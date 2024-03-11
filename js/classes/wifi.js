@@ -130,8 +130,8 @@ class Wifi {
     static connectToWifi(app, name, pwd) {
         const foundWifi = wifis.find(wifi => wifi.name == name && wifi.password == pwd);
         if (foundWifi) {
-            HomeDefence.router.connectedWifi = foundWifi;
-            routers.find(router => router.name == HomeDefence.router.name).connectedWifi = foundWifi;
+            Apartment.activeApartment.router.connectedWifi = foundWifi;
+            routers.find(router => router.name == Apartment.activeApartment.router.name).connectedWifi = foundWifi;
             CMD.log(app, "Successfully connected to Wifi.");
         } else {
             CMD.error(app, "Cannot connect to Wifi: ", name);

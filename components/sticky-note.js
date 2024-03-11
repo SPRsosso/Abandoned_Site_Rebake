@@ -17,7 +17,8 @@ class StickyNote extends HTMLElement {
                     justify-content: center;
 
                     background-color: yellow;
-                    color: black;
+                    font-weight: bolder;
+                    font-size: 1.2rem;
 
                     transform: rotateZ(20deg);
                 }

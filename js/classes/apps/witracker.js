@@ -150,8 +150,8 @@ class WiTracker extends App {
         ul.innerHTML = ``;
 
         for (let i = 0; i < wifiCount; i++)
-            if (HomeDefence.router.connectedWifi) {
-                if (HomeDefence.router.connectedWifi.name == filteredWifis[i].name)
+            if (Apartment.activeApartment.router.connectedWifi) {
+                if (Apartment.activeApartment.router.connectedWifi.name == filteredWifis[i].name)
                     ul.innerHTML += `<li class="active">${filteredWifis[i].name} <img src="./icons/level${filteredWifis[i].strength}.png"></img></li>`;
                 else
                     ul.innerHTML += `<li>${filteredWifis[i].name} <img src="./icons/level${filteredWifis[i].strength}.png"></img></li>`;

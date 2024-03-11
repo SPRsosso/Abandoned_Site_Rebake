@@ -89,15 +89,15 @@ class App {
     }
 
     static downloadApp(app, appName) {
-        if (!HomeDefence.router.connectedWifi) {
+        if (!Apartment.activeApartment.router.connectedWifi) {
             CMD.error(app, "No Wifi connected!");
             return;
         }
 
-        const appSize = 20000 / HomeDefence.router.connectedWifi.strength;
+        const appSize = 20000 / Apartment.activeApartment.router.connectedWifi.strength;
         return new Promise(async ( resolve, reject ) => {
             await App.wait(app, appSize);
-            downloadedApps[appName] = apps[appName];
+            Apartment.activeApartment.pc.downloadedApps[appName] = apps[appName];
             App.getAppIcons();
 
             resolve();

@@ -1,5 +1,4 @@
 class CMD extends App {
-    static user = "User";
     constructor(window) {
         super();
 
@@ -51,7 +50,7 @@ class CMD extends App {
 
             <span slot="name">Console</span>
             <div id="cmd">
-                <p>${CMD.user}:/<span contentEditable="true"></span></p>
+                <p>${Apartment.activeApartment.pc.user}:/<span contentEditable="true"></span></p>
             </div>
         `;
 
@@ -153,7 +152,7 @@ class CMD extends App {
                             string += " ";
                     }
 
-                    CMD.user = string;
+                    Apartment.activeApartment.pc.user = string;
                     break;
                 case "help":
                     mainScreen.innerHTML += `
@@ -215,7 +214,7 @@ class CMD extends App {
                     Wifi.connectToWifi(this.window, wifiArr[0], wifiArr[1]);
                     break;
                 default:
-                    CMD.error(this.window, "Unknown command: ", tokenized[0]);
+                    CMD.error(this.window, "Unknown command: " + tokenized[0].value);
                     break;
             }
             
@@ -235,7 +234,7 @@ class CMD extends App {
 
     getStartLine() {
         const mainScreen = this.window.querySelector("#cmd");
-        mainScreen.innerHTML += `<p>${CMD.user}:/<span contentEditable="true"></span></p>`;
+        mainScreen.innerHTML += `<p>${Apartment.activeApartment.pc.user}:/<span contentEditable="true"></span></p>`;
 
         const editable = mainScreen.querySelector("[contentEditable]");
         this.window.focus();

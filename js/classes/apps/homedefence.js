@@ -1,16 +1,15 @@
 class HomeDefence extends App {
-    static router = routers[routers.length - 1];
     constructor(window) {
         super();
 
         this.window = window;
-        this.selectedRouter = HomeDefence.router;
+        this.selectedRouter = Apartment.activeApartment.router;
     }
 
     static async openApp() {
         const appComponent = document.createElement("app-component");
         const shadow = appComponent.shadowRoot;
-        const mainOptions = shadow.querySelector("main-options");
+        const mainOptions = shadow.querySelector("main-options"); 
 
         let rous = ``;
         let stys = ``;
@@ -102,14 +101,14 @@ class HomeDefence extends App {
 
         const button = mainScreen.querySelector("button");
         button.addEventListener("click", async () => {
-            if (homedefence.selectedRouter.name == HomeDefence.router.name)
+            if (homedefence.selectedRouter.name == Apartment.activeApartment.router.name)
                 return;
 
             await HomeDefence.wait(appComponent, 5000);
-            HomeDefence.router = routers.find(router => router.name == homedefence.selectedRouter.name);
+            Apartment.activeApartment.router = routers.find(router => router.name == homedefence.selectedRouter.name);
             HomeDefence.refreshRouters(appComponent);
             wifis.forEach(wifi => {
-                wifi.changeStrength(HomeDefence.router.pos);
+                wifi.changeStrength(Apartment.activeApartment.router.strength);
             })
         });
     }
@@ -166,7 +165,7 @@ class HomeDefence extends App {
         const routers = mainScreen.querySelectorAll(".router");
 
         routers.forEach(router => router.classList.remove("active"));
-        mainScreen.querySelector(`#${HomeDefence.router.name}`).classList.add("active");
+        mainScreen.querySelector(`#${Apartment.activeApartment.router.name}`).classList.add("active");
 
         mainScreen.querySelector(`#${homedefence.selectedRouter.name}`).classList.add("active");
     }

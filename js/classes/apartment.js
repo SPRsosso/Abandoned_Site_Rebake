@@ -1,7 +1,15 @@
 class Apartment {
     static activeApartment;
-    constructor() {
+    constructor(roomNumber) {
         this.routers = [];
+        Apartment.generateRouters(this.routers);
+
+        this.pc = new PC();
+        this.roomNumber = roomNumber;
+        this.router = this.routers[this.routers.length - 1];
+    }
+
+    static generateRouters(routers) {
         const x = [];
         const y = [];
         const spanX = [];
@@ -44,7 +52,7 @@ class Apartment {
         }
 
         for (let i = 0; i < x.length; i++) {
-            this.routers.push(new Router("r" + (i + 1), x[i], y[i], spanX[i], spanY[i]));
+            routers.push(new Router("r" + (i + 1), x[i], y[i], spanX[i], spanY[i]));
         }
     }
 }

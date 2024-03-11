@@ -24,9 +24,11 @@ class PC {
             }
         }
         this.downloadedApps = [ CMD ];
-        this.routers = [];
-        this.user = "";
+        this.user = pc_names[Math.floor(Math.random() * pc_names.length)] + " " + pc_surnames[Math.floor(Math.random() * pc_surnames.length)];
         this.password = "";
+        for (let i = 0; i < 10; i++) {
+            this.password  += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
+        }
     }
 
     get(index) {
