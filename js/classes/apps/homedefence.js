@@ -12,6 +12,16 @@ class HomeDefence extends App {
         const shadow = appComponent.shadowRoot;
         const mainOptions = shadow.querySelector("main-options");
 
+        let rous = ``;
+        let stys = ``;
+        routers.forEach(router => {
+            stys += `#${ router.name } { 
+                grid-column: ${ router.pos.x } / span ${ router.spanX }; 
+                grid-row:  ${ router.pos.y } / span ${ router.spanY };
+            }`
+            rous += `<div id="${ router.name }" class="router">${ router.name.toUpperCase() }</div>`;
+        });
+
         appComponent.innerHTML = `
             <style>
                 ${styles}
@@ -57,30 +67,7 @@ class HomeDefence extends App {
                     height: 100%;
                 }
 
-                #r1 {
-                    grid-column: 1 / span 1;
-                    grid-row: 3 / span 2;
-                }
-
-                #r2 {
-                    grid-column: 1 / span 1;
-                    grid-row: 1 / span 2;
-                }
-
-                #r3 {
-                    grid-column: 2 / span 1;
-                    grid-row: 1 / span 3;
-                }
-
-                #r4 {
-                    grid-column: 2 / span 1;
-                    grid-row: 4 / span 1;
-                }
-
-                #r5 {
-                    grid-column: 3 / span 1;
-                    grid-row: 1 / span 4;
-                }
+                ${stys}
 
                 #homedefence .active {
                     background-color: var(--accent-color-faded);
@@ -90,11 +77,7 @@ class HomeDefence extends App {
             <span slot="name">Home Defence</span>
             <div id="homedefence">
                 <div id="router-grid">
-                    <div id="r1" class="router">R1</div>
-                    <div id="r2" class="router">R2</div>
-                    <div id="r3" class="router">R3</div>
-                    <div id="r4" class="router">R4</div>
-                    <div id="r5" class="router">R5</div>
+                    ${rous}
                 </div>
                 <button>Connect</button>
             </div>
