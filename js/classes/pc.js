@@ -15,15 +15,23 @@ class PC {
                 else
                     type = "transmission";
 
+                let name = "";
+                for (let k = 0; k < 7; k++)
+                    name += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
+                name += "." + file_extensions[Math.floor(Math.random() * file_extensions.length)];
 
-                tmpDoc["files"].push({ name: Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)], type });
+                tmpDoc["files"].push({ name, type });
             }
             if (i + 1 < 3) {
-                tmpDoc["folder"] = {};
+                let name = "";
+                for (let k = 0; k < 10; k++)
+                    name += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
+
+                tmpDoc["folder"] = { name };
                 tmpDoc = tmpDoc["folder"];
             }
         }
-        this.downloadedApps = [ CMD ];
+        this.downloadedApps = { CMD, FileExplorer };
         this.user = pc_names[Math.floor(Math.random() * pc_names.length)] + " " + pc_surnames[Math.floor(Math.random() * pc_surnames.length)];
         this.password = "";
         for (let i = 0; i < 10; i++) {

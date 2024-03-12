@@ -175,6 +175,12 @@ class CMD extends App {
                         if (tokenized[1])
                             string += " ";
                     }
+                    Object.keys(apps).forEach(( key ) => {
+                        if (string == key || string == key.toLowerCase() || string == key.toUpperCase()) {
+                            string = key;
+                            return;
+                        }
+                    });
                     if (apps[string])
                         await App.downloadApp(this.window, string);
                     else
@@ -222,6 +228,7 @@ class CMD extends App {
         }
         
         this.mode = "standby";
+        this.selectedLine = 0;
         this.getStartLine();
     }
 

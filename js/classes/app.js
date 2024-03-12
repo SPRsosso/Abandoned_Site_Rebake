@@ -10,6 +10,7 @@ class App {
             <span slot="name">Default app (not modded yet)</span>
         `;
 
+        App.defaultValues(appComponent);
         this.screen.prepend(appComponent);
         openedApps.push(new App(appComponent));
     }
@@ -42,7 +43,7 @@ class App {
         appInfo.style.transform = "translate(-50%)";
 
         appIcon.addEventListener("mouseout", () => {
-        appInfo.remove();
+            appInfo.remove();
         });
 
         this.screen.append(appInfo);
@@ -83,7 +84,8 @@ class App {
     static getAppIcons() {
         const mainBar = document.querySelector("main-bar");
         mainBar.innerHTML = "";
-        Object.keys(downloadedApps).forEach(downloadedApp => {
+        let keys = Apartment.activeApartment.pc.downloadedApps;
+        Object.keys(keys).forEach(downloadedApp => {
             mainBar.innerHTML += `<app-icon icon-path="./icons/${downloadedApp}.png" app-name="${downloadedApp}"></app-icon>`;
         });
     }
@@ -94,7 +96,7 @@ class App {
             return;
         }
 
-        const appSize = 20000 / Apartment.activeApartment.router.connectedWifi.strength;
+        const appSize = 5000 / Apartment.activeApartment.router.connectedWifi.strength;
         return new Promise(async ( resolve, reject ) => {
             await App.wait(app, appSize);
             Apartment.activeApartment.pc.downloadedApps[appName] = apps[appName];

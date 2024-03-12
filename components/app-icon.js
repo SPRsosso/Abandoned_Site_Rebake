@@ -51,8 +51,16 @@ class AppIcon extends HTMLElement {
         `;
 
         this.shadow.host.addEventListener("mouseover", () => {
-            if (appName == "CMD")
-                appName = "Console";
+            switch (appName) {
+                case "CMD":
+                    appName = "Console";
+                    break;
+                case "HashMap":
+                    appName = "# Map";
+                case "HomeDefence":
+                    appName = "Home Defence";
+                    break;
+            }
             
             App.showName(this.shadow.host, appName);
         });

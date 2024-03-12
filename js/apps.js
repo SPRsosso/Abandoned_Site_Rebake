@@ -1,14 +1,17 @@
 const apps = {
     CMD,
+    FileExplorer,
     WiTracker,
-    HomeDefence
+    HomeDefence,
+    HashMap
 };
 
 const openedApps = [];
-const downloadedApps = {
+Apartment.activeApartment.pc.downloadedApps = {
     CMD,
+    FileExplorer,
     WiTracker,
     HomeDefence
-};
+}
 
 App.getAppIcons();
