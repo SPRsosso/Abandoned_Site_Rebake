@@ -71,3 +71,73 @@ sticky-note {
     left: 0;
     z-index: 10000;
 }
+
+usb-port {
+    position: absolute;
+}
+
+phone-component {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 150%);
+    
+    z-index: 100000;
+}
+
+phone-component.close {
+    animation: 1s closephone forwards;
+}
+
+phone-component.open {
+    animation: 1s openphone forwards;
+}
+
+@keyframes openphone {
+    0% {
+        transform: translate(-50%, 150%);
+        bottom: 0;
+    }
+
+    100% {
+        transform: translate(-50%, 50%);
+        bottom: 50%;
+    }
+}
+
+@keyframes closephone {
+    0% {
+        transform: translate(-50%, 50%);
+        bottom: 50%;
+    }
+
+    100% {
+        transform: translate(-50%, 150%);
+        bottom: 0;
+    }
+}
+
+#open-phone {
+    position: absolute;
+    bottom: 0;
+    right: 100px;
+
+    width: 300px;
+    height: 50px;
+    border: 1px solid var(--accent-color);
+    border-radius: 10px 10px 0 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#open-phone:hover {
+    background-color: var(--accent-color-faded);
+
+    cursor: pointer;
+}
+
+#open-phone img {
+    height: 100%;
+}

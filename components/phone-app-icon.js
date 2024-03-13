@@ -1,4 +1,4 @@
-class AppIcon extends HTMLElement {
+class PhoneAppIcon extends HTMLElement {
     constructor() {
         super();
 
@@ -8,6 +8,14 @@ class AppIcon extends HTMLElement {
     connectedCallback() {
         let iconPath = this.getAttribute("icon-path");
         let appName = this.getAttribute("app-name");
+
+        let appShowName = appName;
+        switch (appName) {
+            case "PhoneTutorial":
+                appShowName = "Tutorial";
+                break;
+        }
+
         this.shadow.innerHTML = `
             <style>
                 ${styles}
@@ -42,32 +50,19 @@ class AppIcon extends HTMLElement {
                     padding: 5px;
                     overflow-wrap: break-word;
                 }
+
+                #icon #name {
+                    font-size: 12px;
+                }
             </style>
-            <div id="icon" ondblclick="apps['${appName}'] ? apps['${appName}'].openApp() : App.openApp()">
+            <div id="icon" ondblclick="phoneApps['${appName}'] ? phoneApps['${appName}'].openApp() : PhoneApp.openApp()">
                 <div id="inside-icon">
                     <img src="${iconPath}" alt="${appName} icon" draggable="false">
+                    <p id="name">${appShowName}</p>
                 </div>
             </div>
         `;
-
-        this.shadow.host.addEventListener("mouseover", () => {
-            switch (appName) {
-                case "CMD":
-                    appName = "Console";
-                    break;
-                case "HashMap":
-                    appName = "# Map";
-                case "HomeDefence":
-                    appName = "Home Defence";
-                    break;
-                case "FileExplorer":
-                    appName = "File Explorer";
-                    break;
-            }
-            
-            App.showName(this.shadow.host, appName);
-        });
     }
 }
 
-customElements.define("app-icon", AppIcon);
+customElements.define("phone-app-icon", PhoneAppIcon);

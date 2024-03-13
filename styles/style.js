@@ -1,6 +1,7 @@
 const styles = `
     * {
         margin: 0;
+        --usb-height: 80px;
     }
 
     *:not(div) {

@@ -16,6 +16,11 @@
     <script src="./components/app-component.js"></script>
     <script src="./components/app-info.js"></script>
     <script src="./components/sticky-note.js"></script>
+    <script src="./components/usb-component.js"></script>
+    <script defer src="./components/usb-port.js"></script>
+    <script src="./components/phone-component.js"></script>
+    <script src="./components/phone-app-component.js"></script>
+    <script src="./components/phone-app-icon.js"></script>
 
     <script defer src="./js/language/lexer.js"></script>
 
@@ -36,8 +41,16 @@
     <script defer src="./js/apartments.js"></script>
     <script defer src="./js/routers.js"></script>
     
+    <script defer src="./components/login-screen.js"></script>
     <script defer src="./js/wifis.js"></script>
     <script defer src="./js/apps.js"></script>
+
+    
+    <script defer src="./js/phone/phoneapp.js"></script>
+    <script defer src="./js/phone/apps/phonetutorial.js"></script>
+    <script defer src="./js/phone/phoneapps.js"></script>
+    
+    <script defer src="./js/phone/openphone.js"></script>
 
     <link rel="stylesheet" href="./styles/style.css">
     <title>Abandoned Site: Rebake</title>
@@ -51,6 +64,12 @@
             </main-bar>
         </main-screen>
     </main>
+
+    <phone-component></phone-component>
+    <div id="open-phone"><img src="./icons/OpenPhone.png" alt="open phone"></div>
+
+    <usb-port usb-id="usb1"></usb-port>
+
     <sticky-note></sticky-note>
 </body>
 </html>

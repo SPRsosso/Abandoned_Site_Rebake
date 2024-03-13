@@ -106,7 +106,7 @@ class FileExplorer extends App {
         backward.addEventListener("click", () => {
             if (fileexplorer.currentFolderIndex > 0) {
                 fileexplorer.currentFolderIndex--;
-                fileexplorer.getInsideFolder(appComponent);
+                fileexplorer.getInsideFolder(appComponent, Apartment.activeApartment.pc);
 
                 if (fileexplorer.currentFolderIndex == 0)
                     backward.classList.add("disabled");
@@ -115,19 +115,18 @@ class FileExplorer extends App {
             }
         });
 
-        fileexplorer.getInsideFolder(appComponent);
-        // Apartment.activeApartment.pc.documents;
+        fileexplorer.getInsideFolder(appComponent, Apartment.activeApartment.pc);
     }
 
-    getInsideFolder(app) {
+    getInsideFolder(app, pc) {
         const insideFolder = app.querySelector("#inside-folder");
         const directory = app.querySelector("#directory");
         let list = "<ul>";
-        Object.keys(Apartment.activeApartment.pc.get(this.currentFolderIndex)).forEach(( key ) => {
+        Object.keys(pc.get(this.currentFolderIndex)).forEach(( key ) => {
             if (key == "folder")
-                list += `<li class="folder"><img src="./icons/Folder.png">${Apartment.activeApartment.pc.get(this.currentFolderIndex)[key].name}</li>`;
+                list += `<li class="folder"><img src="./icons/Folder.png">${pc.get(this.currentFolderIndex)[key].name}</li>`;
             else if (key == "files")
-                Apartment.activeApartment.pc.get(this.currentFolderIndex)[key].forEach(( file ) => {
+                pc.get(this.currentFolderIndex)[key].forEach(( file ) => {
                     list += `<li><img src="./icons/File.png">${file.name}</li>`
                 });
         });
@@ -136,13 +135,13 @@ class FileExplorer extends App {
 
         let dir = "Documents/";
         for (let i = 0; i <= this.currentFolderIndex; i++)
-            dir += Apartment.activeApartment.pc.get(i).name ? Apartment.activeApartment.pc.get(i).name + "/" : "";
+            dir += pc.get(i).name ? pc.get(i).name + "/" : "";
         directory.innerHTML = dir;
 
         insideFolder.querySelectorAll(".folder").forEach(folder => {
             folder.addEventListener("dblclick", () => {
                 this.currentFolderIndex++;
-                this.getInsideFolder(app);
+                this.getInsideFolder(app, pc);
                 app.querySelector("#backward").classList.remove("disabled");
             });
         });
