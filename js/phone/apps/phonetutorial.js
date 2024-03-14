@@ -22,34 +22,51 @@ class PhoneTutorial extends PhoneApp {
                     margin: 0;
                     margin-bottom: 5px;
                 }
+                
+                #main-tutorial #navigation {
+                    width: 100%;
+                    height: 50px;
 
-                #main-tutorial {
+                    border-bottom: 1px solid var(--accent-color);
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                }
+
+                #main-tutorial #content {
+                    width: 100%;
+                    height: calc(100% - 50px);
+
                     padding: 10px;
                 }
             </style>
             <span slot="name">Tutorial</span>
             <div id="main-tutorial">
-                <h3>USB port connector</h3>
-                <p>It's located on right side of your monitor, you can plug USB devices into it, such as Pendrive</p>
-                
-                <h3>Pendrive</h3>
-                <p>It is used to crack into PCs, you can download additional program that will help you with hacking PCs</p>
-
-                <h3>Console</h3>
-                <p>You can do many things using this powerful app, you can change user name, break wifis, connect into wifis, open apps, delete or create files</p>
-
-                <h3>WiTracker</h3>
-                <p>PC app that you can track Wifis nearby: getting their name, strength and connected PCs</p>
-
-                <h3>Home Defence</h3>
-                <p>PC app that gets your apartment, checks your router stability and allows you to change routers remotely</p>
-
-                <h3># Map</h3>
-                <p>Allows you to download program onto Pendrives</p>
+                <div id="navigation">
+                    <button id="apps-components-btn">Apps & Components</button>
+                    <button id="commands-btn">Commands</button>
+                </div>
+                <div id="content">
+                    ${tutorialAppsAndComponents}
+                </div>
             <div>
         `;
 
+        appComponent.querySelector("#apps-components-btn").addEventListener("click", () => {
+            this.changeTutorial(appComponent, tutorialAppsAndComponents);
+        });
+
+        appComponent.querySelector("#commands-btn").addEventListener("click", () => {
+            this.changeTutorial(appComponent, tutorialCommands);
+        });
+
         this.screen.prepend(appComponent);
         openedPhoneApps.push(new PhoneTutorial(appComponent));
+    }
+
+    static changeTutorial(app, tutorial) {
+        app.querySelector("#content").innerHTML = tutorial;
     }
 }

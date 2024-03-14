@@ -39,27 +39,40 @@ class UsbPort extends HTMLElement {
 
         this.shadow.host.addEventListener("dblclick", () => {
             const usbs = document.querySelectorAll("usb-component");
+            const apps = document.querySelector("phone-component").shadowRoot.querySelectorAll("phone-app-component");
 
             let isTheSameUsb = false;
 
             let usbInterval;
-            usbs.forEach(usb => {
-                if (usb.getAttribute("usb-id") == this.usbId) {
+            usbs.forEach(usbArr => {
+                if (usbArr.getAttribute("usb-id") == this.usbId) {
                     isTheSameUsb = true;
                     clearInterval(usbInterval);
-                    usb.remove();
+                    usbArr.remove();
+                    
+                    usb.inserted = false;
+
+                    apps.forEach(app => {
+                        PhoneCrack.crackUi(app);
+                    });
                 }
             });
 
             if (!isTheSameUsb) {
-                const usb = document.createElement("usb-component");
-                usb.style.position = "absolute";
+                const usbComponent = document.createElement("usb-component");
+                usbComponent.style.position = "absolute";
                 usbInterval = setInterval(() => {
-                    usb.style.left = this.shadow.host.getBoundingClientRect().right + "px";
-                    usb.style.top = this.shadow.host.getBoundingClientRect().top + "px";
+                    usbComponent.style.left = this.shadow.host.getBoundingClientRect().right + "px";
+                    usbComponent.style.top = this.shadow.host.getBoundingClientRect().top + "px";
                 }, 0);
-                usb.setAttribute("usb-id", this.usbId);
-                document.body.append(usb);
+                usbComponent.setAttribute("usb-id", this.usbId);
+                document.body.append(usbComponent);
+
+                usb.inserted = true;
+                
+                apps.forEach(app => {
+                    PhoneCrack.crackUi(app);
+                });
             }
         });
     }

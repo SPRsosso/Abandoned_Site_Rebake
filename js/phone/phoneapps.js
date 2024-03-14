@@ -1,5 +1,6 @@
 const phoneApps = {
-    PhoneTutorial
+    PhoneTutorial,
+    PhoneCrack
 }
 
 const openedPhoneApps = [];

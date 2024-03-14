@@ -89,6 +89,9 @@ class LoginScreen extends HTMLElement {
         const password = this.shadow.querySelector("#password");
 
         if (Apartment.activeApartment.pc.password == password.value) {
+            const audio = new Audio("./sounds/Login.mp3");
+            audio.volume = 0.3;
+            audio.play();
             this.shadow.host.remove();
         } else {
             this.shadow.querySelector("#error").innerHTML = "Wrong password!";

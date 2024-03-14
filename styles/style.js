@@ -61,6 +61,8 @@ const styles = `
         background-color: var(--bg-color);
         border: 1px solid var(--accent-color);
 
+        color: var(--accent-color);
+
         cursor: pointer;
     }
 
