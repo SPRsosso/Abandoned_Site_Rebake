@@ -13,6 +13,21 @@ const styles = `
     *::after {
         box-sizing: border-box;
     }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+        background: var(--bg-color);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--accent-color);
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-color-faded);
+    }
     
     input[type="text"] {
         padding: 10px;
@@ -51,6 +66,11 @@ const styles = `
 
     button:hover {
         background-color: var(--accent-color-faded);
+    }
+
+    img {
+        user-select: none;
+        -webkit-user-drag: none;
     }
 `
 

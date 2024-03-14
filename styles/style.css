@@ -141,3 +141,8 @@ phone-component.open {
 #open-phone img {
     height: 100%;
 }
+
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
