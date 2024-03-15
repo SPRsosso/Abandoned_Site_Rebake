@@ -3,13 +3,15 @@
     font-family: 'Courier New', Courier, monospace;
     color: var(--accent-color);
 
-    
+    touch-action: manipulation;
 }
 
 *,
 *::before,
 *::after {
     box-sizing: border-box;
+
+    touch-action: manipulation;
 }
 
 :root {
