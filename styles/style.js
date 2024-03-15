@@ -2,6 +2,8 @@ const styles = `
     * {
         margin: 0;
         --usb-height: 80px;
+
+        touch-action: manipulation;
     }
 
     *:not(div) {
@@ -12,6 +14,8 @@ const styles = `
     *::before,
     *::after {
         box-sizing: border-box;
+
+        touch-action: manipulation;        
     }
 
     ::-webkit-scrollbar {
