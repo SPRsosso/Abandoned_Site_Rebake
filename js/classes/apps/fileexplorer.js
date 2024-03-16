@@ -109,8 +109,8 @@ class FileExplorer extends App {
                 fileexplorer.getInsideFolder(appComponent, Apartment.activeApartment.pc);
 
                 /*if (fileexplorer.currentFolderIndex == 0)
-                    backward.classList.add("disabled");*/
-            }/* else {
+                    backward.classList.add("disabled");
+            }else {
                 backward.classList.add("disabled");
             }*/
         });
