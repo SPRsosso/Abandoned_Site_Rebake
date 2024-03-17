@@ -113,6 +113,7 @@ class FileExplorer extends App {
                 } else {
                     backward.classList.add("disabled");
                 }
+            }
         });
 
         fileexplorer.getInsideFolder(appComponent, Apartment.activeApartment.pc);
