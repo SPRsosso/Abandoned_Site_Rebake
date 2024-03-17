@@ -15,16 +15,34 @@ class Apartment {
         const spanX = [];
         const spanY = [];
         let allCellsAreNotFilled = true;
+
+        let loopCount = 0;
         while (allCellsAreNotFilled) {
             let flag = false;
             let xs, ys, spanXs, spanYs;
-            let cnt = 0;
-            let index = 0;
             do {
-                xs = genrand(1, 3);
-                ys = genrand(1, 4);
-                spanXs = genrand(1, 3 - xs);
-                spanYs = genrand(1, 4 - ys);
+                if (loopCount < 3) {
+                    if (Math.random() < 0.5) {
+                        xs = genrand(1, 2);
+                        ys = genrand(1, 4);
+                    } else {
+                        xs = genrand(1, 3);
+                        ys = genrand(1, 3);
+                    }
+                    
+                    if (Math.random() < 0.5) {
+                        spanXs = genrand(2, 3 - xs);
+                        spanYs = 1;
+                    } else {
+                        spanXs = 1;
+                        spanYs = genrand(2, 4 - ys);
+                    }
+                } else {
+                    xs = genrand(1, 3);
+                    ys = genrand(1, 4);
+                    spanXs = genrand(1, 3 - xs);
+                    spanYs = genrand(1, 4 - ys);
+                }
                 for (let i = 0; i < x.length; i++) {
                     if (xs + (spanXs - 1) >= x[i] &&
                         xs <= x[i] + (spanX[i] - 1) &&
@@ -42,7 +60,8 @@ class Apartment {
             y.push(ys);
             spanX.push(spanXs);
             spanY.push(spanYs);
-            index++;
+            loopCount++;
+
             let sum = 0;
             for (let i = 0; i < x.length; i++) {
                 sum += spanX[i] * spanY[i];

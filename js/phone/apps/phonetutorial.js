@@ -22,6 +22,10 @@ class PhoneTutorial extends PhoneApp {
                     margin: 0;
                     margin-bottom: 5px;
                 }
+
+                #main-tutorial h2 {
+                    margin: 20px 0;
+                }
                 
                 #main-tutorial #navigation {
                     width: 100%;
