@@ -104,4 +104,4 @@ class LoginScreen extends HTMLElement {
 customElements.define("login-screen", LoginScreen);
 
 const loginScreen = document.createElement("login-screen");
-//document.querySelector("main-screen").prepend(loginScreen);
+document.querySelector("main-screen").prepend(loginScreen);
