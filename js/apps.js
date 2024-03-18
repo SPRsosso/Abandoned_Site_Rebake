@@ -9,9 +9,9 @@ const apps = {
 const openedApps = [];
 Apartment.activeApartment.pc.downloadedApps = {
     CMD,
-    FileExplorer,
+    FileExplorer /* ,
     WiTracker,
-    HomeDefence
+    HomeDefence */
 }
 
 App.getAppIcons();
