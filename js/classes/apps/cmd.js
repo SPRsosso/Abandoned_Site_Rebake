@@ -4,8 +4,11 @@ class CMD extends App {
 
         this.window = window;
         this.mode = "standby";
+
         this.selectedLine = 0;
         this.lines = [""];
+
+        this.pathIndex = -1;
     }
 
     static openApp() {
@@ -219,6 +222,13 @@ class CMD extends App {
                     }
                     Wifi.connectToWifi(this.window, wifiArr[0], wifiArr[1]);
                     break;
+                case "dirl":
+                    const tokenArr = [];
+                    while (tokenized.shift()) {
+                        if (tokenized.length > 0)
+                            tokenArr.push(tokenized[0].value)
+                    }
+                    break;
                 default:
                     CMD.error(this.window, "Unknown command: " + tokenized[0].value);
                     break;
@@ -256,5 +266,9 @@ class CMD extends App {
     static log(app, text) {
         const mainScreen = app.querySelector("#cmd");
         mainScreen.innerHTML += `<span class="log">${text}</span>`;
+    }
+
+    getDir() {
+        
     }
 }

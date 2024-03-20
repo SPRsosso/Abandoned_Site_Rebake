@@ -1,6 +1,6 @@
 class PC {
     constructor() {
-        this.documents = {};
+        this.documents = { name: "Docs" };
         let tmpDoc = this.documents;
         for (let i = 0; i < 3; i++) {
             tmpDoc["files"] = [];
