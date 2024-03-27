@@ -4,8 +4,12 @@ class CMD extends App {
 
         this.window = window;
         this.mode = "standby";
+
         this.selectedLine = 0;
         this.lines = [""];
+    
+        this.pathIndex = -1;
+        this.path = "";
     }
 
     static openApp() {
@@ -162,6 +166,7 @@ class CMD extends App {
                         <p>downapp *app* - Downloads the specified app</p>
                         <p>ccodetab - Shows char code table</p>
                         <p>connectwifi *name* *password* - Connects to given Wifi</p>
+                        <p>dirl - directory list</p>
                     `;
                     break;
                 case "downapp":
@@ -215,9 +220,18 @@ class CMD extends App {
                     const wifiArr = [];
                     while (tokenized.shift()) {
                         if (tokenized.length > 0)
-                            wifiArr.push(tokenized[0].value)
+                            wifiArr.push(tokenized[0].value);
                     }
                     Wifi.connectToWifi(this.window, wifiArr[0], wifiArr[1]);
+                    break;
+                case "dirl":
+                    if (this.pathIndex != -1) {
+                        const filesDir = Apartment.activeApartment.pc.get(this.pathIndex).files;
+                        for (let i = 0; i < filesDir.length; i++) {
+                            CMD.log(this.window, filesDir[i].name + " ");
+                        }
+                    }
+                    CMD.log(this.window, Apartment.activeApartment.pc.get(this.pathIndex + 1).name);
                     break;
                 default:
                     CMD.error(this.window, "Unknown command: " + tokenized[0].value);
@@ -241,7 +255,7 @@ class CMD extends App {
 
     getStartLine() {
         const mainScreen = this.window.querySelector("#cmd");
-        mainScreen.innerHTML += `<p>${Apartment.activeApartment.pc.user}:/<span contentEditable="true"></span></p>`;
+        mainScreen.innerHTML += `<p>${Apartment.activeApartment.pc.user}${this.path}:/<span contentEditable="true"></span></p>`;
 
         const editable = mainScreen.querySelector("[contentEditable]");
         this.window.focus();
