@@ -6,10 +6,11 @@ const TokenType = {
     CloseParen:"CloseParen",
     BinaryOperator: "BinaryOperator",
     Let: "Let",
+    Path: "Path"
 }
 
 const KEYWORDS = {
-    "let": TokenType.Let,
+    "let": TokenType.Let
 }
 
 class Token {
@@ -20,7 +21,7 @@ class Token {
 }
 
 function isAlpha(src) {
-    return src.toUpperCase() != src.toLowerCase();
+    return src.toUpperCase() != src.toLowerCase() || src == ".";
 }
 
 function isInt(src) {
@@ -28,6 +29,10 @@ function isInt(src) {
     const bounds = [ '0'.charCodeAt(0), '9'.charCodeAt(0) ];
 
     return ( c >= bounds[0] && c <= bounds[1] );
+}
+
+function isPath(src) {
+    return src == ".";
 }
 
 function isSkippable(src) {
@@ -59,7 +64,14 @@ function tokenize(sourceCode) {
 
             //     tokens.push(new Token(num, TokenType.Number));
             // } else 
-            if (isAlpha(src[0]) || isInt(src[0])) {
+            if (isPath(src[0])) {
+                let ident = "";
+                while (src.length > 0 && isPath(src[0])) {
+                    ident += src.shift();
+                }
+
+                tokens.push(new Token(ident, TokenType.Path));
+            } else if (isAlpha(src[0]) || isInt(src[0])) {
                 let ident = "";
                 while (src.length > 0 && (isAlpha(src[0]) || isInt(src[0]))) {
                     ident += src.shift();
@@ -79,6 +91,6 @@ function tokenize(sourceCode) {
             }
         }
     }
-
+    
     return tokens;
 }

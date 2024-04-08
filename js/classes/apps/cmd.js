@@ -231,7 +231,63 @@ class CMD extends App {
                             CMD.log(this.window, filesDir[i].name + " ");
                         }
                     }
-                    CMD.log(this.window, Apartment.activeApartment.pc.get(this.pathIndex + 1).name);
+                    if (Apartment.activeApartment.pc.get(this.pathIndex + 1))
+                        CMD.log(this.window, Apartment.activeApartment.pc.get(this.pathIndex + 1).name);
+                    break;
+                case "cd":
+                    tokenized.shift();
+                    while(tokenized.length > 0) {
+                        const folder = Apartment.activeApartment.pc.get(this.pathIndex + 1);
+
+                        if (tokenized[0].value == ".." && this.pathIndex > -1)
+                            this.pathIndex--;
+
+                        if (this.pathIndex == -1)
+                            this.path = "";
+
+                        if (folder)
+                            if (folder.name == tokenized[0].value)
+                                this.pathIndex++;
+                            
+                        this.path = "";
+                        for (let i = 0; i <= this.pathIndex; i++)
+                            this.path += "/" + Apartment.activeApartment.pc.get(i).name;
+
+                        tokenized.shift();
+                    }
+                    break;
+                case "touch":
+                    tokenized.shift();
+                    var fileName = tokenized[0].value;
+                    const fileType = FileTypes[tokenized[1].value.toLowerCase()];
+
+                    if (this.pathIndex != -1) {
+                        if (fileType) {
+                            Apartment.activeApartment.pc.get(this.pathIndex).files.push({ name: fileName, type: fileType });
+                        } else {
+                            CMD.error(this.window, "Unknown file type: " + tokenized[1].value);
+                        }
+                    } else {
+                        CMD.error(this.window, "Cannot create file in this path");
+                    }
+
+                    tokenized.splice(0, 2);
+                    break;
+                case "delete":
+                    tokenized.shift();
+                    var fileName = tokenized[0].value;
+
+                    if (this.pathIndex != -1) {
+                        var filesArr = Apartment.activeApartment.pc.get(this.pathIndex).files;
+                        var index = filesArr.findIndex(file => file.name == fileName);
+                        if (index != -1)
+                            filesArr.splice(index, 1);
+                        else 
+                            CMD.error("File " + fileName + " not found");
+                    } else {
+                        CMD.error("Cannot delete file in this path");
+                    }
+
                     break;
                 default:
                     CMD.error(this.window, "Unknown command: " + tokenized[0].value);

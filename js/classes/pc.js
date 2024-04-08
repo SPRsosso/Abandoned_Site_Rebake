@@ -1,3 +1,9 @@
+const FileTypes = {
+    firewall: "firewall",
+    authorized: "authorized",
+    transmission: "transmission"
+}
+
 class PC {
     constructor() {
         this.documents = { name: "Documents" };
@@ -9,11 +15,11 @@ class PC {
                 let type;
                 
                 if (randomType < 0.33)
-                    type = "firewall";
+                    type = FileTypes.firewall;
                 else if (randomType < 0.66)
-                    type = "authorized";
+                    type = FileTypes.authorized;
                 else
-                    type = "transmission";
+                    type = FileTypes.transmission;
 
                 let name = "";
                 for (let k = 0; k < 7; k++)
