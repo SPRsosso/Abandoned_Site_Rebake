@@ -17,6 +17,8 @@ class PhoneAppIcon extends HTMLElement {
             case "PhoneCrack":
                 appShowName = "Crack";
                 break;
+            case "PhoneCalculator":
+                appShowName = "Calculator";
         }
 
         this.shadow.innerHTML = `

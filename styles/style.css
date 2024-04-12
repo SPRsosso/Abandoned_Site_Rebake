@@ -80,9 +80,9 @@ usb-port {
 
 phone-component {
     position: absolute;
-    bottom: 0;
+    top: 150%;
     left: 50%;
-    transform: translate(-50%, 150%);
+    transform: translate(-50%, -50%);
     
     z-index: 100000;
 }
@@ -96,26 +96,22 @@ phone-component.open {
 }
 
 @keyframes openphone {
-    0% {
-        transform: translate(-50%, 150%);
-        bottom: 0;
+    100% {
+        top: 50%;
     }
 
-    100% {
-        transform: translate(-50%, 50%);
-        bottom: 50%;
+    0% {
+        top: 150%;
     }
 }
 
 @keyframes closephone {
-    0% {
-        transform: translate(-50%, 50%);
-        bottom: 50%;
+    100% {
+        top: 150%;
     }
 
-    100% {
-        transform: translate(-50%, 150%);
-        bottom: 0;
+    0% {
+        top: 50%;
     }
 }
 

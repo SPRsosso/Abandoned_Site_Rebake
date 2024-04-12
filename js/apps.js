@@ -3,15 +3,18 @@ const apps = {
     FileExplorer,
     WiTracker,
     HomeDefence,
-    HashMap
+    HashMap,
+    Calculator
 };
 
 const openedApps = [];
 Apartment.activeApartment.pc.downloadedApps = {
     CMD,
     FileExplorer,
-    WiTracker,
-    HomeDefence
+    Calculator,
+    // WiTracker,
+    // HomeDefence,
+    // HashMap,
 }
 
 App.getAppIcons();

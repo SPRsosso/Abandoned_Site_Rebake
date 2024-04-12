@@ -1,11 +1,12 @@
-class Calculator extends PhoneApp {
+class Calculator extends App {
     constructor(window) {
         super();
+
         this.window = window;
     }
 
     static openApp() {
-        const appComponent = document.createElement("phone-app-component");
+        const appComponent = document.createElement("app-component");
         appComponent.innerHTML = `
             <style>
                 ${styles}
@@ -15,7 +16,7 @@ class Calculator extends PhoneApp {
                     height: 100%;
 
                     display: grid;
-                    grid-template-columns: repeat(4, 1fr);
+                    grid-template-columns: repeat(5, 1fr);
                     gap: 10px;
 
                     padding: 10px;
@@ -25,7 +26,7 @@ class Calculator extends PhoneApp {
                     width: 100%;
                     height: 100%;
 
-                    grid-column: 1 / span 4;
+                    grid-column: 1 / span 5;
                     overflow-x: scroll;
 
                     font-size: 32px;
@@ -47,21 +48,24 @@ class Calculator extends PhoneApp {
                 <button>2</button>
                 <button>3</button>
                 <button>+</button>
+                <button>-</button>
 
                 <button>4</button>
                 <button>5</button>
                 <button>6</button>
-                <button>-</button>
+                <button>*</button>
+                <button>/</button>
 
                 <button>7</button>
                 <button>8</button>
                 <button>9</button>
-                <button>*</button>
-
                 <button>(</button>
-                <button>0</button>
                 <button>)</button>
-                <button>/</button>
+
+                
+                <button>0</button>
+                
+                
 
                 <button class="col-span-2">=</button>
                 <button><</button>
@@ -69,11 +73,10 @@ class Calculator extends PhoneApp {
             </div>
         `;
 
-
-
+        App.defaultValues(appComponent);
         this.screen.prepend(appComponent);
         const calculator = new Calculator(appComponent);
-        openedPhoneApps.push(calculator);
+        openedApps.push(calculator);
 
         appComponent.querySelectorAll("#calculator button").forEach(button => {
             button.addEventListener("click", () => {

@@ -56,7 +56,6 @@ class App {
         const screenBottom = this.screen.getBoundingClientRect().bottom - screenTop;
         x = (x - screenLeft) + offset.x;
         y = (y - screenTop) + offset.y;
-
         
         if (x + app.clientWidth <= screenRight &&
             x >= 0 &&

@@ -19,7 +19,7 @@ class Wifi {
             // 10 42 42 30 29 17 4 15 28 46
             // dodaj liczby
             // po 20s pojawi się następny ciąg
-            // i tak 3 razy
+            // i tak 2 razy
             // potem dostaniesz liczby a - 0, b - 1, itd... które będą w tablicy liczb
             this.passwordKeys.push(Wifi.possibleChars.indexOf(this.password[i]));
         }

@@ -51,10 +51,6 @@ class UsbPort extends HTMLElement {
                     usbArr.remove();
                     
                     usb.inserted = false;
-
-                    apps.forEach(app => {
-                        PhoneCrack.crackUi(app);
-                    });
                 }
             });
 
@@ -69,9 +65,23 @@ class UsbPort extends HTMLElement {
                 document.body.append(usbComponent);
 
                 usb.inserted = true;
-                
+            }
+
+            if (usb.inserted) {
                 apps.forEach(app => {
                     PhoneCrack.crackUi(app);
+                });
+                
+                openedApps.forEach(openedApp => {
+                    HashMap.ui(openedApp.window);
+                });
+            } else {
+                apps.forEach(app => {
+                    PhoneCrack.crackUi(app);
+                });
+
+                openedApps.forEach(openedApp => {
+                    HashMap.ui(openedApp.window);
                 });
             }
         });

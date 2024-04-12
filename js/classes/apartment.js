@@ -22,7 +22,8 @@ class Apartment {
             let xs, ys, spanXs, spanYs;
             do {
                 if (loopCount < 3) {
-                    if (Math.random() < 0.5) {
+                    const randomNum = Math.random();
+                    if (randomNum < 0.5) {
                         xs = genrand(1, 2);
                         ys = genrand(1, 4);
                     } else {
@@ -30,7 +31,7 @@ class Apartment {
                         ys = genrand(1, 3);
                     }
                     
-                    if (Math.random() < 0.5) {
+                    if (randomNum < 0.5) {
                         spanXs = genrand(2, 3 - xs);
                         spanYs = 1;
                     } else {
