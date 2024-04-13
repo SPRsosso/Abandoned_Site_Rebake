@@ -17,7 +17,7 @@ class CMD extends App {
         const shadow = appComponent.shadowRoot;
         const mainOptions = shadow.querySelector("main-options");
 
-        appComponent.innerHTML = `
+        appComponent.innerHTML = /*html*/`
             <style>
                 ${styles}
 
@@ -54,7 +54,7 @@ class CMD extends App {
 
             <span slot="name">Console</span>
             <div id="cmd">
-                <p>${Apartment.activeApartment.pc.user}:/<span contentEditable="true"></span></p>
+                <p>${Apartment.activeApartment.pc.user}${this.path}:/<span contentEditable="true"></span></p>
             </div>
         `;
 
@@ -159,7 +159,7 @@ class CMD extends App {
                     Apartment.activeApartment.pc.user = string;
                     break;
                 case "help":
-                    mainScreen.innerHTML += `
+                    mainScreen.innerHTML += /*html*/`
                         <p>help - Shows basic commands you can use</p>
                         <p>clear - Clears console</p>
                         <p>setuser *name* - Changes current user name</p>
@@ -167,6 +167,9 @@ class CMD extends App {
                         <p>ccodetab - Shows char code table</p>
                         <p>connectwifi *name* *password* - Connects to given Wifi</p>
                         <p>dirl - directory list</p>
+                        <p>cd *path* - changes directory to selected path</p>
+                        <p>touch *filename* - creates file in current directory</p>
+                        <p>delete *filename* - deletes file in current directory</p>
                     `;
                     break;
                 case "downapp":
@@ -181,7 +184,7 @@ class CMD extends App {
                             string += " ";
                     }
                     Object.keys(apps).forEach(( key ) => {
-                        if (string == key || string == key.toLowerCase() || string == key.toUpperCase()) {
+                        if (string == key || string.toLowerCase() == key.toLowerCase() || string.toUpperCase() == key.toUpperCase()) {
                             string = key;
                             return;
                         }

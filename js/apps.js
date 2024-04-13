@@ -12,9 +12,9 @@ Apartment.activeApartment.pc.downloadedApps = {
     CMD,
     FileExplorer,
     Calculator,
-    // WiTracker,
-    // HomeDefence,
-    // HashMap,
+    WiTracker,
+    HomeDefence,
+    HashMap,
 }
 
 App.getAppIcons();

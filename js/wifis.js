@@ -8,4 +8,4 @@ for (let i = 0; i < wifiCount; i++)
 
 document.querySelector("sticky-note").innerHTML = `<p style="color: black;">Wifi: ${ wifis[0].name }<br>Pwd: ${ wifis[0].password }</p>`;
 
-// Apartment.activeApartment.router.connectedWifi = wifis[0];
+Apartment.activeApartment.router.connectedWifi = wifis[0];

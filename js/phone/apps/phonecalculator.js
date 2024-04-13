@@ -6,7 +6,7 @@ class PhoneCalculator extends PhoneApp {
 
     static openApp() {
         const appComponent = document.createElement("phone-app-component");
-        appComponent.innerHTML = `
+        appComponent.innerHTML = /*html*/`
             <style>
                 ${styles}
 
@@ -25,10 +25,23 @@ class PhoneCalculator extends PhoneApp {
                     width: 100%;
                     height: 100%;
 
+                    padding: 5px;
+                    border: 1px solid var(--accent-color);
+
+                    display: flex;
+                    align-items: center;
+
                     grid-column: 1 / span 4;
-                    overflow-x: scroll;
+                    overflow-x: auto;
+                    overflow-y: hidden;
+
+                    word-wrap: normal;
 
                     font-size: 32px;
+                }
+
+                #calculator #output:focus {
+                    outline: none;
                 }
 
                 #calculator button {
@@ -41,7 +54,7 @@ class PhoneCalculator extends PhoneApp {
             </style>
             <span slot="name">Calculator</span>
             <div id="calculator">
-                <input id="output" type="text" readonly>
+                <span id="output" type="text" contentEditable></span>
 
                 <button>1</button>
                 <button>2</button>
@@ -88,21 +101,21 @@ class PhoneCalculator extends PhoneApp {
             case "=":
                 try {
                     const result = eval(output.value);
-                    output.value += "=" + result;
+                    output.innerHTML += "=" + result;
                 } catch(ex) {
-                    output.value = "Wrong format";
+                    output.innerHTML = "Wrong format";
                 }
                 break;
             case "C":
-                output.value = "";
+                output.innerHTML = "";
                 break;
             case "&lt;":
-                output.value = output.value.slice(0, output.value.length - 1);
+                output.innerHTML = output.innerHTML.slice(0, output.innerHTML.length - 1);
                 break;
             default:
-                if (output.value == "Wrong format")
-                    output.value = "";
-                output.value += value;
+                if (output.innerHTML == "Wrong format")
+                    output.innerHTML = "";
+                output.innerHTML += value;
                 break;
         }
     }

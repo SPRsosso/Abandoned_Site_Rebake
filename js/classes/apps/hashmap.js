@@ -158,6 +158,7 @@ class HashMap extends App {
             cover.style.height = hashmap.offsetHeight + "px";
             cover.style.position = "absolute";
             cover.style.zIndex = "10000000";
+            cover.style.cursor = "wait";
 
             document.body.append(cover);
 
