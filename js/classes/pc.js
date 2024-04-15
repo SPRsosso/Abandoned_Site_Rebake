@@ -38,7 +38,14 @@ class PC {
             }
         }
         this.downloadedApps = { CMD, FileExplorer };
-        this.user = pc_names[Math.floor(Math.random() * pc_names.length)] + " " + pc_surnames[Math.floor(Math.random() * pc_surnames.length)];
+        const name = pc_names[Math.floor(Math.random() * pc_names.length)];
+        const surname = pc_surnames[Math.floor(Math.random() * pc_surnames.length)];
+        this.user = {
+          name: name,
+          surname: surname,
+          fullName: name + " " + surname,
+          age: Math.floor(Math.random() * 27) + 18,
+        }
         this.password = "";
         for (let i = 0; i < 10; i++) {
             this.password  += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];

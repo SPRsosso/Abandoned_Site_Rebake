@@ -54,7 +54,7 @@ class CMD extends App {
 
             <span slot="name">Console</span>
             <div id="cmd">
-                <p>${Apartment.activeApartment.pc.user}${this.path}:/<span contentEditable="true"></span></p>
+                <p>${Apartment.activeApartment.pc.user.fullName}${this.path}:/<span contentEditable="true"></span></p>
             </div>
         `;
 
@@ -156,7 +156,9 @@ class CMD extends App {
                             string += " ";
                     }
 
-                    Apartment.activeApartment.pc.user = string;
+                    Apartment.activeApartment.pc.user.name = string;
+                    Apartment.activeApartment.pc.user.surname = "";
+                    Apartment.activeApartment.pc.user.fullName = Apartment.activeApartment.pc.user.name;
                     break;
                 case "help":
                     mainScreen.innerHTML += /*html*/`
@@ -314,7 +316,7 @@ class CMD extends App {
 
     getStartLine() {
         const mainScreen = this.window.querySelector("#cmd");
-        mainScreen.innerHTML += `<p>${Apartment.activeApartment.pc.user}${this.path}:/<span contentEditable="true"></span></p>`;
+        mainScreen.innerHTML += `<p>${Apartment.activeApartment.pc.user.fullName}${this.path}:/<span contentEditable="true"></span></p>`;
 
         const editable = mainScreen.querySelector("[contentEditable]");
         this.window.focus();

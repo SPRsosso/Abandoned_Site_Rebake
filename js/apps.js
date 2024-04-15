@@ -4,7 +4,8 @@ const apps = {
     WiTracker,
     HomeDefence,
     HashMap,
-    Calculator
+    Calculator,
+    Personide
 };
 
 const openedApps = [];
@@ -15,6 +16,7 @@ Apartment.activeApartment.pc.downloadedApps = {
     WiTracker,
     HomeDefence,
     HashMap,
+    Personide
 }
 
 App.getAppIcons();

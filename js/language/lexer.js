@@ -6,7 +6,8 @@ const TokenType = {
     CloseParen:"CloseParen",
     BinaryOperator: "BinaryOperator",
     Let: "Let",
-    Path: "Path"
+    Path: "Path",
+    Flag: "Flag"
 }
 
 const KEYWORDS = {
@@ -40,12 +41,19 @@ function isSkippable(src) {
 }
 
 function tokenize(sourceCode) {
+    sourceCode += " ";
     const tokens = new Array();
     const src = sourceCode.split("");
 
     // Build each token until end of file
     while(src.length > 0) {
-        if (src[0] == "(")
+        if (src[0] == "-" && isAlpha(src[1])) {
+            let ident = src.shift();
+            while (src.length > 0 && isAlpha(src[0])) {
+                ident += src.shift();
+            }
+            tokens.push(new Token(ident, TokenType.Flag));
+        } else if (src[0] == "(")
             tokens.push(new Token(src.shift(), TokenType.OpenParen));
         else if (src[0] == ")")
             tokens.push(new Token(src.shift(), TokenType.CloseParen));
