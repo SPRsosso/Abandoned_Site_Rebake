@@ -134,7 +134,7 @@ class FileExplorer extends App {
         list += "</ul>";
         insideFolder.innerHTML = list;
 
-        let dir = "Documents/";
+        let dir = "";
         for (let i = 0; i <= this.currentFolderIndex; i++)
             dir += pc.get(i).name ? pc.get(i).name + "/" : "";
         directory.innerHTML = dir;

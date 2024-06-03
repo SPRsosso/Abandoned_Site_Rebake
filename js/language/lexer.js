@@ -6,10 +6,12 @@ const TokenType = {
     CloseParen:"CloseParen",
     BinaryOperator: "BinaryOperator",
     Let: "Let",
+    Path: "Path",
+    Flag: "Flag"
 }
 
 const KEYWORDS = {
-    "let": TokenType.Let,
+    "let": TokenType.Let
 }
 
 class Token {
@@ -20,7 +22,7 @@ class Token {
 }
 
 function isAlpha(src) {
-    return src.toUpperCase() != src.toLowerCase();
+    return src.toUpperCase() != src.toLowerCase() || src == ".";
 }
 
 function isInt(src) {
@@ -30,17 +32,28 @@ function isInt(src) {
     return ( c >= bounds[0] && c <= bounds[1] );
 }
 
+function isPath(src) {
+    return src == ".";
+}
+
 function isSkippable(src) {
     return src == " " || src == "\n" || src == "\t";
 }
 
 function tokenize(sourceCode) {
+    sourceCode += " ";
     const tokens = new Array();
     const src = sourceCode.split("");
 
     // Build each token until end of file
     while(src.length > 0) {
-        if (src[0] == "(")
+        if (src[0] == "-" && isAlpha(src[1])) {
+            let ident = src.shift();
+            while (src.length > 0 && isAlpha(src[0])) {
+                ident += src.shift();
+            }
+            tokens.push(new Token(ident, TokenType.Flag));
+        } else if (src[0] == "(")
             tokens.push(new Token(src.shift(), TokenType.OpenParen));
         else if (src[0] == ")")
             tokens.push(new Token(src.shift(), TokenType.CloseParen));
@@ -59,7 +72,14 @@ function tokenize(sourceCode) {
 
             //     tokens.push(new Token(num, TokenType.Number));
             // } else 
-            if (isAlpha(src[0]) || isInt(src[0])) {
+            if (isPath(src[0])) {
+                let ident = "";
+                while (src.length > 0 && isPath(src[0])) {
+                    ident += src.shift();
+                }
+
+                tokens.push(new Token(ident, TokenType.Path));
+            } else if (isAlpha(src[0]) || isInt(src[0])) {
                 let ident = "";
                 while (src.length > 0 && (isAlpha(src[0]) || isInt(src[0]))) {
                     ident += src.shift();
@@ -79,6 +99,6 @@ function tokenize(sourceCode) {
             }
         }
     }
-
+    
     return tokens;
 }

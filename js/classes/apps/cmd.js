@@ -7,8 +7,14 @@ class CMD extends App {
 
         this.selectedLine = 0;
         this.lines = [""];
+<<<<<<< HEAD
 
         this.pathIndex = -1;
+=======
+    
+        this.pathIndex = -1;
+        this.path = "";
+>>>>>>> 250cecd8b78016a12079e82d04e516f5c716bce2
     }
 
     static openApp() {
@@ -16,7 +22,7 @@ class CMD extends App {
         const shadow = appComponent.shadowRoot;
         const mainOptions = shadow.querySelector("main-options");
 
-        appComponent.innerHTML = `
+        appComponent.innerHTML = /*html*/`
             <style>
                 ${styles}
 
@@ -53,7 +59,7 @@ class CMD extends App {
 
             <span slot="name">Console</span>
             <div id="cmd">
-                <p>${Apartment.activeApartment.pc.user}:/<span contentEditable="true"></span></p>
+                <p>${Apartment.activeApartment.pc.user.fullName}${this.path}:/<span contentEditable="true"></span></p>
             </div>
         `;
 
@@ -155,16 +161,22 @@ class CMD extends App {
                             string += " ";
                     }
 
-                    Apartment.activeApartment.pc.user = string;
+                    Apartment.activeApartment.pc.user.name = string;
+                    Apartment.activeApartment.pc.user.surname = "";
+                    Apartment.activeApartment.pc.user.fullName = Apartment.activeApartment.pc.user.name;
                     break;
                 case "help":
-                    mainScreen.innerHTML += `
+                    mainScreen.innerHTML += /*html*/`
                         <p>help - Shows basic commands you can use</p>
                         <p>clear - Clears console</p>
                         <p>setuser *name* - Changes current user name</p>
                         <p>downapp *app* - Downloads the specified app</p>
                         <p>ccodetab - Shows char code table</p>
                         <p>connectwifi *name* *password* - Connects to given Wifi</p>
+                        <p>dirl - directory list</p>
+                        <p>cd *path* - changes directory to selected path</p>
+                        <p>touch *filename* - creates file in current directory</p>
+                        <p>delete *filename* - deletes file in current directory</p>
                     `;
                     break;
                 case "downapp":
@@ -179,7 +191,7 @@ class CMD extends App {
                             string += " ";
                     }
                     Object.keys(apps).forEach(( key ) => {
-                        if (string == key || string == key.toLowerCase() || string == key.toUpperCase()) {
+                        if (string == key || string.toLowerCase() == key.toLowerCase() || string.toUpperCase() == key.toUpperCase()) {
                             string = key;
                             return;
                         }
@@ -218,17 +230,84 @@ class CMD extends App {
                     const wifiArr = [];
                     while (tokenized.shift()) {
                         if (tokenized.length > 0)
-                            wifiArr.push(tokenized[0].value)
+                            wifiArr.push(tokenized[0].value);
                     }
                     Wifi.connectToWifi(this.window, wifiArr[0], wifiArr[1]);
                     break;
                 case "dirl":
+<<<<<<< HEAD
                     const tokenArr = [];
                     while (tokenized.shift()) {
                         if (tokenized.length > 0)
                             tokenArr.push(tokenized[0].value)
                     }
                     break;
+=======
+                    if (this.pathIndex != -1) {
+                        const filesDir = Apartment.activeApartment.pc.get(this.pathIndex).files;
+                        for (let i = 0; i < filesDir.length; i++) {
+                            CMD.log(this.window, filesDir[i].name + " ");
+                        }
+                    }
+                    if (Apartment.activeApartment.pc.get(this.pathIndex + 1))
+                        CMD.log(this.window, Apartment.activeApartment.pc.get(this.pathIndex + 1).name);
+                    break;
+                case "cd":
+                    tokenized.shift();
+                    while(tokenized.length > 0) {
+                        const folder = Apartment.activeApartment.pc.get(this.pathIndex + 1);
+
+                        if (tokenized[0].value == ".." && this.pathIndex > -1)
+                            this.pathIndex--;
+
+                        if (this.pathIndex == -1)
+                            this.path = "";
+
+                        if (folder)
+                            if (folder.name == tokenized[0].value)
+                                this.pathIndex++;
+                            
+                        this.path = "";
+                        for (let i = 0; i <= this.pathIndex; i++)
+                            this.path += "/" + Apartment.activeApartment.pc.get(i).name;
+
+                        tokenized.shift();
+                    }
+                    break;
+                case "touch":
+                    tokenized.shift();
+                    var fileName = tokenized[0].value;
+                    const fileType = FileTypes[tokenized[1].value.toLowerCase()];
+
+                    if (this.pathIndex != -1) {
+                        if (fileType) {
+                            Apartment.activeApartment.pc.get(this.pathIndex).files.push({ name: fileName, type: fileType });
+                        } else {
+                            CMD.error(this.window, "Unknown file type: " + tokenized[1].value);
+                        }
+                    } else {
+                        CMD.error(this.window, "Cannot create file in this path");
+                    }
+
+                    tokenized.splice(0, 2);
+                    break;
+                case "delete":
+                    tokenized.shift();
+                    var fileName = tokenized[0].value;
+
+                    if (this.pathIndex != -1) {
+                        var filesArr = Apartment.activeApartment.pc.get(this.pathIndex).files;
+                        var index = filesArr.findIndex(file => file.name == fileName);
+                        if (index != -1)
+                            filesArr.splice(index, 1);
+                        else 
+                            CMD.error("File " + fileName + " not found");
+                    } else {
+                        CMD.error("Cannot delete file in this path");
+                    }
+
+                    break;
+>>>>>>> 250cecd8b78016a12079e82d04e516f5c716bce2
                 default:
                     CMD.error(this.window, "Unknown command: " + tokenized[0].value);
                     break;
@@ -251,7 +330,7 @@ class CMD extends App {
 
     getStartLine() {
         const mainScreen = this.window.querySelector("#cmd");
-        mainScreen.innerHTML += `<p>${Apartment.activeApartment.pc.user}:/<span contentEditable="true"></span></p>`;
+        mainScreen.innerHTML += `<p>${Apartment.activeApartment.pc.user.fullName}${this.path}:/<span contentEditable="true"></span></p>`;
 
         const editable = mainScreen.querySelector("[contentEditable]");
         this.window.focus();

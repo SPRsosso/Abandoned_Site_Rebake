@@ -14,6 +14,8 @@ class PhoneCrack extends PhoneApp {
                 #crack {
                     padding: 10px;
 
+                    text-align: center;
+
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -68,7 +70,7 @@ class PhoneCrack extends PhoneApp {
             crack.append(button);
         } else {
             crack.innerHTML = `
-                <p>No USB connected</p>
+                <p>No Pendrive connected</p>
             `;
         }
     }

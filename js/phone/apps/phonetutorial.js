@@ -6,7 +6,7 @@ class PhoneTutorial extends PhoneApp {
 
     static openApp() {
         const appComponent = document.createElement("phone-app-component");
-        appComponent.innerHTML = `
+        appComponent.innerHTML = /*html*/`
             <style>
                 ${styles}
 
@@ -44,6 +44,10 @@ class PhoneTutorial extends PhoneApp {
                     height: calc(100% - 50px);
 
                     padding: 10px;
+                }
+
+                #main-tutorial small {
+                    color: gray;
                 }
             </style>
             <span slot="name">Tutorial</span>

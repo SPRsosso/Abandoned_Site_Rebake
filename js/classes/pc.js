@@ -1,6 +1,16 @@
+const FileTypes = {
+    firewall: "firewall",
+    authorized: "authorized",
+    transmission: "transmission"
+}
+
 class PC {
     constructor() {
+<<<<<<< HEAD
         this.documents = { name: "Docs" };
+=======
+        this.documents = { name: "Documents" };
+>>>>>>> 250cecd8b78016a12079e82d04e516f5c716bce2
         let tmpDoc = this.documents;
         for (let i = 0; i < 3; i++) {
             tmpDoc["files"] = [];
@@ -9,11 +19,11 @@ class PC {
                 let type;
                 
                 if (randomType < 0.33)
-                    type = "firewall";
+                    type = FileTypes.firewall;
                 else if (randomType < 0.66)
-                    type = "authorized";
+                    type = FileTypes.authorized;
                 else
-                    type = "transmission";
+                    type = FileTypes.transmission;
 
                 let name = "";
                 for (let k = 0; k < 7; k++)
@@ -32,7 +42,14 @@ class PC {
             }
         }
         this.downloadedApps = { CMD, FileExplorer };
-        this.user = pc_names[Math.floor(Math.random() * pc_names.length)] + " " + pc_surnames[Math.floor(Math.random() * pc_surnames.length)];
+        const name = pc_names[Math.floor(Math.random() * pc_names.length)];
+        const surname = pc_surnames[Math.floor(Math.random() * pc_surnames.length)];
+        this.user = {
+          name: name,
+          surname: surname,
+          fullName: name + " " + surname,
+          age: Math.floor(Math.random() * 27) + 18,
+        }
         this.password = "";
         for (let i = 0; i < 10; i++) {
             this.password  += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];

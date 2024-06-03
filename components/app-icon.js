@@ -57,6 +57,7 @@ class AppIcon extends HTMLElement {
                     break;
                 case "HashMap":
                     appName = "# Map";
+                    break;
                 case "HomeDefence":
                     appName = "Home Defence";
                     break;
