@@ -22,7 +22,7 @@ class Token {
 }
 
 function isAlpha(src) {
-    return src.toUpperCase() != src.toLowerCase() || src == ".";
+    return (src.toUpperCase() != src.toLowerCase() || src == ".") && src.charCodeAt(0) != 160 && src != " ";
 }
 
 function isInt(src) {
@@ -37,7 +37,7 @@ function isPath(src) {
 }
 
 function isSkippable(src) {
-    return src == " " || src == "\n" || src == "\t";
+    return src == " " || src == "\n" || src == "\t" || src.charCodeAt(0) == 160;
 }
 
 function tokenize(sourceCode) {
@@ -48,7 +48,8 @@ function tokenize(sourceCode) {
     // Build each token until end of file
     while(src.length > 0) {
         if (src[0] == "-" && isAlpha(src[1])) {
-            let ident = src.shift();
+            src.shift();
+            let ident = "";
             while (src.length > 0 && isAlpha(src[0])) {
                 ident += src.shift();
             }
@@ -63,16 +64,14 @@ function tokenize(sourceCode) {
             tokens.push(new Token(src.shift(), TokenType.Equals));
         else {
             // Handle multicharacter tokens
+            if (isInt(src[0])) {
+                let num = "";
+                while (src.length > 0 && isInt(src[0])) {
+                    num += src.shift();
+                }
 
-            // if (isInt(src[0])) {
-            //     let num = "";
-            //     while (src.length > 0 && isInt(src[0])) {
-            //         num += src.shift();
-            //     }
-
-            //     tokens.push(new Token(num, TokenType.Number));
-            // } else 
-            if (isPath(src[0])) {
+                tokens.push(new Token(num, TokenType.Number));
+            } else if (isPath(src[0])) {
                 let ident = "";
                 while (src.length > 0 && isPath(src[0])) {
                     ident += src.shift();
@@ -94,7 +93,7 @@ function tokenize(sourceCode) {
             } else if (isSkippable(src[0])) {
                 src.shift(); // SKIP THE CURRENT CHARACTER
             } else {
-                console.error("Unrecognized character found in source: ", src[0]);
+                console.error("Unrecognized character found in source: " + src[0] + ", charcode: " + src[0].charCodeAt(0));
                 break;
             }
         }

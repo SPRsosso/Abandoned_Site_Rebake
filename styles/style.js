@@ -1,4 +1,4 @@
-const styles = `
+const styles = /*css*/`
     * {
         margin: 0;
         --usb-height: 80px;
@@ -77,6 +77,16 @@ const styles = `
     img {
         user-select: none;
         -webkit-user-drag: none;
+    }
+
+    @keyframes slideIn {
+        0% {
+            translate: 100% 0;
+        }
+
+        100% {
+            translate: 0 0;
+        }
     }
 `
 

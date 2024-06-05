@@ -32,4 +32,8 @@ const tutorialAppsAndComponents = /*html*/`
     <h3>Personide</h3>
     <small>ID: Personide</small>
     <p>Allows access to person information</p>
+
+    <h3>MessX</h3>
+    <small>ID: MessX</small>
+    <p>Small and compact communicator you can talk to with other people</p>
 `;

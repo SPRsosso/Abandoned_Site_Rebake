@@ -54,7 +54,7 @@ class CMD extends App {
 
             <span slot="name">Console</span>
             <div id="cmd">
-                <p>${Apartment.activeApartment.pc.user.fullName}${this.path}:/<span contentEditable="true"></span></p>
+                
             </div>
         `;
 
@@ -119,10 +119,16 @@ class CMD extends App {
 
         App.defaultValues(appComponent);
         this.screen.prepend(appComponent);
-        openedApps.push(new CMD(appComponent));
+        const cmd = new CMD(appComponent);
+        cmd.getStartLine();
+        openedApps.push(cmd);
     }
 
     async executeCommand(command) {
+        function isFlag(flag) {
+            return flag.type == TokenType.Flag;
+        }
+
         const mainScreen = this.window.querySelector("#cmd");
         
         this.lines.shift();
@@ -145,20 +151,55 @@ class CMD extends App {
                     mainScreen.innerHTML = "";
                     break;
                 case "setuser":
+                    const user = Apartment.activeApartment.pc.user;
+
                     var string = "";
+                    const allowedFlags = [
+                        { value: "name", output: "name"},
+                        { value: "n", output: "name" },
+                        { value: "surname", output: "surname"},
+                        { value: "s", output: "surname" },
+                        { value: "age", output: "age" },
+                        { value: "a", output: "age" },
+                        { value: "phonenumber", output: "phoneNumber" },
+                        { value: "p", output: "phoneNumber" },
+                        { value: "job", output: "job" },
+                        { value: "j", output: "job" },
+                        { value: "email", output: "email" },
+                        { value: "e", output: "email" },
+                    ]
+                    const flagArray = CMD.getFlags(allowedFlags, tokenized);
+
                     while (tokenized.length > 0) {
                         tokenized.shift();
 
-                        if (tokenized.length > 0)
+                        if (tokenized.length > 0) {
+                            if (isFlag(tokenized[0]))
+                                continue;
+                            
                             string += tokenized[0].value;
+                        }
 
-                        if (tokenized[1])
+                        if (tokenized[1] && !isFlag(tokenized[1]))
                             string += " ";
                     }
 
-                    Apartment.activeApartment.pc.user.name = string;
-                    Apartment.activeApartment.pc.user.surname = "";
-                    Apartment.activeApartment.pc.user.fullName = Apartment.activeApartment.pc.user.name;
+                    flagArray.forEach(flag => {
+                        switch(flag) {
+                            default:
+                                user[flag] = string;
+                                break;
+                        }
+                    });
+
+                    if (flagArray.length == 0) {
+                        user.name = string;
+                        user.surname = "";
+                        user.fullName = user.name;
+                    } else {
+                        user.fullName = user.name + " " + user.surname;
+                    }
+                    
                     break;
                 case "help":
                     mainScreen.innerHTML += /*html*/`
@@ -331,5 +372,19 @@ class CMD extends App {
     static log(app, text) {
         const mainScreen = app.querySelector("#cmd");
         mainScreen.innerHTML += `<span class="log">${text}</span>`;
+    }
+
+    static getFlags(allowedFlags, tokenized) {
+        const tokens = [...tokenized];
+        const flagArray = [];
+        tokens.forEach(token => {
+            if (token.type == TokenType.Flag) {
+                const allowedFlag = allowedFlags.find(allowedFlag => allowedFlag.value == token.value)
+                if (allowedFlag)
+                    flagArray.push(allowedFlag.output);
+            }
+        });
+
+        return flagArray;
     }
 }

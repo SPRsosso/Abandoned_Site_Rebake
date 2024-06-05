@@ -9,6 +9,7 @@ const tutorialCommands = /*html*/`
 
     <h3>setuser *name*</h3>
     <p>It will change current username</p>
+    <small>Flags: -name, -surname, -age, -phonenumber, -job, -email</small>
 
     <h3>connectwifi *wifi name* *wifi password*</h3>
     <p>Connect to the given Wifi if Wifi exists and password is true</p>
