@@ -7,14 +7,9 @@ class CMD extends App {
 
         this.selectedLine = 0;
         this.lines = [""];
-<<<<<<< HEAD
-
-        this.pathIndex = -1;
-=======
     
         this.pathIndex = -1;
         this.path = "";
->>>>>>> 250cecd8b78016a12079e82d04e516f5c716bce2
     }
 
     static openApp() {
@@ -235,14 +230,6 @@ class CMD extends App {
                     Wifi.connectToWifi(this.window, wifiArr[0], wifiArr[1]);
                     break;
                 case "dirl":
-<<<<<<< HEAD
-                    const tokenArr = [];
-                    while (tokenized.shift()) {
-                        if (tokenized.length > 0)
-                            tokenArr.push(tokenized[0].value)
-                    }
-                    break;
-=======
                     if (this.pathIndex != -1) {
                         const filesDir = Apartment.activeApartment.pc.get(this.pathIndex).files;
                         for (let i = 0; i < filesDir.length; i++) {
@@ -307,7 +294,6 @@ class CMD extends App {
                     }
 
                     break;
->>>>>>> 250cecd8b78016a12079e82d04e516f5c716bce2
                 default:
                     CMD.error(this.window, "Unknown command: " + tokenized[0].value);
                     break;

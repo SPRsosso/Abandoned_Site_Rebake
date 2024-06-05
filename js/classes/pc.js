@@ -6,11 +6,7 @@ const FileTypes = {
 
 class PC {
     constructor() {
-<<<<<<< HEAD
-        this.documents = { name: "Docs" };
-=======
         this.documents = { name: "Documents" };
->>>>>>> 250cecd8b78016a12079e82d04e516f5c716bce2
         let tmpDoc = this.documents;
         for (let i = 0; i < 3; i++) {
             tmpDoc["files"] = [];
