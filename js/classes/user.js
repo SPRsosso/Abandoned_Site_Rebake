@@ -27,11 +27,17 @@ class User {
             pc.messages[this.id].push(message);
         }
         
+        if (toUser_id !== Apartment.activeApartment.pc.user.id) return;
+        
         const messageEl = document.createElement("message-component");
         messageEl.innerHTML = /*html*/`
             <h3 slot="name">${this.fullName}</h3>
             <p>${description}</p>
         `;
         App.screen.append(messageEl);
+
+        const notificationSound = new Audio("./sounds/Notification.mp3");
+        notificationSound.volume = 0.5;
+        notificationSound.play();
     }
 }
