@@ -4,9 +4,9 @@ class Apartment {
         this.routers = [];
         Apartment.generateRouters(this.routers);
 
-        this.pc = new PC();
         this.roomNumber = roomNumber;
         this.router = this.routers[this.routers.length - 1];
+        this.pc = new PC(this);
     }
 
     static generateRouters(routers) {

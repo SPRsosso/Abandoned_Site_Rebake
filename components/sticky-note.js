@@ -49,7 +49,8 @@ class StickyNote extends HTMLElement {
     connectedCallback() {
         const redBtn = this.shadow.querySelector("#red");
         redBtn.addEventListener("click", () => {
-            this.shadow.host.remove();
+            if (confirm("Do you really want to remove sticky note? (It can't be put back on)"))
+                this.shadow.host.remove();
         });
 
         const stickyInterval = setInterval(() => {

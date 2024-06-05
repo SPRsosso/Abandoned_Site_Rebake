@@ -1,0 +1,1 @@
+const anonymousUser = new User("Anonymous", "User", undefined, undefined, undefined, undefined, "0", "anonymous_user@an.an");

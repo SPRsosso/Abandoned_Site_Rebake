@@ -2,9 +2,13 @@ class MainBar extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
-        this.shadow.innerHTML = `
+        this.shadow.innerHTML = /*html*/`
             <style>
                 ${styles}
+
+                :host {
+                    z-index: 1;
+                }
 
                 #bar {
                     width: 100%;

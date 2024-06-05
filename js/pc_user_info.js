@@ -44,7 +44,7 @@ const pc_names = [
     "Ephirinik",
     "Michael",
     "Pyricles"
-]
+];
 
 const pc_surnames = [
     "Zylor",
@@ -94,4 +94,38 @@ const pc_surnames = [
     "Kaveron",
     "Jackson",
     "Bryel"
+];
+
+const pc_jobs = [
+    "Cashier",
+    "Food preparation worker",
+    "Stocking associate",
+    "Laborer",
+    "Janitor",
+    "Construction worker",
+    "Bookkeeper",
+    "Medical assistant",
+    "Bartender",
+    "Administrative assistant",
+    "Marketing specialist",
+    "Police officer",
+    "Electrician",
+    "Mechanic",
+    "Retail sales associate",
+    "Carpenter",
+    "Operations manager",
+    "Line supervisor",
+    "Truck Driver",
+    "Nurse",
+    "Software developer",
+    "Lawyer"
+];
+
+const pc_email = [
+    "gmail.com",
+    "fer.as.com",
+    "poem.com",
+    "email.com",
+    "brock.eu.com",
+    "wty.com"
 ]

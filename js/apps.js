@@ -5,7 +5,8 @@ const apps = {
     HomeDefence,
     HashMap,
     Calculator,
-    Personide
+    Personide,
+    MessX,
 };
 
 const openedApps = [];
@@ -13,10 +14,11 @@ Apartment.activeApartment.pc.downloadedApps = {
     CMD,
     FileExplorer,
     Calculator,
+    MessX,
     WiTracker,
     HomeDefence,
     HashMap,
-    Personide
+    Personide,
 }
 
 App.getAppIcons();

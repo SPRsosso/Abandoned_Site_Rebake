@@ -2,7 +2,7 @@ class MainScreen extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
-        this.shadow.innerHTML = `
+        this.shadow.innerHTML = /*html*/`
             <style>
                 ${styles}
 
@@ -11,6 +11,8 @@ class MainScreen extends HTMLElement {
                     width: 100%;
 
                     position: relative;
+                    
+                    overflow: hidden;
                 }
 
                 #desktop {

@@ -89,15 +89,24 @@ class LoginScreen extends HTMLElement {
         const password = this.shadow.querySelector("#password");
 
         if (Apartment.activeApartment.pc.password == password.value) {
-            const audio = new Audio("./sounds/Login.mp3");
-            audio.volume = 0.3;
-            audio.play();
-            this.shadow.host.remove();
+            LoginScreen.openComputer();
         } else {
             this.shadow.querySelector("#error").innerHTML = "Wrong password!";
         }
 
         password.value = "";
+    }
+
+    static openComputer() {
+        const audio = new Audio("./sounds/Login.mp3");
+        audio.volume = 0.3;
+        audio.play();
+        this.shadow.host.remove();
+
+
+        setTimeout(() => {
+            MessX.sendMessage();
+        }, 10000);
     }
 }
 
@@ -105,3 +114,6 @@ customElements.define("login-screen", LoginScreen);
 
 const loginScreen = document.createElement("login-screen");
 // document.querySelector("main-screen").prepend(loginScreen);
+setTimeout(() => {
+    anonymousUser.sendMessage(Apartment.activeApartment.pc.user.id, "Hey!");
+}, 3000);

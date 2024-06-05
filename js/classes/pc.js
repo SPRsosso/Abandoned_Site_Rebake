@@ -4,8 +4,11 @@ const FileTypes = {
     transmission: "transmission"
 }
 
+const phoneNumbers = [];
+const ids = [];
+
 class PC {
-    constructor() {
+    constructor(apartment) {
         this.documents = { name: "Documents" };
         let tmpDoc = this.documents;
         for (let i = 0; i < 3; i++) {
@@ -40,16 +43,46 @@ class PC {
         this.downloadedApps = { CMD, FileExplorer };
         const name = pc_names[Math.floor(Math.random() * pc_names.length)];
         const surname = pc_surnames[Math.floor(Math.random() * pc_surnames.length)];
-        this.user = {
-          name: name,
-          surname: surname,
-          fullName: name + " " + surname,
-          age: Math.floor(Math.random() * 27) + 18,
-        }
+        const job = pc_jobs[Math.floor(Math.random() * pc_jobs.length)];
+
+        let phoneNumber = [];
+        do {
+            for (let i = 0; i < 3; i++) {
+                phoneNumber.push(Math.floor(Math.random() * 1000));
+                if (phoneNumber[i] < 10)
+                    phoneNumber[i] = "00" + phoneNumber[i];
+                else if (phoneNumber[i] < 100)
+                    phoneNumber[i] = "0" + phoneNumber[i];
+            }
+
+            if (!phoneNumbers.find(phonenNum => phonenNum == phoneNumber)) {
+                phoneNumbers.push(phoneNumber);
+                break;
+            }
+        } while(true);
+        phoneNumber = phoneNumber[0] + "-" + phoneNumber[1] + "-" + phoneNumber[2];
+
+        let id = "";
+        do {
+            for (let i = 0; i < 11; i++) {
+                id += Math.floor(Math.random() * 10);
+            }
+
+            if (!ids.find(i => i == id)) {
+                ids.push(id);
+                break;
+            }
+        } while (true);
+
+        const email = name[0].toLowerCase() + surname.toLowerCase() + "@" + pc_email[Math.floor(Math.random() * pc_email.length)];
+
+        this.user = new User(name, surname, Math.floor(Math.random() * 27) + 18, "Chive Apartment " + apartment.roomNumber, job, phoneNumber, id, email);
         this.password = "";
         for (let i = 0; i < 10; i++) {
             this.password  += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
         }
+
+        this.messages = {};
     }
 
     get(index) {
@@ -60,5 +93,9 @@ class PC {
             i++;
         }
         return tmpDoc;
+    }
+
+    static getByUser(userId) {
+        return apartments.find(apartment => apartment.pc.user.id === userId)?.pc;
     }
 }
