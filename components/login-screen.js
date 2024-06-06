@@ -103,10 +103,7 @@ class LoginScreen extends HTMLElement {
         audio.play();
         this.shadow.host.remove();
 
-
-        setTimeout(() => {
-            MessX.sendMessage();
-        }, 10000);
+        messagesAfterLogin();
     }
 }
 
@@ -114,6 +111,4 @@ customElements.define("login-screen", LoginScreen);
 
 const loginScreen = document.createElement("login-screen");
 // document.querySelector("main-screen").prepend(loginScreen);
-setTimeout(() => {
-    anonymousUser.sendMessage(Apartment.activeApartment.pc.user.id, "Hey!");
-}, 3000);
+messagesAfterLogin();

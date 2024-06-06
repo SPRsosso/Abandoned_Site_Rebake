@@ -12,19 +12,33 @@ class User {
     }
 
     static getById(userId) {
+        if (userId === "0") return anonymousUser;
+
         return apartments.find(apartment => apartment.pc.user.id === userId)?.pc.user;
     }
 
     sendMessage(toUser_id, description) {
         const pc = PC.getByUser(toUser_id);
+        const currentPc = PC.getByUser(this.id);
 
-        let userInsideMessages = pc.messages[this.id];
-        const message = new Message(this.fullName, description, new Date());
-        if (userInsideMessages) {
-            userInsideMessages.push(message);
-        } else {
-            pc.messages[this.id] = [];
-            pc.messages[this.id].push(message);
+        if (pc) {
+            let userInsideMessages = pc.messages[this.id];
+            
+            const message = new Message(this.fullName, description, new Date());
+            if (userInsideMessages) {
+                if (userInsideMessages.length >= 50) userInsideMessages.shift();
+
+                userInsideMessages.push(message);
+            } else {
+                pc.messages[this.id] = [];
+                pc.messages[this.id].push(message);
+            }
+        }
+
+        if (currentPc) {
+            if (currentPc.messages[toUser_id].length >= 50) currentPc.messages[toUser_id].shift();
+
+            currentPc.messages[toUser_id].push(new Message(this.fullName, description, new Date()));
         }
         
         if (toUser_id !== Apartment.activeApartment.pc.user.id) return;
@@ -37,7 +51,7 @@ class User {
         App.screen.append(messageEl);
 
         const notificationSound = new Audio("./sounds/Notification.mp3");
-        notificationSound.volume = 0.5;
+        notificationSound.volume = 1;
         notificationSound.play();
     }
 }

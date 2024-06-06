@@ -2,6 +2,7 @@ class MessX extends App {
     constructor(window) {
         super();
         this.window = window;
+        this.userId = null;
     }
 
     static openApp() {
@@ -116,10 +117,15 @@ class MessX extends App {
 
                 #messx .messages {
                     padding: 10px;
+
+                    width: 100%;
+                    height: calc(100% - 30px - 50px);
+
+                    overflow-y: auto;
                     
                     display: flex;
                     flex-direction: column;
-                    gap: 5px;
+                    gap: 20px;
                 }
 
                 #messx .message {
@@ -148,11 +154,6 @@ class MessX extends App {
                     color: gray;
                 }
 
-                #messx .messages {
-                    width: 100%;
-                    height: calc(100% - 30px - 50px);
-                }
-
                 #messx .textbox {
                     width: 100%;
                     height: 50px;
@@ -162,6 +163,10 @@ class MessX extends App {
                     align-items: center;
                     justify-content: center;
                     gap: 10px;
+                }
+
+                #messx .textbox.inactive {
+                    display: none;
                 }
 
                 #messx .textbox input {
@@ -184,13 +189,18 @@ class MessX extends App {
                     <div class="messages">
 
                     </div>
-                    <div class="textbox">
-                        <input type="text">
+                    <div class="textbox inactive">
+                        <input type="text" class="textInput">
                         <button class="send-btn">></button>
                     </div>
                 </div>
             </div>
         `;
+
+        App.defaultValues(appComponent);
+        this.screen.prepend(appComponent);
+        const messx = new MessX(appComponent);
+        openedApps.push(messx);
 
         const hamburgerBtn = appComponent.querySelector(".hamburger-btn");
         const closeBtn = appComponent.querySelector(".close-btn");
@@ -215,29 +225,44 @@ class MessX extends App {
         }
         closeBtn.addEventListener("click", hideUsers);
 
-        const messages = Apartment.activeApartment.pc.messages;
-        Object.keys(messages).forEach(key => {
-            const div = document.createElement("div");
-            div.classList.add("user");
-            div.innerHTML = /*html*/`
-                <img src="./icons/UserImage.png"> 
-                <h4>${key}</h4>
-            `;
+        MessX.refreshMessages();
 
-            div.addEventListener("dblclick", () => {
-                appComponent.querySelector(".menu-user-title").innerHTML = /*html*/`<h4>${key}</h4>`
-                const messagesEl = appComponent.querySelector(".messages");
-                
+        const sendBtn = appComponent.querySelector(".send-btn");
+        const textInput = appComponent.querySelector(".textInput");
+
+        function sendMessage() {
+            const user = Apartment.activeApartment.pc.user;
+            user.sendMessage(messx.userId, textInput.value);
+
+            MessX.refreshMessages();
+
+            textInput.value = "";
+        }
+
+        sendBtn.addEventListener("click", sendMessage);
+        textInput.addEventListener("keypress", ( e ) => {
+            if (e.keyCode === 13) sendMessage();
+        });
+    }
+
+    static refreshMessages() {
+        openedApps.forEach(openedApp => {
+            const appComponent = openedApp.window;
+
+            const messx = appComponent.querySelector("#messx");
+            if (!messx) return;
+            
+            function getMessages(messages) {
                 messagesEl.innerHTML = "";
-                console.log(messages[key]);
-                messages[key].forEach(message => {
-                    const month = '' + (message.date.getMonth() + 1);
-                    const day = '' + message.date.getDate();
+    
+                messages.forEach(message => {
+                    const month = (message.date.getMonth() + 1) < 10 ? "0" + (message.date.getMonth() + 1) : (message.date.getMonth() + 1).toString();
+                    const day =  message.date.getDate() < 10 ? "0" + message.date.getDate() : message.date.getDate();
                     const year = message.date.getFullYear();
-                    const hours = message.date.getHours();
-                    const minutes = message.date.getMinutes();
-                    const seconds = message.date.getSeconds();
-
+                    const hours = message.date.getHours() < 10 ? "0" + message.date.getHours() : message.date.getHours();
+                    const minutes = message.date.getMinutes() < 10 ? "0" + message.date.getMinutes() : message.date.getMinutes();
+                    const seconds = message.date.getSeconds() < 10 ? "0" + message.date.getSeconds() : message.date.getSeconds();
+    
                     messagesEl.innerHTML += /*html*/`
                         <div class="message">
                             <img src="./icons/UserImage.png">
@@ -253,16 +278,51 @@ class MessX extends App {
                         </div>
                     `;
                 });
-                
-                hideUsers();
+    
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
+
+            function hideUsers() {
+                closeBtn.classList.add("inactive");
+                hamburgerBtn.classList.remove("inactive");
+    
+                menuDiv.animate([ { left: "200px" }, { left: "0" } ], { duration: 500, fill: "forwards", easing: "ease-out" });
+                usersDiv.animate([ { left: "0" }, { left: "-200px" } ], { duration: 500, fill: "forwards", easing: "ease-out" });
+            }
+
+            const hamburgerBtn = appComponent.querySelector(".hamburger-btn");
+            const closeBtn = appComponent.querySelector(".close-btn");
+            const usersDiv = appComponent.querySelector(".users");
+            const menuDiv = appComponent.querySelector(".menu");
+            
+            const messagesEl = appComponent.querySelector(".messages"); 
+            const messages = Apartment.activeApartment.pc.messages;
+            usersDiv.innerHTML = "";
+            Object.keys(messages).forEach(key => {
+                const div = document.createElement("div");
+                div.classList.add("user");
+                div.innerHTML = /*html*/`
+                    <img src="./icons/UserImage.png"> 
+                    <h4>${User.getById(key).fullName}</h4>
+                `;
+
+                div.addEventListener("dblclick", () => {
+                    appComponent.querySelector(".menu-user-title").innerHTML = /*html*/`<h4>${User.getById(key).fullName}</h4>`
+
+                    getMessages(messages[key]);
+                    openedApp.userId = key;
+                    
+                    hideUsers();
+
+                    appComponent.querySelector(".textbox").classList.remove("inactive");
+                });
+
+                usersDiv.append(div)
             });
 
-            usersDiv.append(div)
+            if (openedApp.userId) {
+                getMessages(messages[openedApp.userId]);
+            }
         });
-
-        App.defaultValues(appComponent);
-        this.screen.prepend(appComponent);
-        const messx = new MessX(appComponent);
-        openedApps.push(messx);
     }
 }

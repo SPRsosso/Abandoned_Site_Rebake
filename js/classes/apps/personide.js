@@ -21,13 +21,13 @@ class Personide extends App {
       </style>
       <span slot="name">Personide</span>
       <div id="personide">
-        <h3>Name and surname: ${user.fullName}</h3>
-        <h3>Age: ${user.age}</h3>
-        <h3>ID: ${user.id}</h3>
-        <h3>Home/Residence: ${user.home}</h3>
-        <h3>Job: ${user.job}</h3>
-        <h3>Phone number: ${user.phoneNumber}</h3>
-        <h3>E-Mail: ${user.email}</h3>
+        <p>Name and surname: ${user.fullName}</p>
+        <p>Age: ${user.age}</p>
+        <p>ID: ${user.id}</p>
+        <p>Home/Residence: ${user.home}</p>
+        <p>Job: ${user.job}</p>
+        <p>Phone number: ${user.phoneNumber}</p>
+        <p>E-Mail: ${user.email}</p>
       </div>
     `;
     
