@@ -40,7 +40,14 @@ class PC {
                 tmpDoc = tmpDoc["folder"];
             }
         }
-        this.downloadedApps = { CMD, FileExplorer };
+
+        this.downloadedApps = {
+            CMD,
+            FileExplorer,
+            Calculator,
+            MessX,
+        };
+
         const name = pc_names[Math.floor(Math.random() * pc_names.length)];
         const surname = pc_surnames[Math.floor(Math.random() * pc_surnames.length)];
         const job = pc_jobs[Math.floor(Math.random() * pc_jobs.length)];

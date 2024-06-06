@@ -15,10 +15,10 @@ Apartment.activeApartment.pc.downloadedApps = {
     FileExplorer,
     Calculator,
     MessX,
-    WiTracker,
-    HomeDefence,
-    HashMap,
-    Personide,
+    // WiTracker,
+    // HomeDefence,
+    // HashMap,
+    // Personide,
 }
 
 App.getAppIcons();

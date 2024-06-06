@@ -40,6 +40,8 @@ class User {
 
             currentPc.messages[toUser_id].push(new Message(this.fullName, description, new Date()));
         }
+
+        MessX.refreshMessages();
         
         if (toUser_id !== Apartment.activeApartment.pc.user.id) return;
         

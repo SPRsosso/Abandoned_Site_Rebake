@@ -64,7 +64,7 @@ class LoginScreen extends HTMLElement {
             </style>
             <div id="login-screen">
                 <img src="./icons/UserImage.png" alt="user image">
-                <p id="name">${Apartment.activeApartment.pc.user}</p>
+                <p id="name">${Apartment.activeApartment.pc.user.fullName}</p>
                 <div class="splitter">
                     <input type="password" id="password" placeholder="Password...">
                     <button id="submit">></button>
@@ -89,7 +89,7 @@ class LoginScreen extends HTMLElement {
         const password = this.shadow.querySelector("#password");
 
         if (Apartment.activeApartment.pc.password == password.value) {
-            LoginScreen.openComputer();
+            this.openComputer();
         } else {
             this.shadow.querySelector("#error").innerHTML = "Wrong password!";
         }
@@ -97,7 +97,7 @@ class LoginScreen extends HTMLElement {
         password.value = "";
     }
 
-    static openComputer() {
+    openComputer() {
         const audio = new Audio("./sounds/Login.mp3");
         audio.volume = 0.3;
         audio.play();
@@ -110,5 +110,5 @@ class LoginScreen extends HTMLElement {
 customElements.define("login-screen", LoginScreen);
 
 const loginScreen = document.createElement("login-screen");
-// document.querySelector("main-screen").prepend(loginScreen);
-messagesAfterLogin();
+document.querySelector("main-screen").prepend(loginScreen);
+// messagesAfterLogin();

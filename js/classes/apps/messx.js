@@ -32,6 +32,7 @@ class MessX extends App {
                     position: absolute;
                     left: 0;
                     top: 0;
+                    z-index: 1;
                 }
 
                 #messx .hamburger-btn, 
@@ -75,6 +76,7 @@ class MessX extends App {
                     left: -200px;
 
                     overflow-y: auto;
+                    z-index: 1;
                 }
 
                 #messx .user {
@@ -126,6 +128,8 @@ class MessX extends App {
                     display: flex;
                     flex-direction: column;
                     gap: 20px;
+
+                    position: relative;
                 }
 
                 #messx .message {
@@ -143,6 +147,7 @@ class MessX extends App {
 
                 #messx .message img {
                     width: 40px;
+                    height: 40px;
                 }
 
                 #messx .name-date {
@@ -172,6 +177,24 @@ class MessX extends App {
                 #messx .textbox input {
                     flex-grow: 1;
                 }
+
+                #messx .option-box {
+                    width: 100%;
+                    height: 40px;
+
+                    display: flex;
+                    gap: 30px;
+
+                    padding: 0 20px;
+                }
+
+                #messx .option-box.inactive {
+                    display: none;
+                }
+                
+                #messx .option-box button {
+                    flex: 1;
+                }
             </style>
             <span slot="name">MessX</span>
             <div id="messx">
@@ -187,6 +210,9 @@ class MessX extends App {
 
                     </div>
                     <div class="messages">
+
+                    </div>
+                    <div class="option-box inactive">
 
                     </div>
                     <div class="textbox inactive">
@@ -230,18 +256,11 @@ class MessX extends App {
         const sendBtn = appComponent.querySelector(".send-btn");
         const textInput = appComponent.querySelector(".textInput");
 
-        function sendMessage() {
-            const user = Apartment.activeApartment.pc.user;
-            user.sendMessage(messx.userId, textInput.value);
-
-            MessX.refreshMessages();
-
-            textInput.value = "";
-        }
-
-        sendBtn.addEventListener("click", sendMessage);
+        sendBtn.addEventListener("click", () => {
+            MessX.sendMessage(messx, textInput.value, textInput)
+        });
         textInput.addEventListener("keypress", ( e ) => {
-            if (e.keyCode === 13) sendMessage();
+            if (e.keyCode === 13) MessX.sendMessage(messx, textInput.value, textInput);
         });
     }
 
@@ -295,7 +314,7 @@ class MessX extends App {
             const usersDiv = appComponent.querySelector(".users");
             const menuDiv = appComponent.querySelector(".menu");
             
-            const messagesEl = appComponent.querySelector(".messages"); 
+            const messagesEl = appComponent.querySelector(".messages");
             const messages = Apartment.activeApartment.pc.messages;
             usersDiv.innerHTML = "";
             Object.keys(messages).forEach(key => {
@@ -309,8 +328,8 @@ class MessX extends App {
                 div.addEventListener("dblclick", () => {
                     appComponent.querySelector(".menu-user-title").innerHTML = /*html*/`<h4>${User.getById(key).fullName}</h4>`
 
-                    getMessages(messages[key]);
                     openedApp.userId = key;
+                    MessX.refreshMessages();
                     
                     hideUsers();
 
@@ -323,6 +342,44 @@ class MessX extends App {
             if (openedApp.userId) {
                 getMessages(messages[openedApp.userId]);
             }
+
+            messagesEl.style.height = "calc(100% - 30px - 50px)";
+            const optionBox = appComponent.querySelector(".option-box");
+            if (anonymousUserChooseOptions && openedApp.userId === "0") {
+                optionBox.classList.remove("inactive");
+                optionBox.innerHTML = "";
+
+                messagesEl.style.height = `${messagesEl.offsetHeight - 40}px`;
+
+                anonymousUserChooseOptions.forEach(option => {
+                    const button = document.createElement("button");
+                    button.classList.add("option");
+                    button.innerHTML = option;
+
+                    button.addEventListener("click", () => {
+                        anonymousUserChooseOptions = null;
+                        messagesEl.style.height = `${messagesEl.offsetHeight + 40}px`;
+                        optionBox.classList.add("inactive");
+
+                        sendToAnonymousUser(option);
+
+                        MessX.sendMessage(openedApp, option);
+                    });
+
+                    optionBox.appendChild(button);
+                });
+            }
+
+            if (!anonymousUserChooseOptions) optionBox.classList.add("inactive");
         });
+    }
+
+    static sendMessage(messx, description, textInput = null) {
+        const user = Apartment.activeApartment.pc.user;
+        user.sendMessage(messx.userId, description);
+
+        MessX.refreshMessages();
+
+        if (textInput) textInput.value = "";
     }
 }
