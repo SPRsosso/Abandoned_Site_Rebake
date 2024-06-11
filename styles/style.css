@@ -145,4 +145,121 @@ phone-component.open {
 img {
     user-select: none;
     -webkit-user-drag: none;
+
+    image-rendering: pixelated;
+}
+
+.loading {
+    --loading-border-thickness: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: var(--loading-border-thickness) solid var(--accent-color-faded);
+    border-right: var(--loading-border-thickness) solid var(--accent-color);
+
+    animation: 1s loading infinite linear;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+}
+
+@keyframes loading {
+    0% {
+        transform: rotateZ(0);
+    }
+    100% {
+        transform: rotateZ(360deg);
+    }
+}
+
+.pc-center-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    translate: -50% -50px;
+}
+
+.system-icon {
+    width: 50px;
+    height: 50px;
+    image-rendering: pixelated;
+    
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+}
+
+.small-system-icon {
+    width: 20px;
+    height: 20px;
+    image-rendering: pixelated;
+}
+
+input[type="text"],
+textarea {
+    padding: 10px;
+
+    background-color: var(--bg-color);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 50px;
+}
+
+input[type="text"]:focus::placeholder,
+textarea:focus::placeholder {
+    color: white;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    outline: none;
+    background-color: var(--accent-color-faded);
+}
+
+select {
+    padding: 2px;
+    background-color: var(--bg-color);
+}
+
+select:focus {
+    outline: none;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: var(--bg-color);
+    border: 1px solid var(--accent-color);
+
+    color: var(--accent-color);
+
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--accent-color-faded);
+}
+
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+@keyframes slideIn {
+    0% {
+        translate: 100% 0;
+    }
+
+    100% {
+        translate: 0 0;
+    }
+}
+
+.bottom-right {
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }

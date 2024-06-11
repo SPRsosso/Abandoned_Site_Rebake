@@ -1,12 +1,18 @@
 class Apartment {
     static activeApartment;
     constructor(roomNumber) {
+        this.wifis = [];
+
         this.routers = [];
         Apartment.generateRouters(this.routers);
 
         this.roomNumber = roomNumber;
         this.router = this.routers[this.routers.length - 1];
         this.pc = new PC(this);
+    }
+
+    static getByPC(pc) {
+        return apartments.find(apartment => apartment.pc === pc);
     }
 
     static generateRouters(routers) {

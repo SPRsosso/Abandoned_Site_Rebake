@@ -20,5 +20,3 @@ Apartment.activeApartment.pc.downloadedApps = {
     // HashMap,
     // Personide,
 }
-
-App.getAppIcons();

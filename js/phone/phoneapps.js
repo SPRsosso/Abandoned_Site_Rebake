@@ -1,7 +1,8 @@
 const phoneApps = {
     PhoneTutorial,
     PhoneCrack,
-    PhoneCalculator
+    PhoneCalculator,
+    PhoneNotes,
 }
 
 const openedPhoneApps = [];

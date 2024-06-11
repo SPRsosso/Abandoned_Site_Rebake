@@ -96,7 +96,7 @@ class WiTracker extends App {
                 <div id="info">
                     <p id="name"></p>
                     <p id="strength"></p>
-                    <p id="connected-pcs"></p>
+                    <p id="ip"></p>
                     <button id="refresh-btn">Refresh</button>
                 </div>
             </div>
@@ -116,7 +116,7 @@ class WiTracker extends App {
     static showWifis(appComponent) {
         const list = appComponent.querySelector("#witracker #list");
         
-        let filteredWifis = [...wifis];
+        let filteredWifis = [...Apartment.activeApartment.wifis];
         let option = list.querySelector("#sort");
         if (option) {
             option = option.value;
@@ -176,10 +176,11 @@ class WiTracker extends App {
         const info = this.window.querySelector("#witracker #info");
         const nameBox = info.querySelector("#name");
         const strengthBox = info.querySelector("#strength");
-        const connectedPcsBox = info.querySelector("#connected-pcs");
+        const ipBox = info.querySelector("#ip");
 
-        const wifi = wifis.find(wifi => wifi.name == name);
+        const wifi = Apartment.activeApartment.wifis.find(wifi => wifi.name == name);
         nameBox.innerHTML = "Name: " + wifi.name;
         strengthBox.innerHTML = "Strength: " + wifi.strength;
+        ipBox.innerHTML = "IP: " + wifi.ip;
     }
 }

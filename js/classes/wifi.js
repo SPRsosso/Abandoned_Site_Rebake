@@ -1,3 +1,5 @@
+const wifis = [];
+
 class Wifi {
     static lower = "abcdefghijklmnopqrstuvwxyz"
     static upper = Wifi.lower.toUpperCase();
@@ -16,11 +18,6 @@ class Wifi {
 
         this.passwordKeys = [];
         for (let i = 0; i < this.password.length; i++) {
-            // 10 42 42 30 29 17 4 15 28 46
-            // dodaj liczby
-            // po 20s pojawi się następny ciąg
-            // i tak 2 razy
-            // potem dostaniesz liczby a - 0, b - 1, itd... które będą w tablicy liczb
             this.passwordKeys.push(Wifi.possibleChars.indexOf(this.password[i]));
         }
 
@@ -29,6 +26,8 @@ class Wifi {
             y: Math.floor(Math.random() * 50) - 25
         }
         this.strength = null;
+
+        this.ip = generateIP(wifis);
     }
 
     changeStrength(startPos) {
@@ -108,8 +107,6 @@ class Wifi {
             }
             app.addEventListener("keydown", getLine);
         });
-
-        // return new Promise(resolve => resolve());
     }
 
     static async showBreakNumbers(app) {

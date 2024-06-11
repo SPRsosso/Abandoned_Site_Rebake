@@ -29,7 +29,7 @@ function isInt(src) {
     const c = src.charCodeAt(0);
     const bounds = [ '0'.charCodeAt(0), '9'.charCodeAt(0) ];
 
-    return ( c >= bounds[0] && c <= bounds[1] );
+    return ( c >= bounds[0] && c <= bounds[1] || c == '.'.charCodeAt(0) );
 }
 
 function isPath(src) {

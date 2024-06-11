@@ -1,0 +1,59 @@
+:host {
+    width: 100%;
+    height: 100%;
+}
+
+#bios {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+#bios .choose-options {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+#bios .downloading-bar {
+    width: 100px;
+    height: 25px;
+    border: 1px solid var(--accent-color);
+
+    --downloading-speed: 5000ms;
+}
+
+#bios .downloading-bar-inside {
+    width: 100%;
+    height: 100%;
+    background-color: var(--accent-color);
+
+    transform-origin: left;
+    animation: downloading forwards linear var(--downloading-speed);
+
+    scale: 0 1;
+}
+
+#bios button {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+@keyframes downloading {
+    0% {
+        scale: 0 1;
+    }
+
+    100% {
+        scale: 1 1;
+    }
+}

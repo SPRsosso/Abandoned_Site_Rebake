@@ -146,7 +146,14 @@ class CMD extends App {
         while (token = tokenized[0]) {
             let tokenVal = token.value;
 
-            switch(tokenVal) {
+            const apartmentOs = Apartment.activeApartment.pc.os;
+
+            if (OS[apartmentOs.system][apartmentOs.version][tokenVal])
+                await Apartment.activeApartment.pc.os.commands[apartmentOs.system][apartmentOs.version][tokenVal](tokenized, mainScreen, this);
+            else
+                CMD.error(this.window, "Unknown command: " + tokenVal);
+
+            /*switch(tokenVal) {
                 case "clear":
                     mainScreen.innerHTML = "";
                     break;
@@ -202,7 +209,7 @@ class CMD extends App {
                     
                     break;
                 case "help":
-                    mainScreen.innerHTML += /*html*/`
+                    mainScreen.innerHTML += `
                         <p>help - Shows basic commands you can use</p>
                         <p>clear - Clears console</p>
                         <p>setuser *name* - Changes current user name</p>
@@ -338,7 +345,7 @@ class CMD extends App {
                 default:
                     CMD.error(this.window, "Unknown command: " + tokenized[0].value);
                     break;
-            }
+            }*/
             
             tokenized.shift();
         }

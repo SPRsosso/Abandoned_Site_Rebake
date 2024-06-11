@@ -107,7 +107,7 @@ class HomeDefence extends App {
             await HomeDefence.wait(appComponent, 5000);
             Apartment.activeApartment.router = routers.find(router => router.name == homedefence.selectedRouter.name);
             HomeDefence.refreshRouters(appComponent);
-            wifis.forEach(wifi => {
+            Apartment.activeApartment.wifis.forEach(wifi => {
                 wifi.changeStrength(Apartment.activeApartment.router.strength);
             })
         });

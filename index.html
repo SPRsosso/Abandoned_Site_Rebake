@@ -10,6 +10,8 @@
     <script src="./js/file_extensions.js"></script>
     <script src="./js/classes/usb.js"></script>
     <script src="./js/classes/message.js"></script>
+    <script src="./js/classes/note.js"></script>
+    <script src="./js/other_bindings.js"></script>
 
     <script src="./js/classes/component.js"></script>
 
@@ -31,6 +33,9 @@
 
     <script defer src="./js/language/lexer.js"></script>
 
+    <script defer src="./js/functions.js"></script>
+
+    <script defer src="./js/cmd_commands.js"></script>
     <script defer src="./js/classes/fullscreen_window.js"></script>
     <script defer src="./js/classes/router.js"></script>
     <script defer src="./js/classes/wifi.js"></script>
@@ -41,23 +46,26 @@
     <script defer src="./js/classes/app.js"></script>
     
     <script defer src="./js/classes/apps/cmd.js"></script>
-    <script defer src="./js/classes/apps/homedefence.js"></script>
-    <script defer src="./js/classes/apps/witracker.js"></script>
-    <script defer src="./js/classes/apps/hashmap.js"></script>
     <script defer src="./js/classes/apps/fileexplorer.js"></script>
-    <script defer src="./js/classes/apps/calculator.js"></script>
-    <script defer src="./js/classes/apps/personide.js"></script>
     <script defer src="./js/classes/apps/messx.js"></script>
+    <script defer src="./js/classes/apps/calculator.js"></script>
+    
+    <script defer src="./js/classes/apps/Streamline/homedefence.js"></script>
+    <script defer src="./js/classes/apps/Streamline/witracker.js"></script>
+    <script defer src="./js/classes/apps/Streamline/hashmap.js"></script>
+    <script defer src="./js/classes/apps/Streamline/personide.js"></script>
     
     <script defer src="./js/classes/apartment.js"></script>
     <script defer src="./js/apartments.js"></script>
     <script defer src="./js/routers.js"></script>
+    <script defer src="./js/bios_key.js"></script>
 
     <script defer src="./js/messages_after_login.js"></script>
     
-    <script defer src="./components/login-screen.js"></script>
     <script defer src="./js/wifis.js"></script>
     <script defer src="./js/apps.js"></script>
+    <script defer src="./components/login-screen.js"></script>
+    <script defer src="./components/bios-component.js"></script>
 
     <script src="./js/phone/apps/tutorial-components/tutorialapps.js"></script>
     <script src="./js/phone/apps/tutorial-components/tutorialcommands.js"></script>
@@ -66,6 +74,7 @@
     <script defer src="./js/phone/apps/phonetutorial.js"></script>
     <script defer src="./js/phone/apps/phonecrack.js"></script>
     <script defer src="./js/phone/apps/phonecalculator.js"></script>
+    <script defer src="./js/phone/apps/phonenotes.js"></script>
     <script defer src="./js/phone/phoneapps.js"></script>
     <script defer src="./js/phone/openphone.js"></script>
 
@@ -74,11 +83,14 @@
 </head>
 <body>
     <main>
-        <main-options red="App.closeAllApps()" yellow="FullscreenWindow.maximizeWindow()" green="">Abandoned Site: Rebake</main-options>
+        <main-options red="App.closeAllApps()" yellow="FullscreenWindow.maximizeWindow()" green="PC.shutdown()">Abandoned Site: Rebake</main-options>
         <main-screen>
-            <main-bar slot="bar">
-                <!-- <app-icon icon-path="./icons/CMD.png" app-name="CMD"></app-icon> -->
-            </main-bar>
+            <!-- <div class="loading">
+
+            </div> -->
+            <!-- <main-bar slot="bar">
+                <app-icon icon-path="./icons/CMD.png" app-name="CMD"></app-icon>
+            </main-bar> -->
         </main-screen>
     </main>
 

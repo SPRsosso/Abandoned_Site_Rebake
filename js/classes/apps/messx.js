@@ -339,10 +339,6 @@ class MessX extends App {
                 usersDiv.append(div)
             });
 
-            if (openedApp.userId) {
-                getMessages(messages[openedApp.userId]);
-            }
-
             messagesEl.style.height = "calc(100% - 30px - 50px)";
             const optionBox = appComponent.querySelector(".option-box");
             if (anonymousUserChooseOptions && openedApp.userId === "0") {
@@ -368,6 +364,10 @@ class MessX extends App {
 
                     optionBox.appendChild(button);
                 });
+            }
+
+            if (openedApp.userId) {
+                getMessages(messages[openedApp.userId]);
             }
 
             if (!anonymousUserChooseOptions) optionBox.classList.add("inactive");

@@ -105,8 +105,8 @@ class Calculator extends App {
         switch(value) {
             case "=":
                 try {
-                    const result = eval(output.value);
-                    output.innerHTML += "=" + result;
+                    const result = eval(output.innerHTML);
+                    output.innerHTML = result;
                 } catch(ex) {
                     output.innerHTML = "Wrong format";
                 }

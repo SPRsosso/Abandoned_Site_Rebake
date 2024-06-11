@@ -2,6 +2,9 @@ const styles = /*css*/`
     * {
         margin: 0;
         --usb-height: 80px;
+        
+        font-family: 'Courier New', Courier, monospace;
+        color: var(--accent-color);
 
         touch-action: manipulation;
     }
@@ -77,6 +80,8 @@ const styles = /*css*/`
     img {
         user-select: none;
         -webkit-user-drag: none;
+
+        image-rendering: pixelated;
     }
 
     @keyframes slideIn {

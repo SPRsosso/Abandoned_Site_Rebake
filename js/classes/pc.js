@@ -6,40 +6,13 @@ const FileTypes = {
 
 const phoneNumbers = [];
 const ids = [];
+const pcs = [];
 
 class PC {
+    #on;
     constructor(apartment) {
         this.documents = { name: "Documents" };
-        let tmpDoc = this.documents;
-        for (let i = 0; i < 3; i++) {
-            tmpDoc["files"] = [];
-            for (let j = 0; j < Math.floor(Math.random() * 2) + 1; j++) {
-                const randomType = Math.random();
-                let type;
-                
-                if (randomType < 0.33)
-                    type = FileTypes.firewall;
-                else if (randomType < 0.66)
-                    type = FileTypes.authorized;
-                else
-                    type = FileTypes.transmission;
-
-                let name = "";
-                for (let k = 0; k < 7; k++)
-                    name += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
-                name += "." + file_extensions[Math.floor(Math.random() * file_extensions.length)];
-
-                tmpDoc["files"].push({ name, type });
-            }
-            if (i + 1 < 3) {
-                let name = "";
-                for (let k = 0; k < 10; k++)
-                    name += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
-
-                tmpDoc["folder"] = { name };
-                tmpDoc = tmpDoc["folder"];
-            }
-        }
+        this.generateFiles();
 
         this.downloadedApps = {
             CMD,
@@ -90,6 +63,29 @@ class PC {
         }
 
         this.messages = {};
+
+        this.ip = generateIP(pcs);
+
+        this.os = {
+            system: null,
+            version: null,
+            commands: Object.setPrototypeOf( Object.assign( {}, OS ), OS )
+        };
+
+        this.#on = false;
+        this.loggedIn = false;
+        this.state = "open";
+
+        pcs.push(this);
+    }
+
+    get on() {
+        return this.#on;
+    }
+
+    set on(value) {
+        this.#on = value;
+        if (value === false) this.loggedIn = value;
     }
 
     get(index) {
@@ -104,5 +100,104 @@ class PC {
 
     static getByUser(userId) {
         return apartments.find(apartment => apartment.pc.user.id === userId)?.pc;
+    }
+
+    static getByIP(ip) {
+        return apartments.find(apartment => apartment.pc.ip === ip)?.pc;
+    }
+
+    generateFiles() {
+        let tmpDoc = this.documents;
+        for (let i = 0; i < 3; i++) {
+            tmpDoc["files"] = [];
+            for (let j = 0; j < Math.floor(Math.random() * 2) + 1; j++) {
+                const randomType = Math.random();
+                
+                let type;
+                if (randomType < 0.33)
+                    type = FileTypes.firewall;
+                else if (randomType < 0.66)
+                    type = FileTypes.authorized;
+                else
+                    type = FileTypes.transmission;
+
+                let name = "";
+                for (let k = 0; k < 7; k++)
+                    name += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
+                name += "." + file_extensions[Math.floor(Math.random() * file_extensions.length)];
+
+                tmpDoc["files"].push({ name, type });
+            }
+            if (i + 1 < 3) {
+                let name = "";
+                for (let k = 0; k < 10; k++)
+                    name += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
+
+                tmpDoc["folder"] = { name };
+                tmpDoc = tmpDoc["folder"];
+            }
+        }
+    }
+
+    static async shutdown() {
+        if (Apartment.activeApartment.pc.state !== "open") return;
+
+        if (Apartment.activeApartment.pc.on) {
+            Apartment.activeApartment.pc.state = "shuttingdown";
+            Apartment.activeApartment.pc.on = false;
+            App.screen.innerHTML = `<p class="pc-center-text">Shutting down PC</p>`;
+
+            const loading = document.createElement("div");
+            loading.classList.add("loading");
+            App.screen.prepend(loading);
+
+            await wait(3000);
+
+            App.screen.innerHTML = "";
+            Apartment.activeApartment.pc.state = "open";
+        } else {
+            Apartment.activeApartment.pc.state = "shuttingdown";
+            
+            App.screen.innerHTML = /*html*/`
+                <p>PC starting up...</p>
+                <div class="bottom-right">
+                    <p>Press Delete to open BIOS</p>
+                </div>
+            `;
+
+            await wait(2000);
+
+            App.screen.innerHTML = "";
+
+            if (!Apartment.activeApartment.pc.os.system || biosKeyPressed) {
+                const bios = document.createElement("bios-component");
+
+                App.screen.append(bios);
+            } else {
+                App.screen.innerHTML = `<p class="pc-center-text">${Apartment.activeApartment.pc.os.system} starting up...</p>`;
+                App.screen.innerHTML += /*html*/`<img class="system-icon" src="./icons/${Apartment.activeApartment.pc.os.system}.gif">`;
+
+                await wait(6000);
+
+                openComputer();
+            }
+            
+            Apartment.activeApartment.pc.on = true;
+            Apartment.activeApartment.pc.state = "open";
+        }
+    }
+
+    static async downloadOS(system, version) {
+        Apartment.activeApartment.pc.state = "downloadingos";
+
+        const downloadingSpeed = 5000;
+        await wait(downloadingSpeed);
+
+        Apartment.activeApartment.pc.os.system = system;
+        Apartment.activeApartment.pc.os.version = version;
+        Apartment.activeApartment.pc.state = "open";
+        Apartment.activeApartment.pc.on = false;
+
+        PC.shutdown();
     }
 }

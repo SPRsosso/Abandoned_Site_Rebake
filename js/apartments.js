@@ -6,3 +6,5 @@ for (let i = 0; i < 15; i++) {
 }
 
 Apartment.activeApartment = apartments[0];
+// Apartment.activeApartment.pc.on = true;
+// Apartment.activeApartment.pc.loggedIn = true;

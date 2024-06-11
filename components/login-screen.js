@@ -98,17 +98,34 @@ class LoginScreen extends HTMLElement {
     }
 
     openComputer() {
+        Apartment.activeApartment.pc.loggedIn = true;
+        App.screen.innerHTML = `
+            <main-bar slot="bar">
+                
+            </main-bar>
+        `;
+        App.getAppIcons();
+
         const audio = new Audio("./sounds/Login.mp3");
         audio.volume = 0.3;
         audio.play();
         this.shadow.host.remove();
 
-        messagesAfterLogin();
+        if (firstTimeInTheGame) messagesAfterLogin();
+        
+        firstTimeInTheGame = false;
     }
 }
 
 customElements.define("login-screen", LoginScreen);
 
 const loginScreen = document.createElement("login-screen");
-document.querySelector("main-screen").prepend(loginScreen);
-// messagesAfterLogin();
+if (Apartment.activeApartment.pc.on) {
+    openComputer();
+}
+
+function openComputer() {
+    document.querySelector("main-screen").prepend(loginScreen);
+    
+    if (Apartment.activeApartment.pc.loggedIn) loginScreen.openComputer();
+}

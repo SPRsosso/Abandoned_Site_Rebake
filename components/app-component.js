@@ -5,7 +5,7 @@ class AppComponent extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.moves = false;
 
-        this.shadow.innerHTML = `
+        this.shadow.innerHTML = /*html*/`
             <style>
                 ${styles}
 

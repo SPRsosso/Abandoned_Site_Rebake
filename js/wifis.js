@@ -1,11 +1,18 @@
-const wifis = [];
 const wifiCount = 10;
 for (let i = 0; i < wifiCount; i++)
     wifis.push(new Wifi());
 
-for (let i = 0; i < wifiCount; i++)
-    wifis[i].changeStrength(Apartment.activeApartment.router.strength);
+apartments.forEach(apartment => {
+    apartment.wifis = wifis.map(a => Object.setPrototypeOf( Object.assign( {}, a ), Wifi.prototype ));
 
-document.querySelector("sticky-note").innerHTML = `<p style="color: black;">Wifi: ${ wifis[0].name }<br>Pwd: ${ wifis[0].password }</p>`;
+    for (let i = 0; i < wifiCount; i++) {
+        apartment.wifis[i].changeStrength(apartment.router.strength);
+    }
+    
+    apartment.router.connectedWifi = apartment.wifis[randomInt(0, wifiCount - 1)];
+});
 
-// Apartment.activeApartment.router.connectedWifi = wifis[0];
+// console.log(apartments[1].router.connectedWifi.name, apartments[1].pc.ip);
+
+// Apartment.activeApartment.router.connectedWifi = Apartment.activeApartment.wifis[randomInt(0, wifiCount - 1)];
+document.querySelector("sticky-note").innerHTML = `<p style="color: black;">Wifi: ${ Apartment.activeApartment.router.connectedWifi.name }<br>Pwd: ${ Apartment.activeApartment.router.connectedWifi.password }</p>`;
