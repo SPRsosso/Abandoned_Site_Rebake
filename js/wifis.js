@@ -14,5 +14,5 @@ apartments.forEach(apartment => {
 
 // console.log(apartments[1].router.connectedWifi.name, apartments[1].pc.ip);
 
-// Apartment.activeApartment.router.connectedWifi = Apartment.activeApartment.wifis[randomInt(0, wifiCount - 1)];
-document.querySelector("sticky-note").innerHTML = `<p style="color: black;">Wifi: ${ Apartment.activeApartment.router.connectedWifi.name }<br>Pwd: ${ Apartment.activeApartment.router.connectedWifi.password }</p>`;
+Apartment.activeApartment.router.connectedWifi = null;
+document.querySelector("sticky-note").innerHTML = `<p style="color: black;">Wifi: ${ Apartment.activeApartment.wifis[0].name }<br>Pwd: ${ Apartment.activeApartment.wifis[0].password }</p>`;
