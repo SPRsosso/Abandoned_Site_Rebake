@@ -9,7 +9,7 @@ const GLOBAL_COMMANDS = {
     setuser: (tokenized, mainScreen) => {
         const user = Apartment.activeApartment.pc.user;
 
-        var string = "";
+        let string = "";
         const allowedFlags = [
             { value: "name", output: "name"},
             { value: "n", output: "name" },
@@ -57,7 +57,7 @@ const GLOBAL_COMMANDS = {
         }
     },
     breakwifi: async (tokenized, mainScreen, cmd) => {
-        var string = "";
+        let string = "";
         while (tokenized.length > 0) {
             tokenized.shift();
 
@@ -83,33 +83,49 @@ const GLOBAL_COMMANDS = {
         Wifi.connectToWifi(cmd.window, wifiArr[0], wifiArr[1]);
     },
     dirlist: (tokenized, mainScreen, cmd) => {
-        if (cmd.pathIndex != -1) {
-            const filesDir = Apartment.activeApartment.pc.get(cmd.pathIndex).files;
-            for (let i = 0; i < filesDir.length; i++) {
-                CMD.log(cmd.window, filesDir[i].name + " ");
-            }
+        const folder = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+
+        let filesDir;
+        if (cmd.path === "")
+            filesDir = [ folder ];
+        else
+            filesDir = folder;
+
+        for (let i = 0; i < filesDir.length; i++) {
+            CMD.log(cmd.window, filesDir[i].name + " ");
         }
-        if (Apartment.activeApartment.pc.get(cmd.pathIndex + 1))
-            CMD.log(cmd.window, Apartment.activeApartment.pc.get(cmd.pathIndex + 1).name);
     },
     cdir: (tokenized, mainScreen, cmd) => {
         tokenized.shift();
+        // debugger;
         while(tokenized.length > 0) {
-            const folder = Apartment.activeApartment.pc.get(cmd.pathIndex + 1);
+            const path = tokenized[0].value;
 
-            if (tokenized[0].value == ".." && cmd.pathIndex > -1)
-                cmd.pathIndex--;
+            if (path == ".." && cmd.path.length > 0) {
+                const pathArray = cmd.path.split("/");
+                if (pathArray.length > 1) pathArray.shift();
 
-            if (cmd.pathIndex == -1)
                 cmd.path = "";
+                for (let i = 0; i < pathArray.length - 1; i++) {
+                    cmd.path += `/${pathArray[i]}`;
+                }
 
-            if (folder)
-                if (folder.name == tokenized[0].value)
-                    cmd.pathIndex++;
-                
-            cmd.path = "";
-            for (let i = 0; i <= cmd.pathIndex; i++)
-                cmd.path += "/" + Apartment.activeApartment.pc.get(i).name;
+                if (cmd.path === "/") cmd.path = "";
+            } else {
+                const folder = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+
+                let foundFolder
+                if (cmd.path === "") {
+                    if (folder.name === path) foundFolder = folder.name;
+                } else {
+                    foundFolder = folder.find(document => {
+                        return document.name === path && Object.getPrototypeOf(document).constructor.name === "Folder";
+                    })?.name;
+                }
+                    
+                if (foundFolder)
+                    cmd.path += `/${foundFolder}`;
+            }
 
             tokenized.shift();
         }
@@ -121,35 +137,82 @@ const GLOBAL_COMMANDS = {
             return;
         }
 
-        var fileName = tokenized[0].value;
-        const fileType = FileTypes[tokenized[1].value.toLowerCase()];
+        let fileName = tokenized.shift().value;
+        const typedFileType = tokenized.shift().value;
 
-        if (cmd.pathIndex != -1) {
-            if (fileType) {
-                Apartment.activeApartment.pc.get(cmd.pathIndex).files.push({ name: fileName, type: fileType });
-            } else {
-                CMD.error(cmd.window, "Unknown file type: " + tokenized[1].value);
-            }
-        } else {
+        if (cmd.path === "") {
             CMD.error(cmd.window, "Cannot create file in this path");
+            return;
         }
+        
+        const fileType = FileTypes[typedFileType.toLowerCase()];
 
-        tokenized.splice(0, 2);
+        if (fileType) {
+            Apartment.activeApartment.pc.get(cmd.path.replace("/", "")).push(new ComputerFile(fileName, fileType));
+        } else {
+            CMD.error(cmd.window, "Unknown file type: " + typedFileType);
+        }
     },
     deletefile: (tokenized, mainScreen, cmd) => {
         tokenized.shift();
-        var fileName = tokenized[0].value;
 
-        if (this.pathIndex != -1) {
-            var filesArr = Apartment.activeApartment.pc.get(cmd.pathIndex).files;
-            var index = filesArr.findIndex(file => file.name == fileName);
-            if (index != -1)
-                filesArr.splice(index, 1);
-            else 
-                CMD.error(cmd.window, "File " + fileName + " not found");
-        } else {
+        let fileName = tokenized.shift().value;
+
+        if (cmd.path === ""){
             CMD.error(cmd.window, "Cannot delete file in this path");
+            return;
         }
+
+        let files = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+        let index = files.findIndex(file => {
+            return file.name === fileName && Object.getPrototypeOf(file).constructor.name === "ComputerFile";
+        });
+        if (index !== -1)
+            files.splice(index, 1);
+        else 
+            CMD.error(cmd.window, "File " + fileName + " not found");
+    },
+    createdir: (tokenized, mainScreen, cmd) => {
+        tokenized.shift();
+
+        if (tokenized.length <= 0) {
+            CMD.error(cmd.window, "Need at least 1 argument!");
+            return;
+        }
+
+        let dirName = tokenized.shift().value;
+
+        if (cmd.path === "") {
+            CMD.error(cmd.window, "Cannot create directory in this path");
+            return;
+        }
+
+        Apartment.activeApartment.pc.get(cmd.path.replace("/", "")).push(new Folder(dirName));
+    },
+    deletedir: (tokenized, mainScreen, cmd) => {
+        tokenized.shift();
+
+        if (tokenized.length <= 0) {
+            CMD.error(cmd.window, "Need at least 1 argument!");
+            return;
+        }
+
+        let dirName = tokenized.shift().value;
+
+        if (cmd.path === "") {
+            CMD.error(cmd.window, "Cannot delete directory in this path");
+            return;
+        }
+
+        let folders = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+        let index = folders.findIndex(folder => {
+            return folder.name === dirName && Object.getPrototypeOf(folder).constructor.name === "Folder";
+        });
+
+        if (index !== -1)
+            folders.splice(index, 1);
+        else 
+            CMD.error(cmd.window, "Folder " + dirName + " not found");
     },
     pingpc: async (tokenized, mainScreen, cmd) => {
         tokenized.shift();
@@ -177,18 +240,28 @@ const GLOBAL_COMMANDS = {
             return;
         }
 
-        let packetTime_ms = 1000;
-        packetTime_ms *= Math.floor(Math.sqrt(packetSize));
-        packetTime_ms /= ( wifi.strength +  currentWifi.strength ) / 2;
+        let packetTimePC1_ms = 100;
+        let packetTimePC2_ms = 100;
+        packetTimePC1_ms *= packetSize;
+        packetTimePC2_ms *= packetSize;
+
+        packetTimePC1_ms /= wifi.strength / 5;
+        packetTimePC2_ms /= currentWifi.strength / 5;
+
+        let packetTime_ms = (packetTimePC1_ms + packetTimePC2_ms) / 2;
 
         for (let i = 0; i < 10; i++) {
-            packetTime_ms *= randomInt(0, 10) / 10 + 0.5;
+            packetTime_ms *= randomInt(1, 5) / 10 + 0.75;
             packetTime_ms = Math.floor(packetTime_ms * 10) / 10;
-            await wait(packetTime_ms);
-            if (packetTime_ms > 8000)
+
+            const maxTimeOutTime = 10000;
+            if (packetTime_ms > maxTimeOutTime){
+                await wait(maxTimeOutTime);
                 CMD.log(cmd.window, "Timed out");
-            else
+            } else {
+                await wait(packetTime_ms);
                 CMD.log(cmd.window, "Time: " + packetTime_ms + "ms");
+            }
         }
     }
 }
@@ -213,29 +286,29 @@ const OS = {
                 `;
             },
             downapp: async (tokenized, mainScreen, cmd) => {
-                var string = "";
-                    while (tokenized.length > 0) {
-                        tokenized.shift();
+                let string = "";
+                while (tokenized.length > 0) {
+                    tokenized.shift();
 
-                        if (tokenized.length > 0)
-                            string += tokenized[0].value;
+                    if (tokenized.length > 0)
+                        string += tokenized[0].value;
 
-                        if (tokenized[1])
-                            string += " ";
+                    if (tokenized[1])
+                        string += " ";
+                }
+                Object.keys(apps).forEach(( key ) => {
+                    if (string == key || string.toLowerCase() == key.toLowerCase() || string.toUpperCase() == key.toUpperCase()) {
+                        string = key;
+                        return;
                     }
-                    Object.keys(apps).forEach(( key ) => {
-                        if (string == key || string.toLowerCase() == key.toLowerCase() || string.toUpperCase() == key.toUpperCase()) {
-                            string = key;
-                            return;
-                        }
-                    });
-                    if (apps[string])
-                        await App.downloadApp(cmd.window, string);
-                    else
-                        CMD.error(cmd.window, "App does not exist: " + string);
+                });
+                if (apps[string])
+                    await App.downloadApp(cmd.window, string);
+                else
+                    CMD.error(cmd.window, "App does not exist: " + string);
             },
             breakwifi: async (tokenized, mainScreen, cmd) => {
-                var string = "";
+                let string = "";
                 while (tokenized.length > 0) {
                     tokenized.shift();
 
@@ -257,6 +330,8 @@ const OS = {
             cdir: GLOBAL_COMMANDS.cdir,
             createfile: GLOBAL_COMMANDS.createfile,
             deletefile: GLOBAL_COMMANDS.deletefile,
+            createdir: GLOBAL_COMMANDS.createdir,
+            deletedir: GLOBAL_COMMANDS.deletedir,
             pingpc: GLOBAL_COMMANDS.pingpc
         },
         "X": {

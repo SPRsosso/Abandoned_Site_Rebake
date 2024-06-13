@@ -8,7 +8,6 @@ class CMD extends App {
         this.selectedLine = 0;
         this.lines = [""];
     
-        this.pathIndex = -1;
         this.path = "";
     }
 

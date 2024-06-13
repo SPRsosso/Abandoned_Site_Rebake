@@ -11,7 +11,7 @@ const pcs = [];
 class PC {
     #on;
     constructor(apartment) {
-        this.documents = { name: "Documents" };
+        this.documents = new Folder("Documents");
         this.generateFiles();
 
         this.downloadedApps = {
@@ -67,8 +67,8 @@ class PC {
         this.ip = generateIP(pcs);
 
         this.os = {
-            system: null,
-            version: null,
+            system: "Streamline",
+            version: "V",
             commands: Object.setPrototypeOf( Object.assign( {}, OS ), OS )
         };
 
@@ -88,13 +88,24 @@ class PC {
         if (value === false) this.loggedIn = value;
     }
 
-    get(index) {
-        let i = 0;
-        let tmpDoc = this.documents;
-        while(i < index) {
-            tmpDoc = tmpDoc["folder"];
-            i++;
+    get(path) {
+        path = path.split("/");
+        let tmpDoc = this.documents
+        // debugger;
+        for (let i = 0; i < path.length; i++) {
+            if (path.length === 1 && this.documents.name === path[i]) return tmpDoc.inside;
+            if (tmpDoc.forEach) {
+                tmpDoc.forEach(doc => {
+                    if (Object.getPrototypeOf(doc).constructor.name === "Folder")
+                        if (doc.name === path[i]) tmpDoc = doc.inside;
+                });
+            } else {
+                if (Object.getPrototypeOf(tmpDoc).constructor.name === "Folder")
+                    if (tmpDoc.name === path[i]) tmpDoc = tmpDoc.inside;
+            }
         }
+
+        if (tmpDoc === undefined) throw new Error("Cannot access undefined");
         return tmpDoc;
     }
 
@@ -109,7 +120,6 @@ class PC {
     generateFiles() {
         let tmpDoc = this.documents;
         for (let i = 0; i < 3; i++) {
-            tmpDoc["files"] = [];
             for (let j = 0; j < Math.floor(Math.random() * 2) + 1; j++) {
                 const randomType = Math.random();
                 
@@ -126,15 +136,15 @@ class PC {
                     name += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
                 name += "." + file_extensions[Math.floor(Math.random() * file_extensions.length)];
 
-                tmpDoc["files"].push({ name, type });
+                tmpDoc.push(new ComputerFile(name, type));
             }
             if (i + 1 < 3) {
                 let name = "";
                 for (let k = 0; k < 10; k++)
                     name += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
 
-                tmpDoc["folder"] = { name };
-                tmpDoc = tmpDoc["folder"];
+                tmpDoc.push(new Folder(name));
+                tmpDoc = tmpDoc.inside[tmpDoc.inside.length - 1];
             }
         }
     }

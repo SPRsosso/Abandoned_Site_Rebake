@@ -50,7 +50,6 @@ class Wifi {
 
         let appConsole = openedApps.find(openedApp => openedApp.window == app);
         let result = await Wifi.showBreakNumbers(app);
-        console.log(result);
         appConsole.getStartLine();
         
         let counter = 0;
@@ -95,13 +94,11 @@ class Wifi {
                             mainScreen.innerHTML += wifi.passwordKeys[i] + " ";
                             await new Promise(resolve => setTimeout(resolve, 100));
                         }
-                        console.log(wifi.password);
                     }
                     app.removeEventListener("keydown", getLine);
                     resolve();
                 } else {
                     result = await Wifi.showBreakNumbers(app);
-                    console.log(result);
                     appConsole.getStartLine();
                 }
             }

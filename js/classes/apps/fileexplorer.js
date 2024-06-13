@@ -3,7 +3,7 @@ class FileExplorer extends App {
         super();
         this.window = window;
 
-        this.currentFolderIndex = 0;
+        this.path = "Documents";
     }
 
     static openApp() {
@@ -104,11 +104,17 @@ class FileExplorer extends App {
 
         const backward = appComponent.querySelector("#backward");
         backward.addEventListener("click", () => {
-            if (fileexplorer.currentFolderIndex > 0) {
-                fileexplorer.currentFolderIndex--;
+            if (fileexplorer.path !== "Documents") {
+                fileexplorer.path = fileexplorer.path.split("/");
+                let path = "";
+                for (let i = 0; i < fileexplorer.path.length - 1; i++) {
+                    path += fileexplorer.path[i];
+                    if (i !== fileexplorer.path.length - 2) path += "/";
+                }
+                fileexplorer.path = path;
                 fileexplorer.getInsideFolder(appComponent, Apartment.activeApartment.pc);
 
-                if (fileexplorer.currentFolderIndex == 0)
+                if (fileexplorer.path === "Documents")
                    backward.classList.add("disabled");
                 
             } else {
@@ -122,14 +128,11 @@ class FileExplorer extends App {
     getInsideFolder(app, pc) {
         const insideFolder = app.querySelector("#inside-folder");
         const directory = app.querySelector("#directory");
+
         let list = "<ul>";
-        Object.keys(pc.get(this.currentFolderIndex)).forEach(( key ) => {
-            if (key == "folder")
-                list += `<li class="folder"><img src="./icons/Folder.png">${pc.get(this.currentFolderIndex)[key].name}</li>`;
-            else if (key == "files")
-                pc.get(this.currentFolderIndex)[key].forEach(( file ) => {
-                    list += `<li><img src="./icons/File.png">${file.name}</li>`
-                });
+        pc.get(this.path).forEach(obj => {
+            if (Object.getPrototypeOf(obj).constructor.name === "Folder") list += `<li class="folder"><img src="./icons/Folder.png">${obj.name}</li>`;
+            if (Object.getPrototypeOf(obj).constructor.name === "ComputerFile") list += `<li><img src="./icons/File.png">${obj.name}</li>`;
         });
         list += "</ul>";
         insideFolder.innerHTML = list;
@@ -141,7 +144,7 @@ class FileExplorer extends App {
 
         insideFolder.querySelectorAll(".folder").forEach(folder => {
             folder.addEventListener("dblclick", () => {
-                this.currentFolderIndex++;
+                this.path += `/${folder.innerText}`;
                 this.getInsideFolder(app, pc);
                 app.querySelector("#backward").classList.remove("disabled");
             });
