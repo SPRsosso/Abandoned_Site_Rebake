@@ -64,7 +64,19 @@ function tokenize(sourceCode) {
             tokens.push(new Token(src.shift(), TokenType.Equals));
         else {
             // Handle multicharacter tokens
-            if (isInt(src[0])) {
+            if (isAlpha(src[0]) || isInt(src[0])) {
+                let ident = "";
+                while (src.length > 0 && (isAlpha(src[0]) || isInt(src[0]))) {
+                    ident += src.shift();
+                }
+
+                // Check for reserved keywords
+                const reserved = KEYWORDS[ident];
+                if (reserved == undefined)
+                    tokens.push(new Token(ident, TokenType.Identifier))
+                else
+                    tokens.push(new Token(ident, reserved));
+            } else if (isInt(src[0])) {
                 let num = "";
                 while (src.length > 0 && isInt(src[0])) {
                     num += src.shift();
@@ -78,18 +90,6 @@ function tokenize(sourceCode) {
                 }
 
                 tokens.push(new Token(ident, TokenType.Path));
-            } else if (isAlpha(src[0]) || isInt(src[0])) {
-                let ident = "";
-                while (src.length > 0 && (isAlpha(src[0]) || isInt(src[0]))) {
-                    ident += src.shift();
-                }
-
-                // Check for reserved keywords
-                const reserved = KEYWORDS[ident];
-                if (reserved == undefined)
-                    tokens.push(new Token(ident, TokenType.Identifier))
-                else
-                    tokens.push(new Token(ident, reserved));
             } else if (isSkippable(src[0])) {
                 src.shift(); // SKIP THE CURRENT CHARACTER
             } else {
