@@ -139,7 +139,7 @@ class App {
                 counter += intervalTime;
                 lineCounter += intervalTime;
 
-                
+                app.scrollTop = app.scrollHeight;
             }, intervalTime);
         });
     }

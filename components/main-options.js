@@ -30,7 +30,7 @@ class MainOptions extends HTMLElement {
                 }
 
                 #green {
-                    background-color: var(--accent-color);
+                    background-color: rgb(25, 211, 0);
                 }
 
                 #yellow {

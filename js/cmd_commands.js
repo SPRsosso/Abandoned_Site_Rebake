@@ -2,11 +2,21 @@ function isFlag(flag) {
     return flag.type == TokenType.Flag;
 }
 
+function removeFlags(tokenized) {
+    const flagIndexes = [];
+    for (let i = 0; i < tokenized.length; i++)
+        if (isFlag(tokenized[i])) flagIndexes.push(i);
+
+    for (let i = flagIndexes.length - 1; i >= 0; i--) {
+        tokenized.splice(flagIndexes[i], 1);
+    }
+}
+
 const GLOBAL_COMMANDS = {
-    clear: (tokenized, mainScreen) => {
-        mainScreen.innerHTML = "";
+    clear: (tokenized, cmd) => {
+        cmd.window.querySelector("#cmd").innerHTML = "";
     },
-    setuser: (tokenized, mainScreen) => {
+    setuser: (tokenized) => {
         const user = Apartment.activeApartment.pc.user;
 
         let string = "";
@@ -56,7 +66,7 @@ const GLOBAL_COMMANDS = {
             user.fullName = user.name + " " + user.surname;
         }
     },
-    breakwifi: async (tokenized, mainScreen, cmd) => {
+    breakwifi: async (tokenized, cmd) => {
         let string = "";
         while (tokenized.length > 0) {
             tokenized.shift();
@@ -74,15 +84,17 @@ const GLOBAL_COMMANDS = {
             CMD.error(cmd.window, "Cannot find Wifi: " + string);
         }
     },
-    connectwifi: (tokenized, mainScreen, cmd) => {
-        const wifiArr = [];
-        while (tokenized.shift()) {
-            if (tokenized.length > 0)
-                wifiArr.push(tokenized[0].value);
+    connectwifi: (tokenized, cmd) => {
+        tokenized.shift();
+
+        if (tokenized.length < 2) {
+            CMD.error(cmd.window, "Needs at least 2 arguments!");
+            return;
         }
-        Wifi.connectToWifi(cmd.window, wifiArr[0], wifiArr[1]);
+
+        Wifi.connectToWifi(cmd.window, tokenized.shift().value, tokenized.shift().value);
     },
-    dirlist: (tokenized, mainScreen, cmd) => {
+    dirlist: (tokenized, cmd) => {
         const folder = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
 
         let filesDir;
@@ -95,7 +107,7 @@ const GLOBAL_COMMANDS = {
             CMD.log(cmd.window, filesDir[i].name + " ");
         }
     },
-    cdir: (tokenized, mainScreen, cmd) => {
+    cdir: (tokenized, cmd) => {
         tokenized.shift();
         // debugger;
         while(tokenized.length > 0) {
@@ -130,7 +142,7 @@ const GLOBAL_COMMANDS = {
             tokenized.shift();
         }
     },
-    createfile: (tokenized, mainScreen, cmd) => {
+    createfile: (tokenized, cmd) => {
         tokenized.shift();
         if (tokenized.length < 2) {
             CMD.error(cmd.window, "Needs at least 2 arguments!");
@@ -153,7 +165,7 @@ const GLOBAL_COMMANDS = {
             CMD.error(cmd.window, "Unknown file type: " + typedFileType);
         }
     },
-    deletefile: (tokenized, mainScreen, cmd) => {
+    deletefile: (tokenized, cmd) => {
         tokenized.shift();
 
         let fileName = tokenized.shift().value;
@@ -172,7 +184,7 @@ const GLOBAL_COMMANDS = {
         else 
             CMD.error(cmd.window, "File " + fileName + " not found");
     },
-    createdir: (tokenized, mainScreen, cmd) => {
+    createdir: (tokenized, cmd) => {
         tokenized.shift();
 
         if (tokenized.length <= 0) {
@@ -189,7 +201,7 @@ const GLOBAL_COMMANDS = {
 
         Apartment.activeApartment.pc.get(cmd.path.replace("/", "")).push(new Folder(dirName));
     },
-    deletedir: (tokenized, mainScreen, cmd) => {
+    deletedir: (tokenized, cmd) => {
         tokenized.shift();
 
         if (tokenized.length <= 0) {
@@ -214,16 +226,17 @@ const GLOBAL_COMMANDS = {
         else 
             CMD.error(cmd.window, "Folder " + dirName + " not found");
     },
-    pingpc: async (tokenized, mainScreen, cmd) => {
+    pingpc: async (tokenized, cmd) => {
         tokenized.shift();
 
-        if (tokenized.length < 2) {
-            CMD.error(cmd.window, "Needs at least 2 arguments!");
+        if (tokenized.length < 3) {
+            CMD.error(cmd.window, "Needs at least 3 arguments!");
             return;
         }
 
         const pingTo = tokenized.shift().value;
         const packetSize = tokenized.shift().value;
+        const pings = tokenized.shift().value;
 
         const pingedPc = PC.getByIP(pingTo);
 
@@ -235,7 +248,7 @@ const GLOBAL_COMMANDS = {
         const pingedApartment = Apartment.getByPC(pingedPc);
         const wifi = pingedApartment.router.connectedWifi;
         const currentWifi = Apartment.activeApartment.router.connectedWifi
-        if (wifi.ip !== currentWifi.ip || !currentWifi || !wifi) {
+        if (wifi?.ip !== currentWifi?.ip || !currentWifi || !wifi) {
             CMD.error(cmd.window, "Cannot connect with the user");
             return;
         }
@@ -250,8 +263,8 @@ const GLOBAL_COMMANDS = {
 
         let packetTime_ms = (packetTimePC1_ms + packetTimePC2_ms) / 2;
 
-        for (let i = 0; i < 10; i++) {
-            packetTime_ms *= randomInt(1, 5) / 10 + 0.75;
+        for (let i = 0; i < parseInt(pings); i++) {
+            packetTime_ms *= randomInt(1, 5) / 10 + 0.75; // multiplies from 0.75 - 1.25
             packetTime_ms = Math.floor(packetTime_ms * 10) / 10;
 
             const maxTimeOutTime = 10000;
@@ -263,7 +276,71 @@ const GLOBAL_COMMANDS = {
                 CMD.log(cmd.window, "Time: " + packetTime_ms + "ms");
             }
         }
-    }
+    },
+    pcinfo: (tokenized, cmd) => {
+        tokenized.shift();
+
+        CMD.log(cmd.window, `IP: ${Apartment.activeApartment.pc.ip}`);
+        if (Apartment.activeApartment.router.connectedWifi)
+            CMD.log(cmd.window, `
+                <table>
+                    <tr>
+                        <td style="padding-right: 10px">Connected Wifi:</td>
+                        <td>Name: </td>
+                        <td>${Apartment.activeApartment.router.connectedWifi.name}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Password: </td>
+                        <td>${Apartment.activeApartment.router.connectedWifi.password}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>IP: </td>
+                        <td>${Apartment.activeApartment.router.connectedWifi.ip}</td>
+                    </tr>
+                </table>
+            `);
+        else CMD.log(cmd.window, "Connected Wifi: Not connected");
+    },
+    colorize: (tokenized, cmd) => {
+        tokenized.shift();
+
+        const allowedFlags = [
+            { value: "reset", output: "reset"},
+            { value: "r", output: "reset" },
+        ]
+        const flagArray = CMD.getFlags(allowedFlags, tokenized);
+
+        const root = document.querySelector(":root");
+        let isReset = false;
+        flagArray.forEach(flag => {
+            if (flag === "reset") {
+                root.style.setProperty("--bg-color", "black");
+                root.style.setProperty("--bg-color-faded", "rgba(255, 255, 255, 0.2)");
+                root.style.setProperty("--accent-color", "rgb(25, 211, 0)");
+                root.style.setProperty("--accent-color-faded", "rgba(25, 211, 0, .3)");
+                isReset = true;
+            }
+        });
+
+        removeFlags(tokenized);
+
+        if (isReset) return;
+
+        if (tokenized.length < 2) {
+            CMD.error(cmd.window, "Needs at least 2 arguments!");
+            return;
+        }
+
+        const bgcolor = tokenized.shift().value;
+        const accentcolor = tokenized.shift().value;
+
+        root.style.setProperty("--bg-color", bgcolor);
+        root.style.setProperty("--bg-color-faded", bgcolor + "33");
+        root.style.setProperty("--accent-color", accentcolor);
+        root.style.setProperty("--accent-color-faded", accentcolor + "4d");
+    },
 }
 
 const OS = {
@@ -271,23 +348,24 @@ const OS = {
         "V": {
             clear: GLOBAL_COMMANDS.clear,
             setuser: GLOBAL_COMMANDS.setuser,
-            help: (tokenized, mainScreen) => {
-                mainScreen.innerHTML += /*html*/`
+            help: (tokenized, cmd) => {
+                CMD.log(cmd.window, /*html*/`
                     <p>help - Shows basic commands you can use</p>
                     <p>clear - Clears console</p>
+                    <p>colorize *bgcolor* *accentcolor* - Sets color scheme to desired colors (note: only hexadecimal values)</p>
                     <p>setuser *name* - Changes current user name</p>
                     <p>downapp *app* - Downloads the specified app</p>
                     <p>connectwifi *name* *password* - Connects to given Wifi</p>
-                    <p>dirlist - directory list</p>
-                    <p>cdir *path* - changes directory to selected path</p>
-                    <p>createfile *filename* *filetype* - creates file in current directory</p>
-                    <p>deletefile *filename* - deletes file in current directory</p>
-                    <p>createdir *dirname* - creates new directory (folder) in current directory</p>
-                    <p>deletedir *dirname* - deletes new directory (folder) in current directory</p>
-                    <p>pingpc *computer ip* *packet size* - pings computer with desired packet size</p>
-                `;
+                    <p>dirlist - Directory list</p>
+                    <p>cdir *path* - Changes directory to selected path</p>
+                    <p>createfile *filename* *filetype* - Creates file in current directory</p>
+                    <p>deletefile *filename* - Deletes file in current directory</p>
+                    <p>createdir *dirname* - Creates new directory (folder) in current directory</p>
+                    <p>deletedir *dirname* - Deletes new directory (folder) in current directory</p>
+                    <p>pingpc *computer ip* *packet size* *pings* - Pings computer with desired packet size</p>
+                `);
             },
-            downapp: async (tokenized, mainScreen, cmd) => {
+            downapp: async (tokenized, cmd) => {
                 let string = "";
                 while (tokenized.length > 0) {
                     tokenized.shift();
@@ -309,7 +387,7 @@ const OS = {
                 else
                     CMD.error(cmd.window, "App does not exist: " + string);
             },
-            breakwifi: async (tokenized, mainScreen, cmd) => {
+            breakwifi: async (tokenized, cmd) => {
                 let string = "";
                 while (tokenized.length > 0) {
                     tokenized.shift();
@@ -334,7 +412,9 @@ const OS = {
             deletefile: GLOBAL_COMMANDS.deletefile,
             createdir: GLOBAL_COMMANDS.createdir,
             deletedir: GLOBAL_COMMANDS.deletedir,
-            pingpc: GLOBAL_COMMANDS.pingpc
+            pingpc: GLOBAL_COMMANDS.pingpc,
+            pcinfo: GLOBAL_COMMANDS.pcinfo,
+            colorize: GLOBAL_COMMANDS.colorize,
         },
         "X": {
 

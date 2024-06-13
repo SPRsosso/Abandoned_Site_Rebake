@@ -46,7 +46,8 @@ class CMD extends App {
                     color: red;
                 }
 
-                #cmd .log {
+                #cmd .log,
+                #cmd .log * {
                     color: gray;
                 }
             </style>
@@ -148,12 +149,14 @@ class CMD extends App {
             const apartmentOs = Apartment.activeApartment.pc.os;
 
             if (OS[apartmentOs.system][apartmentOs.version][tokenVal])
-                await Apartment.activeApartment.pc.os.commands[apartmentOs.system][apartmentOs.version][tokenVal](tokenized, mainScreen, this);
+                await Apartment.activeApartment.pc.os.commands[apartmentOs.system][apartmentOs.version][tokenVal](tokenized, this);
             else
                 CMD.error(this.window, "Unknown command: " + tokenVal);
             
             tokenized.shift();
         }
+
+        mainScreen.scrollTop = mainScreen.scrollHeight;
         
         this.mode = "standby";
         this.selectedLine = 0;
@@ -179,11 +182,15 @@ class CMD extends App {
     static error(app, err) {
         const mainScreen = app.querySelector("#cmd");
         mainScreen.innerHTML += `<span class="alert">${err}</span>`
+
+        mainScreen.scrollTop = mainScreen.scrollHeight;
     }
 
     static log(app, text) {
         const mainScreen = app.querySelector("#cmd");
         mainScreen.innerHTML += `<span class="log">${text}</span>`;
+
+        mainScreen.scrollTop = mainScreen.scrollHeight;
     }
 
     static getFlags(allowedFlags, tokenized) {
