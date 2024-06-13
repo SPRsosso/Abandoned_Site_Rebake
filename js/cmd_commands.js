@@ -280,8 +280,10 @@ const OS = {
                     <p>connectwifi *name* *password* - Connects to given Wifi</p>
                     <p>dirlist - directory list</p>
                     <p>cdir *path* - changes directory to selected path</p>
-                    <p>createfile *filename* - creates file in current directory</p>
+                    <p>createfile *filename* *filetype* - creates file in current directory</p>
                     <p>deletefile *filename* - deletes file in current directory</p>
+                    <p>createdir *dirname* - creates new directory (folder) in current directory</p>
+                    <p>deletedir *dirname* - deletes new directory (folder) in current directory</p>
                     <p>pingpc *computer ip* *packet size* - pings computer with desired packet size</p>
                 `;
             },
