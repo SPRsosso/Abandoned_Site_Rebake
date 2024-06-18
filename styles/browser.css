@@ -1,0 +1,41 @@
+#browser {
+    width: 100%;
+    height: 100%;
+}
+
+#browser nav {
+    width: 100%;
+    height: 35px;
+    padding: 5px;
+
+    display: flex;
+    gap: 10px;
+
+    border-bottom: 1px solid var(--accent-color);
+}
+
+#browser nav button {
+    flex-shrink: 1;
+}
+
+#browser nav input {
+    flex: 1;
+}
+
+#browser input,
+#browser textarea {
+    border-radius: 0;
+}
+
+#browser .main {
+    width: 100%;
+    height: calc(100% - 35px);
+    overflow: auto;
+
+    position: relative;
+}
+
+#browser button.inactive {
+    background-color: var(--accent-color-faded);
+    cursor: default;
+}

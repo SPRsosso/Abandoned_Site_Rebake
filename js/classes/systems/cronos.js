@@ -1,0 +1,3 @@
+class Cronos {
+    static apps = {};
+}

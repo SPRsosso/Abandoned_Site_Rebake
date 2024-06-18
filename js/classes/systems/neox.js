@@ -1,0 +1,3 @@
+class NeoX {
+    static apps = {};
+}

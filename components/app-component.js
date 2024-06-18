@@ -29,8 +29,10 @@ class AppComponent extends HTMLElement {
             const mainOptions = this.shadow.querySelector("main-options");
             const redButton = mainOptions.shadowRoot.querySelector("#red");
     
+            const name = this.shadowRoot.host.getAttribute("name");
+
             redButton.onclick = () => {
-                App.closeApp(this.shadowRoot.host);
+                apps[name].closeApp(this.shadowRoot.host);
             }
 
             let offset = {

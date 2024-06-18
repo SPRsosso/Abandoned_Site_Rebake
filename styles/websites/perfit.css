@@ -1,0 +1,88 @@
+#perfit {
+    width: 100%;
+    height: calc(100% - 3px);
+}
+
+#perfit .error {
+    color: red;
+}
+
+#perfit nav {
+    width: 100%;
+    height: auto;
+    padding: 5px 10px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#perfit nav ul {
+    list-style-type: none;
+
+    display: flex;
+    gap: 20px;
+}
+
+#perfit .main {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+#perfit .card {
+    width: 100%;
+    height: max-content;
+    padding: 10px;
+
+    border: 1px solid var(--accent-color);
+
+    display: grid;
+    grid-template-columns: 50px 1fr;
+}
+
+#perfit .card .description {
+    width: 100%;
+    padding: 10px;
+    word-wrap: break-word;
+
+    grid-column: span 2;
+}
+
+#perfit .card .title {
+    width: max-content;
+    height: min-content;
+    padding: 0 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#perfit .card img {
+    height: 50px;
+}
+
+#perfit .form {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#perfit .settings {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#perfit .settings #description {
+    height: 150px;
+    resize: none;
+}

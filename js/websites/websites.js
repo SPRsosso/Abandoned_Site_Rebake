@@ -1,0 +1,4 @@
+const websites = {
+    BlankPage,
+    Perfit,
+}

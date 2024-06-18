@@ -10,6 +10,8 @@ class AppInfo extends HTMLElement {
                     border: 1px solid var(--accent-color);
                     padding: 2px;
 
+                    background-color: var(--bg-color);
+
                     font-size: 14px;
                 }
             </style>

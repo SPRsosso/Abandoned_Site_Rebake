@@ -12,6 +12,10 @@ function removeFlags(tokenized) {
     }
 }
 
+function downapp(tokenized, cmd, system) {
+    
+}
+
 const GLOBAL_COMMANDS = {
     clear: (tokenized, cmd) => {
         cmd.window.querySelector("#cmd").innerHTML = "";
@@ -156,14 +160,25 @@ const GLOBAL_COMMANDS = {
             CMD.error(cmd.window, "Cannot create file in this path");
             return;
         }
+
+        const pathFiles = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+        const foundFile = pathFiles.find(file => {
+            return file.name === fileName && file.constructor.name === "ComputerFile";
+        });
+
+        if (foundFile) {
+            CMD.error(cmd.window, "Cannot create file with duplicate name");
+            return;
+        }
         
         const fileType = FileTypes[typedFileType.toLowerCase()];
 
-        if (fileType) {
-            Apartment.activeApartment.pc.get(cmd.path.replace("/", "")).push(new ComputerFile(fileName, fileType));
-        } else {
+        if (!fileType) {
             CMD.error(cmd.window, "Unknown file type: " + typedFileType);
+            return;
         }
+
+        pathFiles.push(new ComputerFile(fileName, fileType));
     },
     deletefile: (tokenized, cmd) => {
         tokenized.shift();
@@ -181,7 +196,7 @@ const GLOBAL_COMMANDS = {
         });
         if (index !== -1)
             files.splice(index, 1);
-        else 
+        else
             CMD.error(cmd.window, "File " + fileName + " not found");
     },
     createdir: (tokenized, cmd) => {
@@ -199,7 +214,17 @@ const GLOBAL_COMMANDS = {
             return;
         }
 
-        Apartment.activeApartment.pc.get(cmd.path.replace("/", "")).push(new Folder(dirName));
+        const pathFiles = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+        const foundFolder = pathFiles.find(folder => {
+            return folder.name === dirName && folder.constructor.name === "Folder";
+        });
+
+        if (foundFolder) {
+            CMD.error(cmd.window, "Cannot create folder with duplicate name");
+            return;
+        }
+
+        pathFiles.push(new Folder(dirName));
     },
     deletedir: (tokenized, cmd) => {
         tokenized.shift();
@@ -264,7 +289,7 @@ const GLOBAL_COMMANDS = {
         let packetTime_ms = (packetTimePC1_ms + packetTimePC2_ms) / 2;
 
         for (let i = 0; i < parseInt(pings); i++) {
-            packetTime_ms *= randomInt(1, 5) / 10 + 0.75; // multiplies from 0.75 - 1.25
+            packetTime_ms *= randomInt(0, 50) / 100 + 0.75; // multiplies from 0.75 - 1.25
             packetTime_ms = Math.floor(packetTime_ms * 10) / 10;
 
             const maxTimeOutTime = 10000;
@@ -319,7 +344,7 @@ const GLOBAL_COMMANDS = {
                 root.style.setProperty("--bg-color", "black");
                 root.style.setProperty("--bg-color-faded", "rgba(255, 255, 255, 0.2)");
                 root.style.setProperty("--accent-color", "rgb(25, 211, 0)");
-                root.style.setProperty("--accent-color-faded", "rgba(25, 211, 0, .3)");
+                root.style.setProperty("--accent-color-faded", "rgba(25, 211, 0, 0.3)");
                 isReset = true;
             }
         });
@@ -341,6 +366,75 @@ const GLOBAL_COMMANDS = {
         root.style.setProperty("--accent-color", accentcolor);
         root.style.setProperty("--accent-color-faded", accentcolor + "4d");
     },
+    install: async (tokenized, cmd, system) => {
+        tokenized.shift();
+
+        let string = tokenized.shift().value;
+        Object.keys(system.cmdApps).forEach(( key ) => {
+            if (string == key || string.toLowerCase() == key.toLowerCase() || string.toUpperCase() == key.toUpperCase()) {
+                string = key;
+                return;
+            }
+        });
+
+        if (system.cmdApps[string])
+            await CMDApp.install(cmd.window, string, system);
+        else
+            CMD.error(cmd.window, "App does not exist: " + string);
+    },
+    changepassword: (tokenized, cmd) => {
+        tokenized.shift();
+
+        let password = "";
+        if (tokenized.length > 0) password = tokenized.shift().value;
+
+        Apartment.activeApartment.pc.password = password;
+    },
+    editfile: (tokenized, cmd) => {
+        tokenized.shift();
+
+        if (tokenized.length < 1) {
+            CMD.error(cmd.window, "Needs at least 1 argument!");
+            return;
+        }
+
+        const fileName = tokenized.shift().value;
+
+        const pathFiles = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+        const foundFile = pathFiles.find(file => {
+            return file.name === fileName && file.constructor.name === "ComputerFile";
+        });
+
+        if (!foundFile) {
+            CMD.error(cmd.window, "Cannot find file in this path");
+            return;
+        }
+
+        Notepad.openApp(foundFile);
+    },
+    downapp: async (tokenized, cmd, system) => {
+        let string = "";
+        while (tokenized.length > 0) {
+            tokenized.shift();
+
+            if (tokenized.length > 0)
+                string += tokenized[0].value;
+
+            if (tokenized[1])
+                string += " ";
+        }
+        Object.keys(system.apps).forEach(( key ) => {
+            if (string == key || string.toLowerCase() == key.toLowerCase() || string.toUpperCase() == key.toUpperCase()) {
+                string = key;
+                return;
+            }
+        });
+
+        if (system.apps[string])
+            await App.downloadApp(cmd.window, string, system);
+        else
+            CMD.error(cmd.window, "App does not exist: " + string);
+    }
 }
 
 const OS = {
@@ -353,6 +447,7 @@ const OS = {
                     <p>help - Shows basic commands you can use</p>
                     <p>clear - Clears console</p>
                     <p>colorize *bgcolor* *accentcolor* - Sets color scheme to desired colors (note: only hexadecimal values)</p>
+                    <p>changepassword *password* - Changes current PC password ( note, if no password is set, the PC will have no password [automatically logs you in] )</p>
                     <p>setuser *name* - Changes current user name</p>
                     <p>downapp *app* - Downloads the specified app</p>
                     <p>connectwifi *name* *password* - Connects to given Wifi</p>
@@ -360,50 +455,15 @@ const OS = {
                     <p>cdir *path* - Changes directory to selected path</p>
                     <p>createfile *filename* *filetype* - Creates file in current directory</p>
                     <p>deletefile *filename* - Deletes file in current directory</p>
+                    <p>editfile *filename* - Opens a new instance of Notepad with file edit</p>
                     <p>createdir *dirname* - Creates new directory (folder) in current directory</p>
                     <p>deletedir *dirname* - Deletes new directory (folder) in current directory</p>
                     <p>pingpc *computer ip* *packet size* *pings* - Pings computer with desired packet size</p>
+                    <p>install *appname* - Installs command app</p>
                 `);
             },
             downapp: async (tokenized, cmd) => {
-                let string = "";
-                while (tokenized.length > 0) {
-                    tokenized.shift();
-
-                    if (tokenized.length > 0)
-                        string += tokenized[0].value;
-
-                    if (tokenized[1])
-                        string += " ";
-                }
-                Object.keys(apps).forEach(( key ) => {
-                    if (string == key || string.toLowerCase() == key.toLowerCase() || string.toUpperCase() == key.toUpperCase()) {
-                        string = key;
-                        return;
-                    }
-                });
-                if (apps[string])
-                    await App.downloadApp(cmd.window, string);
-                else
-                    CMD.error(cmd.window, "App does not exist: " + string);
-            },
-            breakwifi: async (tokenized, cmd) => {
-                let string = "";
-                while (tokenized.length > 0) {
-                    tokenized.shift();
-
-                    if (tokenized.length > 0)
-                        string += tokenized[0].value;
-
-                    if (tokenized[1])
-                        string += " ";
-                }
-                if (wifis.find(wifi => wifi.name == string)) {
-                    cmd.mode = "breakwifi";
-                    await Wifi.breakWifi(cmd.window, string);
-                } else {
-                    CMD.error(cmd.window, "Cannot find Wifi: " + string);
-                }
+                await GLOBAL_COMMANDS.downapp(tokenized, cmd, Streamline);
             },
             connectwifi: GLOBAL_COMMANDS.connectwifi,
             dirlist: GLOBAL_COMMANDS.dirlist,
@@ -415,6 +475,11 @@ const OS = {
             pingpc: GLOBAL_COMMANDS.pingpc,
             pcinfo: GLOBAL_COMMANDS.pcinfo,
             colorize: GLOBAL_COMMANDS.colorize,
+            install: async (tokenized, cmd) => {
+                await GLOBAL_COMMANDS.install(tokenized, cmd, Streamline);
+            },
+            changepassword: GLOBAL_COMMANDS.changepassword,
+            editfile: GLOBAL_COMMANDS.editfile,
         },
         "X": {
 

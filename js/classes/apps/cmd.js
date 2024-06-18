@@ -95,6 +95,8 @@ class CMD extends App {
                 const selection = window.getSelection();
                 selection.removeAllRanges();
                 selection.addRange(range);
+
+                mainScreen.scrollTop = mainScreen.scrollHeight;
             }
 
             if (event.keyCode == 40) {
@@ -114,6 +116,8 @@ class CMD extends App {
                 const selection = window.getSelection();
                 selection.removeAllRanges();
                 selection.addRange(range);
+
+                mainScreen.scrollTop = mainScreen.scrollHeight;
             }
         });
 
@@ -137,7 +141,6 @@ class CMD extends App {
         if (this.mode == "breakwifi")
             return;
 
-        const shadow = this.window.shadowRoot;
         this.removeEditable();
         
         // Commands
@@ -156,11 +159,11 @@ class CMD extends App {
             tokenized.shift();
         }
 
-        mainScreen.scrollTop = mainScreen.scrollHeight;
-        
         this.mode = "standby";
         this.selectedLine = 0;
         this.getStartLine();
+
+        mainScreen.scrollTop = mainScreen.scrollHeight;
     }
 
     removeEditable() {
@@ -175,8 +178,7 @@ class CMD extends App {
         mainScreen.innerHTML += `<p>${Apartment.activeApartment.pc.user.fullName}${this.path}:/<span contentEditable="true"></span></p>`;
 
         const editable = mainScreen.querySelector("[contentEditable]");
-        this.window.focus();
-        editable.focus();
+        if (document.activeElement === document.body) editable.focus();
     }
 
     static error(app, err) {

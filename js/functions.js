@@ -18,3 +18,10 @@ function generateIP(objs) {
 
     return ip;
 }
+
+function getParentById(id, element) {
+    let parent = element.parentElement;
+    while (parent.id !== id)
+        parent = parent.parentElement;
+    return parent;
+}

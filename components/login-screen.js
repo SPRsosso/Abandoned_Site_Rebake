@@ -83,12 +83,16 @@ class LoginScreen extends HTMLElement {
 
             this.submitPassword();
         })
+
+        if (Apartment.activeApartment.pc.password === "") {
+            this.submitPassword();
+        }
     }
 
     submitPassword() {
         const password = this.shadow.querySelector("#password");
 
-        if (Apartment.activeApartment.pc.password == password.value) {
+        if (Apartment.activeApartment.pc.password === password.value) {
             this.openComputer();
         } else {
             this.shadow.querySelector("#error").innerHTML = "Wrong password!";

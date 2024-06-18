@@ -10,7 +10,7 @@ class PhoneNotes extends PhoneApp {
         const appComponent = document.createElement("phone-app-component");
         appComponent.innerHTML = /*html*/`
             <link rel="stylesheet" href="./styles/style.css">
-            <link rel="stylesheet" href="./js/phone/apps/phonenotes.css">
+            <link rel="stylesheet" href="./styles/phonenotes.css">
 
             <span slot="name">Notes</span>
             <div id="notes">

@@ -129,13 +129,24 @@ class FileExplorer extends App {
         const insideFolder = app.querySelector("#inside-folder");
         const directory = app.querySelector("#directory");
 
-        let list = "<ul>";
+        const ul = document.createElement("ul");
         pc.get(this.path).forEach(obj => {
-            if (Object.getPrototypeOf(obj).constructor.name === "Folder") list += `<li class="folder"><img src="./icons/Folder.png">${obj.name}</li>`;
-            if (Object.getPrototypeOf(obj).constructor.name === "ComputerFile") list += `<li><img src="./icons/File.png">${obj.name}</li>`;
+            const li = document.createElement("li");
+            if (obj.constructor.name === "Folder") {
+                li.classList.add("folder");
+                li.innerHTML = `<img src="./icons/Folder.png">${obj.name}`;
+            }
+            if (obj.constructor.name === "ComputerFile") {
+                li.innerHTML = `<img src="./icons/File.png">${obj.name}`;
+                li.addEventListener("dblclick", () => {
+                    Notepad.openApp(obj);
+                });
+            }
+
+            ul.append(li);
         });
-        list += "</ul>";
-        insideFolder.innerHTML = list;
+        insideFolder.innerHTML = "";
+        insideFolder.append(ul);
 
         let dir = "";
         for (let i = 0; i <= this.currentFolderIndex; i++)

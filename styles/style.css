@@ -18,7 +18,7 @@
     --bg-color: black;
     --bg-color-faded: rgba(255, 255, 255, 0.2);
     --accent-color: rgb(25, 211, 0);
-    --accent-color-faded: rgba(25, 211, 0, .3);
+    --accent-color-faded: rgba(25, 211, 0, 0.3);
 }
 
 ::-webkit-scrollbar {
@@ -200,6 +200,9 @@ img {
 }
 
 input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
 textarea {
     padding: 10px;
 
@@ -210,11 +213,17 @@ textarea {
 }
 
 input[type="text"]:focus::placeholder,
+input[type="email"]:focus::placeholder,
+input[type="password"]:focus::placeholder,
+input[type="number"]:focus::placeholder,
 textarea:focus::placeholder {
     color: white;
 }
 
 input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
 textarea:focus {
     outline: none;
     background-color: var(--accent-color-faded);

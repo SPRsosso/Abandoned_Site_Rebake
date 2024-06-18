@@ -16,7 +16,7 @@ class MessageComponent extends HTMLElement {
 
                     animation: slideIn forwards 0.5s;
 
-                    z-index: 100001;
+                    z-index: 9999;
                 }
 
                 .message {

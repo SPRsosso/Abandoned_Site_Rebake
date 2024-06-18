@@ -56,7 +56,7 @@ class PC {
 
         const email = name[0].toLowerCase() + surname.toLowerCase() + "@" + pc_email[Math.floor(Math.random() * pc_email.length)];
 
-        this.user = new User(name, surname, Math.floor(Math.random() * 27) + 18, "Chive Apartment " + apartment.roomNumber, job, phoneNumber, id, email);
+        this.user = new User(name, surname, Math.floor(Math.random() * 27) + 18, apartment.name, job, phoneNumber, id, email);
         this.password = "";
         for (let i = 0; i < 10; i++) {
             this.password  += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
@@ -75,6 +75,11 @@ class PC {
         this.#on = false;
         this.loggedIn = false;
         this.state = "open";
+
+        this.browser = {
+            loggedAs: null,
+            activePorts: [],
+        }
 
         pcs.push(this);
     }

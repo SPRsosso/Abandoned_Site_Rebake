@@ -1,7 +1,9 @@
 class App {
     static screen = document.querySelector("main-screen");
+    static lastAppClassName;
     constructor(window) {
         this.window = window;
+        App.lastAppClassName = this.constructor.name;
     }
 
     static openApp() {
@@ -26,6 +28,9 @@ class App {
         });
 
         app.style.zIndex = parseInt(maxZIndex) + 1;
+        setTimeout(() => {
+            app.setAttribute("name", App.lastAppClassName);
+        }, 0);
     }
     
     static closeApp(app) {
@@ -41,6 +46,7 @@ class App {
         appInfo.style.bottom = `${barHeight}px`;
         appInfo.style.left = `${appIcon.offsetLeft - this.screen.offsetLeft + appIcon.offsetWidth / 2}px`;
         appInfo.style.transform = "translate(-50%)";
+        appInfo.style.zIndex = "9999";
 
         appIcon.addEventListener("mouseout", () => {
             appInfo.remove();
@@ -89,7 +95,7 @@ class App {
         });
     }
 
-    static downloadApp(app, appName) {
+    static downloadApp(app, appName, system) {
         if (!Apartment.activeApartment.router.connectedWifi) {
             CMD.error(app, "No Wifi connected!");
             return;
@@ -98,7 +104,7 @@ class App {
         const appSize = 5000 / Apartment.activeApartment.router.connectedWifi.strength;
         return new Promise(async ( resolve, reject ) => {
             await App.wait(app, appSize);
-            Apartment.activeApartment.pc.downloadedApps[appName] = apps[appName];
+            Apartment.activeApartment.pc.downloadedApps[appName] = system.apps[appName];
             App.getAppIcons();
 
             resolve();
