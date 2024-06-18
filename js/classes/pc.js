@@ -19,6 +19,8 @@ class PC {
             FileExplorer,
             Calculator,
             MessX,
+            Browser,
+            Notepad,
         };
 
         const name = pc_names[Math.floor(Math.random() * pc_names.length)];
@@ -67,8 +69,8 @@ class PC {
         this.ip = generateIP(pcs);
 
         this.os = {
-            system: "Streamline",
-            version: "V",
+            system: null,
+            version: null,
             commands: Object.setPrototypeOf( Object.assign( {}, OS ), OS )
         };
 
