@@ -65,7 +65,7 @@ class PhoneComponent extends HTMLElement {
                 </div>
             </div>
         `;
-        let time = 50;
+        let time = 100;
         if (navigator.userAgent.match(/Android/i)
          || navigator.userAgent.match(/webOS/i)
          || navigator.userAgent.match(/iPhone/i)

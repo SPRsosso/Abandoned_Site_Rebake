@@ -11,7 +11,7 @@ const apps = {
     Notepad,
 };
 
-const openedApps = [];
+// const openedApps = [];
 Apartment.activeApartment.pc.downloadedApps = {
     CMD,
     FileExplorer,
@@ -19,8 +19,8 @@ Apartment.activeApartment.pc.downloadedApps = {
     MessX,
     Browser,
     Notepad,
-    // WiTracker,
-    // HomeDefence,
-    // HashMap,
-    // Personide,
+    WiTracker,
+    HomeDefence,
+    HashMap,
+    Personide,
 }

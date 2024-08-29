@@ -1,119 +1,122 @@
 class WiTracker extends App {
-    constructor(window) {
+    constructor(window = null) {
         super();
 
         this.window = window;
     }
 
-    static openApp() {
+    static openApp(apartment = Apartment.activeApartment) {
         const appComponent = document.createElement("app-component");
-        const shadow = appComponent.shadowRoot;
-        const mainOptions = shadow.querySelector("main-options");
 
-        appComponent.innerHTML = `
-            <style>
-                ${styles}
+        if (apartment == Apartment.activeApartment) {
+            appComponent.innerHTML = `
+                <style>
+                    ${styles}
 
-                #witracker {
-                    width: 100%;
-                    height: 100%;
+                    #witracker {
+                        width: 100%;
+                        height: 100%;
 
-                    display: flex;
-                }
+                        display: flex;
+                    }
 
-                #witracker #list {
-                    width: 50%;
-                    height: 100%;
-                    overflow-y: auto;
+                    #witracker #list {
+                        width: 50%;
+                        height: 100%;
+                        overflow-y: auto;
 
-                    border-right: 1px solid var(--accent-color);
-                }
+                        border-right: 1px solid var(--accent-color);
+                    }
 
-                #witracker #info {
-                    width: 50%;
-                    height: 100%;
-                }
+                    #witracker #info {
+                        width: 50%;
+                        height: 100%;
+                    }
 
-                #witracker #list, #witracker #info {
-                    padding: 10px;
-                }
+                    #witracker #list, #witracker #info {
+                        padding: 10px;
+                    }
 
-                #witracker ul {
-                    width: 100%;
-                    padding: 0;
-                    margin: 0;
+                    #witracker ul {
+                        width: 100%;
+                        padding: 0;
+                        margin: 0;
 
-                    list-style-type: none;
-                }
+                        list-style-type: none;
+                    }
 
-                #witracker ul li {
-                    width: 100%;
-                    padding: 5px;
+                    #witracker ul li {
+                        width: 100%;
+                        padding: 5px;
 
-                    position: relative;
+                        position: relative;
 
-                    cursor: pointer;
-                }
+                        cursor: pointer;
+                    }
 
-                #witracker ul li:hover {
-                    background-color: var(--bg-color-faded);
-                }
+                    #witracker ul li:hover {
+                        background-color: var(--bg-color-faded);
+                    }
 
-                #witracker li.active {
-                    background-color: var(--accent-color-faded);
-                }
+                    #witracker li.active {
+                        background-color: var(--accent-color-faded);
+                    }
 
-                #witracker #refresh-btn {
-                    position: absolute;
-                    bottom: 10px;
-                    right: 10px;
-                }
+                    #witracker #refresh-btn {
+                        position: absolute;
+                        bottom: 10px;
+                        right: 10px;
+                    }
 
-                #witracker img {
-                    height: 100%;
+                    #witracker img {
+                        height: 100%;
 
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                }
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                    }
 
-                #witracker #filter {
-                    width: 100%;
-                    padding: 5px;
-                    
-                    border-bottom: 1px solid var(--accent-color);
-                    margin-bottom: 10px;
-                    padding: 5px 0;
+                    #witracker #filter {
+                        width: 100%;
+                        padding: 5px;
+                        
+                        border-bottom: 1px solid var(--accent-color);
+                        margin-bottom: 10px;
+                        padding: 5px 0;
 
-                    display: flex;
-                }
-            </style>
+                        display: flex;
+                    }
+                </style>
 
-            <span slot="name">WiTracker</span>
-            <div id="witracker">
-                <div id="list">
+                <span slot="name">WiTracker</span>
+                <div id="witracker">
+                    <div id="list">
+                    </div>
+                    <div id="info">
+                        <p id="name"></p>
+                        <p id="strength"></p>
+                        <p id="ip"></p>
+                        <p id="company-name"></p>
+                        <button id="refresh-btn">Refresh</button>
+                    </div>
                 </div>
-                <div id="info">
-                    <p id="name"></p>
-                    <p id="strength"></p>
-                    <p id="ip"></p>
-                    <button id="refresh-btn">Refresh</button>
-                </div>
-            </div>
-        `;
+            `;
 
-        App.defaultValues(appComponent);
-        this.screen.prepend(appComponent);
-        openedApps.push(new WiTracker(appComponent));
+            App.defaultValues(appComponent);
+            this.screen.prepend(appComponent);
+            apartment.pc.openedApps.push(new WiTracker(appComponent));
 
-        WiTracker.showWifis(appComponent);
-
-        appComponent.querySelector("#refresh-btn").addEventListener("click", () => {
             WiTracker.showWifis(appComponent);
-        });
+
+            appComponent.querySelector("#refresh-btn").addEventListener("click", () => {
+                WiTracker.showWifis(appComponent);
+            });
+        } else {
+            apartment.pc.openedApps.push(new WiTracker());
+        }
     }
 
-    static showWifis(appComponent) {
+    static showWifis(appComponent, apartment = Apartment.activeApartment) {
         const list = appComponent.querySelector("#witracker #list");
         
         let filteredWifis = [...Apartment.activeApartment.wifis];
@@ -159,7 +162,7 @@ class WiTracker extends App {
                 ul.innerHTML += `<li>${filteredWifis[i].name} <img src="./icons/level${filteredWifis[i].strength}.png"></img></li>`;
         
         const li = ul.querySelectorAll("li");
-        const app = openedApps.find(app => app.window == appComponent);
+        const app = apartment.pc.openedApps.find(app => app.window == appComponent);
         for (let i  = 0; i < li.length; i++) {
             const element = li[i];
             element.addEventListener("click", () => {
@@ -177,10 +180,12 @@ class WiTracker extends App {
         const nameBox = info.querySelector("#name");
         const strengthBox = info.querySelector("#strength");
         const ipBox = info.querySelector("#ip");
+        const companyNameBox = info.querySelector("#company-name");
 
         const wifi = Apartment.activeApartment.wifis.find(wifi => wifi.name == name);
         nameBox.innerHTML = "Name: " + wifi.name;
         strengthBox.innerHTML = "Strength: " + wifi.strength;
         ipBox.innerHTML = "IP: " + wifi.ip;
+        companyNameBox.innerHTML = "Company: " + wifi.company.name;
     }
 }

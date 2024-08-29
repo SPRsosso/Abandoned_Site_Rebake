@@ -2,8 +2,6 @@ class UsbPort extends HTMLElement {
     constructor() {
         super();
 
-        
-
         this.shadow = this.attachShadow({ mode: "open" });
         this.shadow.innerHTML = `
             <style>
@@ -72,7 +70,7 @@ class UsbPort extends HTMLElement {
                     PhoneCrack.crackUi(app);
                 });
                 
-                openedApps.forEach(openedApp => {
+                Apartment.activeApartment.pc.openedApps.forEach(openedApp => {
                     HashMap.ui(openedApp.window);
                 });
             } else {
@@ -80,7 +78,7 @@ class UsbPort extends HTMLElement {
                     PhoneCrack.crackUi(app);
                 });
 
-                openedApps.forEach(openedApp => {
+                Apartment.activeApartment.pc.openedApps.forEach(openedApp => {
                     HashMap.ui(openedApp.window);
                 });
             }

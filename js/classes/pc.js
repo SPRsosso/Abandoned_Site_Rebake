@@ -69,8 +69,8 @@ class PC {
         this.ip = generateIP(pcs);
 
         this.os = {
-            system: null,
-            version: null,
+            system: "Streamline",
+            version: "V",
             commands: Object.setPrototypeOf( Object.assign( {}, OS ), OS )
         };
 
@@ -83,6 +83,9 @@ class PC {
             activePorts: [],
         }
 
+        this.openedApps = [];
+
+        this.password = "";
         pcs.push(this);
     }
 
@@ -169,6 +172,8 @@ class PC {
             App.screen.prepend(loading);
 
             await wait(3000);
+
+            Apartment.activeApartment.pc.openedApps = [];
 
             App.screen.innerHTML = "";
             Apartment.activeApartment.pc.state = "open";

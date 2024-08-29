@@ -114,10 +114,8 @@ class LoginScreen extends HTMLElement {
         audio.volume = 0.3;
         audio.play();
         this.shadow.host.remove();
-
-        if (firstTimeInTheGame) messagesAfterLogin();
         
-        firstTimeInTheGame = false;
+        isGameStarted = true;
     }
 }
 

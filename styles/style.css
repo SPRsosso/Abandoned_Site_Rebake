@@ -47,7 +47,7 @@ body {
 }
 
 main {
-    width: 80%;
+    width: 65%;
     aspect-ratio: 16/9;
     
     border: 1px solid var(--accent-color);

@@ -15,15 +15,45 @@ class CMDApp {
 
         const appSize = 5000 / Apartment.activeApartment.router.connectedWifi.strength;
         return new Promise(async ( resolve, reject ) => {
-            await App.wait(app, appSize);
+            await App.wait(app, appSize * trojanMultiplier);
 
             let name = "";
             const currentOS = Apartment.activeApartment.pc.os
             switch (appName.toLowerCase()) {
                 case "portscanner":
-                    if (currentOS.system === "Streamline" && currentOS.version === "V") name = "portscanner";
-                    else if (currentOS.system === "Streamline" && currentOS.version === "X") name = "portscan";
-                    else name = "ps";
+
+                    switch(currentOS.system) {
+                        case "Streamline":
+
+                            switch(currentOS.version) {
+                                case "V":
+                                    name = "portscanner";
+                                    break;
+                                case "X":
+                                    name = "portscan";
+                                    break;
+                                default:
+                                    name = "ps";
+                                    break;
+                            }
+
+                            break;
+                    }
+
+                    break;
+                case "decoder":
+
+                    switch(currentOS.system) {
+                        case "Streamline":
+
+                            switch(currentOS.version) {
+                                default:
+                                    name = "decode";
+                                    break;
+                            }
+
+                            break;
+                    }
 
                     break;
             }

@@ -1,116 +1,119 @@
 class HomeDefence extends App {
-    constructor(window) {
+    constructor(window = null) {
         super();
 
         this.window = window;
         this.selectedRouter = Apartment.activeApartment.router;
     }
 
-    static async openApp() {
+    static async openApp(apartment = Apartment.activeApartment) {
         const appComponent = document.createElement("app-component");
-        const shadow = appComponent.shadowRoot;
-        const mainOptions = shadow.querySelector("main-options"); 
 
-        let rous = ``;
-        let stys = ``;
-        routers.forEach(router => {
-            stys += `#${ router.name } { 
-                grid-column: ${ router.pos.x } / span ${ router.spanX }; 
-                grid-row:  ${ router.pos.y } / span ${ router.spanY };
-            }`
-            rous += `<div id="${ router.name }" class="router">${ router.name.toUpperCase() }</div>`;
-        });
-
-        appComponent.innerHTML = `
-            <style>
-                ${styles}
-
-                #homedefence {
-                    width: 100%;
-                    height: 100%;
-
-                    position: relative;
-
-                    padding: 50px;
-                }
-
-                #homedefence button {
-                    position: absolute;
-                    bottom: 10px;
-                    right: 10px;
-                }
-
-                #homedefence .router {
-                    --width: 65px;
-                    --height: 65px;
-                    border: 1px solid var(--accent-color);
-
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-
-                    cursor: pointer;
-                }
-
-                #homedefence .router:hover {
-                    background-color: var(--accent-color-faded);
-                }
-
-                #router-grid {
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    grid-template-rows: repeat(4, 1fr);
-                    gap: 20px;
-
-                    width: 100%;
-                    height: 100%;
-                }
-
-                ${stys}
-
-                #homedefence .active {
-                    background-color: var(--accent-color-faded);
-                }
-            </style>
-
-            <span slot="name">Home Defence</span>
-            <div id="homedefence">
-                <div id="router-grid">
-                    ${rous}
-                </div>
-                <button>Connect</button>
-            </div>
-        `;
-
-        App.defaultValues(appComponent);
-        this.screen.prepend(appComponent);
-        const homedefence = new HomeDefence(appComponent);
-        openedApps.push(homedefence);
-        
-
-        const mainScreen = appComponent.querySelector("#homedefence");
-        HomeDefence.refreshRouters(appComponent);
-
-        const routersEl = mainScreen.querySelectorAll(".router");
-        routersEl.forEach(router => {
-            router.addEventListener("click", () => {
-                homedefence.selectedRouter = routers.find(router1 => router1.name == router.id);
-                HomeDefence.refreshRouters(appComponent);
+        if (apartment == Apartment.activeApartment) {
+            let rous = ``;
+            let stys = ``;
+            routers.forEach(router => {
+                stys += `#${ router.name } { 
+                    grid-column: ${ router.pos.x } / span ${ router.spanX }; 
+                    grid-row:  ${ router.pos.y } / span ${ router.spanY };
+                }`
+                rous += `<div id="${ router.name }" class="router">${ router.name.toUpperCase() }</div>`;
             });
-        });
-
-        const button = mainScreen.querySelector("button");
-        button.addEventListener("click", async () => {
-            if (homedefence.selectedRouter.name == Apartment.activeApartment.router.name)
-                return;
-
-            await HomeDefence.wait(appComponent, 5000);
-            Apartment.activeApartment.router = routers.find(router => router.name == homedefence.selectedRouter.name);
+    
+            appComponent.innerHTML = `
+                <style>
+                    ${styles}
+    
+                    #homedefence {
+                        width: 100%;
+                        height: 100%;
+    
+                        position: relative;
+    
+                        padding: 50px;
+                    }
+    
+                    #homedefence button {
+                        position: absolute;
+                        bottom: 10px;
+                        right: 10px;
+                    }
+    
+                    #homedefence .router {
+                        --width: 65px;
+                        --height: 65px;
+                        border: 1px solid var(--accent-color);
+    
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+    
+                        cursor: pointer;
+                    }
+    
+                    #homedefence .router:hover {
+                        background-color: var(--accent-color-faded);
+                    }
+    
+                    #router-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        grid-template-rows: repeat(4, 1fr);
+                        gap: 20px;
+    
+                        width: 100%;
+                        height: 100%;
+                    }
+    
+                    ${stys}
+    
+                    #homedefence .active {
+                        background-color: var(--accent-color-faded);
+                    }
+                </style>
+    
+                <span slot="name">Home Defence</span>
+                <div id="homedefence">
+                    <div id="router-grid">
+                        ${rous}
+                    </div>
+                    <button>Connect</button>
+                </div>
+            `;
+    
+            App.defaultValues(appComponent);
+            this.screen.prepend(appComponent);
+            const homedefence = new HomeDefence(appComponent);
+            apartment.pc.openedApps.push(homedefence);
+            
+    
+            const mainScreen = appComponent.querySelector("#homedefence");
             HomeDefence.refreshRouters(appComponent);
-            Apartment.activeApartment.wifis.forEach(wifi => {
-                wifi.changeStrength(Apartment.activeApartment.router.strength);
-            })
-        });
+    
+            const routersEl = mainScreen.querySelectorAll(".router");
+            routersEl.forEach(router => {
+                router.addEventListener("click", () => {
+                    homedefence.selectedRouter = routers.find(router1 => router1.name == router.id);
+                    HomeDefence.refreshRouters(appComponent);
+                });
+            });
+    
+            const button = mainScreen.querySelector("button");
+            button.addEventListener("click", async () => {
+                if (homedefence.selectedRouter.name == Apartment.activeApartment.router.name)
+                    return;
+    
+                await HomeDefence.wait(appComponent, 5000);
+                Apartment.activeApartment.router = routers.find(router => router.name == homedefence.selectedRouter.name);
+                HomeDefence.refreshRouters(appComponent);
+                Apartment.activeApartment.wifis.forEach(wifi => {
+                    wifi.changeStrength(Apartment.activeApartment.router.strength);
+                })
+            });
+        } else {
+            apartment.pc.openedApps.push(new HomeDefence());
+        }
+        
     }
 
     static wait(app, time) {
@@ -159,8 +162,8 @@ class HomeDefence extends App {
         });
     }
 
-    static refreshRouters(app) {
-        const homedefence = openedApps.find(openedApp => openedApp.window == app);
+    static refreshRouters(app, apartment = Apartment.activeApartment) {
+        const homedefence = apartment.pc.openedApps.find(openedApp => openedApp.window == app);
         const mainScreen = app.querySelector("#homedefence");
         const routers = mainScreen.querySelectorAll(".router");
 

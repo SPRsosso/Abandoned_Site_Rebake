@@ -1,13 +1,13 @@
 class Apartment {
     static activeApartment;
-    constructor(roomNumber) {
+    constructor(apartmentsName, roomNumber) {
         this.wifis = [];
 
         this.routers = [];
         Apartment.generateRouters(this.routers);
 
         this.roomNumber = roomNumber;
-        this.name = "Chive Apartment " + this.roomNumber;
+        this.name = apartmentsName + " " + this.roomNumber;
         this.router = this.routers[this.routers.length - 1];
         this.pc = new PC(this);
     }

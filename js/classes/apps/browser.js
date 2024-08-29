@@ -16,7 +16,7 @@ class Browser extends App {
         new BrowserUser("test456", "456", "Test", "456", 24, "Welcome to my Fit!", "Chive Apartment 301"),
     ];
 
-    constructor(window) {
+    constructor(window = null) {
         super();
 
         this.window = window;
@@ -25,82 +25,89 @@ class Browser extends App {
         this.activePort = 0;
     }
 
-    static openApp() {
+    static openApp(apartment = Apartment.activeApartment) {
+        let browser;
+
         const appComponent = document.createElement("app-component");
-        appComponent.innerHTML = /*html*/`
-            <link rel="stylesheet" href="./styles/style.css">
-            <link rel="stylesheet" href="./styles/browser.css">
-            <span slot="name">Browser</span>
-            <div id="browser">
-                <nav>
-                    <button id="back" class="inactive"><</button>
-                    <button id="forward" class="inactive">></button>
-                    <input id="link" type="text" placeholder="Link...">
-                </nav>
-                <div class="main">
-
+        if (apartment == Apartment.activeApartment) {
+            appComponent.innerHTML = /*html*/`
+                <link rel="stylesheet" href="./styles/style.css">
+                <link rel="stylesheet" href="./styles/browser.css">
+                <span slot="name">Browser</span>
+                <div id="browser">
+                    <nav>
+                        <button id="back" class="inactive"><</button>
+                        <button id="forward" class="inactive">></button>
+                        <input id="link" type="text" placeholder="Link...">
+                    </nav>
+                    <div class="main">
+                        ${BlankPage.site}
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+    
+            App.defaultValues(appComponent);
+            this.screen.prepend(appComponent);
 
-        App.defaultValues(appComponent);
-        this.screen.prepend(appComponent);
-        const browser = new Browser(appComponent);
-        openedApps.push(browser);
+            browser = new Browser(appComponent);
 
-        Browser.updateActivePorts();
-
-        const linkEl = appComponent.querySelector("#link");
-        let isLoading = false;
-        linkEl.addEventListener("keydown", async ( e ) => {
-            if (e.keyCode === 13 && !isLoading) {
+            const linkEl = appComponent.querySelector("#link");
+            let isLoading = false;
+            linkEl.addEventListener("keydown", async ( e ) => {
+                if (e.keyCode === 13 && !isLoading) {
+                    isLoading = true;
+                    
+                    const link = await browser.navigate(linkEl.value.trim());
+    
+                    browser.historyPointer++;
+                    browser.history[browser.historyPointer] = link;
+                    browser.history.splice(browser.historyPointer + 1, browser.history.length);
+                    browser.changeInactiveButtons();
+    
+                    linkEl.value = link;
+    
+                    isLoading = false;
+                }
+            });
+    
+            const backBtn = appComponent.querySelector("#back");
+            const forwardBtn = appComponent.querySelector("#forward");
+    
+            backBtn.addEventListener("click", async () => {
+                if (backBtn.classList.contains("inactive")) return;
+                if (isLoading) return;
+    
+                browser.historyPointer--;
+    
                 isLoading = true;
-                
-                const link = await browser.navigate(linkEl.value.trim());
-
-                browser.historyPointer++;
-                browser.history[browser.historyPointer] = link;
-                browser.history.splice(browser.historyPointer + 1, browser.history.length);
+    
+                const link = await browser.navigate(browser.history[browser.historyPointer]);
                 browser.changeInactiveButtons();
-
                 linkEl.value = link;
-
+    
                 isLoading = false;
-            }
-        });
+            });
+    
+            forwardBtn.addEventListener("click", async () => {
+                if (forwardBtn.classList.contains("inactive")) return;
+                if (isLoading) return;
+    
+                browser.historyPointer++;
+    
+                isLoading = true;
+                    
+                const link = await browser.navigate(browser.history[browser.historyPointer]);
+                browser.changeInactiveButtons();
+                linkEl.value = link;
+    
+                isLoading = false;
+            });
+        } else {
+            browser = new Browser();
+        }
 
-        const backBtn = appComponent.querySelector("#back");
-        const forwardBtn = appComponent.querySelector("#forward");
-
-        backBtn.addEventListener("click", async () => {
-            if (backBtn.classList.contains("inactive")) return;
-            if (isLoading) return;
-
-            browser.historyPointer--;
-
-            isLoading = true;
-
-            const link = await browser.navigate(browser.history[browser.historyPointer]);
-            browser.changeInactiveButtons();
-            linkEl.value = link;
-
-            isLoading = false;
-        });
-
-        forwardBtn.addEventListener("click", async () => {
-            if (forwardBtn.classList.contains("inactive")) return;
-            if (isLoading) return;
-
-            browser.historyPointer++;
-
-            isLoading = true;
-                
-            const link = await browser.navigate(browser.history[browser.historyPointer]);
-            browser.changeInactiveButtons();
-            linkEl.value = link;
-
-            isLoading = false;
-        });
+        apartment.pc.openedApps.push(browser);
+        Browser.updateActivePorts(apartment);
     }
 
     changeInactiveButtons() {
@@ -117,30 +124,47 @@ class Browser extends App {
         else forwardBtn.classList.add("inactive"); 
     }
 
-    async navigate(link) {
-        const mainWindow = this.window.querySelector(".main");
+    async navigate(link, apartment = Apartment.activeApartment) {
+        let mainWindow
+        if (apartment == Apartment.activeApartment) {
+            mainWindow = this.window.querySelector(".main");
+        }
 
-        mainWindow.innerHTML = "";
+        if (mainWindow) mainWindow.innerHTML = "";
 
         const loading = document.createElement("div");
         loading.classList.add("loading");
 
         const site = document.createElement("site-component");
 
-        const currentWifi = Apartment.activeApartment.router.connectedWifi
-        let loadingTime_ms = 3000;
+        const currentWifi = apartment.router.connectedWifi
+        let loadingTime_ms = 3000 * trojanMultiplier;
         if (!currentWifi) {
-            mainWindow.append(loading);
+            if (mainWindow) mainWindow.append(loading);
             await wait(loadingTime_ms);
-            loading.remove();
+            if (mainWindow) loading.remove();
 
-            site.innerHTML = Error404.site;
-            mainWindow.append(site);
+            if (mainWindow) site.innerHTML = Error404.site;
+            if (mainWindow) mainWindow.append(site);
 
             this.activePort = null;
 
-            Browser.updateActivePorts();
+            Browser.updateActivePorts(apartment);
             
+            return link;
+        }
+
+        if (link.trim() === "") {
+            if (mainWindow) mainWindow.append(loading);
+            await wait(loadingTime_ms);
+            if (mainWindow) loading.remove();
+
+            if (mainWindow) site.innerHTML = BlankPage.site;
+            if (mainWindow) mainWindow.append(site);
+
+            this.activePort = BlankPage.port;
+
+            Browser.updateActivePorts(apartment);
             return link;
         }
 
@@ -148,7 +172,21 @@ class Browser extends App {
         Object.keys(websites).forEach(key => {
             const website = websites[key];
 
-            if (website.ip === link || website.dns === link) {
+            if (website.ip !== link && website.dns !== link || link === "") return;
+
+            let canAccess = true;
+            if (website.info.state === "private") {
+                switch(website.info.access) {
+                    case "wificompany":
+                        canAccess = currentWifi.company.name === website.info.company
+                        break;
+                    default:
+                        canAccess = false;
+                        break;
+                }
+            }
+
+            if (canAccess) {
                 dns = website.dns;
                 site.innerHTML = website.site;
                 port = website.port;
@@ -156,54 +194,54 @@ class Browser extends App {
         });
 
         if (!dns && dns !== "") {
-            mainWindow.append(loading);
+            if (mainWindow) mainWindow.append(loading);
             await wait(loadingTime_ms);
-            loading.remove();
+            if (mainWindow) loading.remove();
 
-            site.innerHTML = Error404.site;
-            mainWindow.append(site);
+            if (mainWindow) site.innerHTML = Error404.site;
+            if (mainWindow) mainWindow.append(site);
 
             this.activePort = null;
 
-            Browser.updateActivePorts();
+            Browser.updateActivePorts(apartment);
 
             return link;
         }
 
         loadingTime_ms -= 500;
         loadingTime_ms /= currentWifi.strength;
-        mainWindow.append(loading);
+        if (mainWindow) mainWindow.append(loading);
         await wait(loadingTime_ms);
-        loading.remove();
+        if (mainWindow) loading.remove();
 
         const load = new Event("custom:load", { bubbles: false, cancelable: false });
         site.addEventListener("custom:load", (e) => {
             Perfit.checkIfUserIsLogged(e.target?.querySelector("#perfit"));
         })
-        site.dispatchEvent(load);
+        if (mainWindow) site.dispatchEvent(load);
 
-        mainWindow.append(site);
+        if (mainWindow) mainWindow.append(site);
 
         this.activePort = port;
 
-        Browser.updateActivePorts();
+        Browser.updateActivePorts(apartment);
 
         return dns;
     }
 
-    static login(nickname, password) {
+    static login(nickname, password, apartment = Apartment.activeApartment) {
         const foundUser = Browser.users.find(user => {
             return user.nickname === nickname && user.password === password;
         });
 
         if (!foundUser) return false;
         
-        Apartment.activeApartment.pc.browser.loggedAs = foundUser;
+        apartment.pc.browser.loggedAs = foundUser;
         return true;
     }
 
-    static logout() {
-        Apartment.activeApartment.pc.browser.loggedAs = null;
+    static logout(apartment = Apartment.activeApartment) {
+        apartment.pc.browser.loggedAs = null;
     }
 
     static register(nickname, password, name, surname, age) {
@@ -217,8 +255,8 @@ class Browser extends App {
         return true;
     }
 
-    static save(password, name, surname, age, residence, description) {
-        const loggedUser = Apartment.activeApartment.pc.browser.loggedAs;
+    static save(password, name, surname, age, residence, description, apartment = Apartment.activeApartment) {
+        const loggedUser = apartment.pc.browser.loggedAs;
         const foundUser = Browser.users.find(user => user.nickname === loggedUser.nickname);
 
         if (!foundUser) return false;
@@ -235,26 +273,77 @@ class Browser extends App {
         return true;
     }
 
-    static closeApp(app) {
-        app.remove();
+    static closeApp(app, apartment = Apartment.activeApartment) {
+        if (app) app.remove();
 
-        let openedAppIndex = openedApps.findIndex(openedApp => openedApp.window == app);
-        openedApps.splice(openedAppIndex, 1);
+        let openedAppIndex = apartment.pc.openedApps.findIndex(openedApp => openedApp.window == app);
+        apartment.pc.openedApps.splice(openedAppIndex, 1);
     
-        Browser.updateActivePorts();
+        Browser.updateActivePorts(apartment);
     }
 
-    static updateActivePorts() {
+    static updateActivePorts(apartment = Apartment.activeApartment) {
         const activePorts = [];
-        openedApps.forEach(openedApp => {
+        apartment.pc.openedApps.forEach(openedApp => {
             if (openedApp.constructor.name !== "Browser") return;
 
-            const foundPort = activePorts.find(activePort => activePort === openedApp.activePort)
-            if (foundPort !== null && foundPort !== undefined) return;
+            const foundPort = activePorts.find(activePort => activePort === openedApp.activePort);
+            if (foundPort) return;
 
             activePorts.push(openedApp.activePort);
         });
 
-        Apartment.activeApartment.pc.browser.activePorts = activePorts;
+        apartment.pc.browser.activePorts = activePorts;
+
+        wifis.forEach(wifi => {
+            const wifiActivePorts = [];
+            apartments.forEach(tApartment => {
+                if (tApartment.router.connectedWifi.ip !== wifi.ip) return;
+                
+                tApartment.pc.openedApps.forEach(openedApp => {
+                    if (openedApp.constructor.name !== "Browser") return;
+        
+                    const foundPort = wifiActivePorts.find(portInfo => portInfo.port === openedApp.activePort);
+                    
+                    if (foundPort) {
+                        const foundPC = foundPort.pcIPs.find(pcInfo => pcInfo === tApartment.pc.ip);
+                        
+                        if (!foundPC) foundPort.pcIPs.push({ 
+                            pcIP: tApartment.pc.ip,
+                            packets: null,
+                            packetIndex: 0
+                        });
+                        return;
+                    }
+                    
+                    wifiActivePorts.push({ port: openedApp.activePort, pcIPs: [{
+                        ip: tApartment.pc.ip,
+                        packets: null,
+                        packetIndex: 0
+                    }]});
+                });
+            })
+            
+            wifi.activePorts = wifiActivePorts;
+    
+            wifi.activePorts.forEach(activePort => {
+                activePort.pcIPs.forEach(pc => {
+                    if (pc.packets) pc.packets = pc.packets;
+                    else {
+                        let packets = "";
+                        Object.keys(websites).forEach(website => {
+                            if (websites[website].port !== activePort.port) return;
+    
+                            const parsedSite = websites[website].site.replace(/[^A-Za-z0-9]+/g, " ");
+                                
+                            packets = `site ${parsedSite} wifipassword ${wifi.password} wifiname ${wifi.name}`;
+                        });
+                        pc.packets = packets;
+                    }
+    
+                    pc.packetIndex = pc.packetIndex;
+                });
+            });
+        });
     }
 }

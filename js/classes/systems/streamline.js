@@ -14,5 +14,6 @@ class Streamline {
 
     static cmdApps = {
         PortScanner,
+        Decoder,
     }
 }

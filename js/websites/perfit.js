@@ -2,6 +2,9 @@ class Perfit {
     static ip = "196.92.211.11";
     static dns = "perfit.com";
     static port = 80;
+    static info = { 
+        state: "public"
+    };
     static site = /*html*/`
         <link rel="stylesheet" href="./styles/websites/perfit.css">
         <div id="perfit">

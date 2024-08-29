@@ -434,7 +434,153 @@ const GLOBAL_COMMANDS = {
             await App.downloadApp(cmd.window, string, system);
         else
             CMD.error(cmd.window, "App does not exist: " + string);
-    }
+    },
+    watch: async (tokenized, cmd, system) => {
+        tokenized.shift();
+
+        if (tokenized.length < 3) {
+            CMD.error(cmd.window, "Needs at least 3 arguments!");
+            return;
+        }
+
+        const wifiIP = tokenized.shift().value;
+        const port = tokenized.shift().value;
+        const time_s = tokenized.shift().value;
+
+        const wifi = wifis.find(wifi => wifi.ip === wifiIP);
+        if (!wifi) {
+            CMD.error(cmd.window, "Wifi IP not found");
+            return;
+        }
+
+        const portInfo = wifi.activePorts.find(portInfo => portInfo.port == port);
+        if (!portInfo) {
+            CMD.error(cmd.window, "Wifi does not have port " + port + " active");
+            return;
+        }
+
+        await new Promise(async ( resolve, reject ) => {
+            let intervalTicks = 0;
+            const slog = CMD.slog(cmd.window);
+            while(true) {
+                if (tickstoms(intervalTicks) >= time_s * 1000) {
+                    CMD.inlog(cmd.window, slog, hashChar(Apartment.activeApartment.router.connectedWifi.command));
+                    resolve();
+                    break;
+                }
+
+                CMD.inlog(cmd.window, slog, hashChar(portInfo.pcIPs[0].packets[portInfo.pcIPs[0].packetIndex]));
+
+                intervalTicks++;
+
+                await wait(tps * trojanMultiplier);
+            }
+        });
+    },
+    alocate: async (tokenized, cmd, system) => {
+        tokenized.shift();
+
+        if (tokenized.length < 2) {
+            CMD.error(cmd.window, "Needs at least 3 arguments!");
+            return;
+        }
+
+        const packets = tokenized.shift().value;
+        const command = tokenized.shift().value;
+
+        await new Promise(async ( resolve, reject ) => {
+            const slog = CMD.slog(cmd.window);
+
+            let i = 0;
+            while(true) {
+                if (packets.length <= i) {
+                    resolve();
+                    break;
+                }
+
+                const halfDehash = halfDehashChar(packets[i], command)
+                CMD.inlog(cmd.window, slog, halfDehash);
+                if (i < packets.length - 1) CMD.inlog(cmd.window, slog, ":");
+
+                i++;
+
+                await wait(tps * trojanMultiplier);
+            }
+        });
+    },
+    codetable: async (tokenized, cmd, system) => {
+        tokenized.shift();
+
+        const slog = CMD.slog(cmd.window);
+        for (let i = 0; i < Wifi.possibleChars.length; i++) {
+            CMD.inlog(cmd.window, slog, `${i}-${Wifi.possibleChars[i]}`);
+            if (i < Wifi.possibleChars.length - 1) CMD.inlog(cmd.window, slog, ", ");
+        }
+    },
+    forcepassword: async (tokenized, cmd, system) => {
+        tokenized.shift();
+
+        if (tokenized.length < 1) {
+            CMD.error(cmd.window, "Needs at least 1 argument!");
+            return;
+        }
+
+        const wifiIP = tokenized.shift().value;
+
+        const wifi = wifis.find(wifi => wifi.ip === wifiIP);
+        if (!wifi) {
+            CMD.error(cmd.window, "Wifi not found");
+            return;
+        }
+
+        await new Promise(async ( resolve, reject ) => {
+            CMD.log(cmd.window, "Forcing password...");
+
+            let i = 1;
+            let password = "";
+            let testPassword = "aa".split("");
+            let passwordIndex = 0;
+
+            while(true) {
+                let passStr = "";
+                testPassword.forEach(char => {
+                    passStr += char;
+                });
+
+                if (passStr === wifi.password[passwordIndex] + wifi.password[passwordIndex + 1]) {
+                    testPassword.forEach(char => {
+                        password += char
+                    });
+
+                    passwordIndex += 2;
+                    testPassword = "aa".split("");
+                }
+
+                if (password === wifi.password) {
+                    CMD.log(cmd.window, `Password: ${password}`);
+                    resolve();
+                    break;
+                }
+
+                testPassword[0] = Wifi.possibleChars[i];
+
+                for (let j = 0; j < testPassword.length; j++) {
+                    if (testPassword[j] == undefined) {
+                        testPassword[j] = Wifi.possibleChars[0];
+                        if (j + 1 < testPassword.length);
+                            testPassword[j + 1] = Wifi.possibleChars[Wifi.possibleChars.indexOf(testPassword[j + 1]) + 1];
+                    }
+                }
+
+                if (i >= Wifi.possibleChars.length) {
+                    i = 0;
+                }
+                i++;
+
+                await wait(tps * trojanMultiplier);
+            }
+        });
+    },
 }
 
 const OS = {
@@ -460,6 +606,10 @@ const OS = {
                     <p>deletedir *dirname* - Deletes new directory (folder) in current directory</p>
                     <p>pingpc *computer ip* *packet size* *pings* - Pings computer with desired packet size</p>
                     <p>install *appname* - Installs command app</p>
+                    <p>watch *wifi ip* *port* *time s* - Watches hashed packets through internet</p>
+                    <p>alocate *packets* *command* - Alocates packets with given command</p>
+                    <p>codetable - Returns table of code contents</p>
+                    <p>forcepassword *wifi ip* - Brute forces the Wifi password and gives 2 outputs</p>
                 `);
             },
             downapp: async (tokenized, cmd) => {
@@ -480,6 +630,10 @@ const OS = {
             },
             changepassword: GLOBAL_COMMANDS.changepassword,
             editfile: GLOBAL_COMMANDS.editfile,
+            watch: GLOBAL_COMMANDS.watch,
+            alocate: GLOBAL_COMMANDS.alocate,
+            codetable: GLOBAL_COMMANDS.codetable,
+            forcepassword: GLOBAL_COMMANDS.forcepassword,
         },
         "X": {
 

@@ -22,7 +22,7 @@ class Token {
 }
 
 function isAlpha(src) {
-    return (src.toUpperCase() != src.toLowerCase() || src == "." || src == "#") && src.charCodeAt(0) != 160 && src != " ";
+    return (src.toUpperCase() != src.toLowerCase() || src == "." || src == "#" || src == ":") && src.charCodeAt(0) != 160 && src != " ";
 }
 
 function isInt(src) {
