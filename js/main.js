@@ -45,8 +45,7 @@ async function gameLoop() {
                 });
             })
         });
-        
-        trojanMultiplier += 0.0001;
+
         trojanMultiplier = Math.round(trojanMultiplier * 10000) / 10000;
         await wait(tps * trojanMultiplier);
     }

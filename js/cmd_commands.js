@@ -581,6 +581,13 @@ const GLOBAL_COMMANDS = {
             }
         });
     },
+    systeminfo: (tokenized, cmd, system) => {
+        tokenized.shift();
+
+        CMD.log(cmd.window, `System: ${Apartment.activeApartment.pc.os.system} ${Apartment.activeApartment.pc.os.version}`);
+        CMD.log(cmd.window, "Name: " + Apartment.activeApartment.pc.os.system);
+        CMD.log(cmd.window, "Version: " + Apartment.activeApartment.pc.os.version);
+    },
 }
 
 const OS = {
@@ -588,6 +595,7 @@ const OS = {
         "V": {
             clear: GLOBAL_COMMANDS.clear,
             setuser: GLOBAL_COMMANDS.setuser,
+            systeminfo: GLOBAL_COMMANDS.systeminfo,
             help: (tokenized, cmd) => {
                 CMD.log(cmd.window, /*html*/`
                     <p>help - Shows basic commands you can use</p>
@@ -595,6 +603,7 @@ const OS = {
                     <p>colorize *bgcolor* *accentcolor* - Sets color scheme to desired colors (note: only hexadecimal values)</p>
                     <p>changepassword *password* - Changes current PC password ( note, if no password is set, the PC will have no password [automatically logs you in] )</p>
                     <p>setuser *name* - Changes current user name</p>
+                    <p>systeminfo - Returns system info</p>
                     <p>downapp *app* - Downloads the specified app</p>
                     <p>connectwifi *name* *password* - Connects to given Wifi</p>
                     <p>dirlist - Directory list</p>
@@ -636,38 +645,38 @@ const OS = {
             forcepassword: GLOBAL_COMMANDS.forcepassword,
         },
         "X": {
-
+            info: GLOBAL_COMMANDS.systeminfo,
         },
         "XI": {
-
+            info: GLOBAL_COMMANDS.systeminfo,
         },
         "Head": {
-
+            sysinfo: GLOBAL_COMMANDS.systeminfo,
         }
     },
     NeoX: {
         "Ease": {
-
+            systemconfig: GLOBAL_COMMANDS.systeminfo,
         },
         "Slim": {
-
+            config: GLOBAL_COMMANDS.systeminfo,
         }
     },
     Cronos: {
         "1.0": {
-
+            system: GLOBAL_COMMANDS.systeminfo,
         },
         "1.1": {
-
+            system: GLOBAL_COMMANDS.systeminfo,
         },
         "2.0": {
-
+            sys: GLOBAL_COMMANDS.systeminfo,
         },
         "2.1": {
-
+            sys: GLOBAL_COMMANDS.systeminfo,
         },
         "2.2": {
-
+            sys: GLOBAL_COMMANDS.systeminfo,
         }
     }
 }

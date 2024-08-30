@@ -1,4 +1,4 @@
-class Mywifi {
+class Mywifi extends AdminPanel {
     static ip = wifiCompanies[4].adminPanelIp;
     static dns = wifiCompanies[4].adminPanelIp;
     static port = 1004;
@@ -16,7 +16,7 @@ class Mywifi {
             <div class="main">
                 <input type="text" placeholder="Nickname...">
                 <input type="password" placeholder="Password...">
-                <button onclick="">Log in</button>
+                <button onclick="Mywifi.login()">Log in</button>
             </div>
         </div>
     `;

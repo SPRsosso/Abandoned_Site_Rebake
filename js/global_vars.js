@@ -62,13 +62,24 @@ function paste(e) {
     let paste = e.clipboardData.getData("text");
     paste = paste.replace(/<\/[^>]+(>|$)/g, "");
 
+    if (e.target.constructor.name === "HTMLInputElement") {
+        e.target.value = paste;
+        return;
+    }
+
     const textNode = document.createTextNode(paste);
 
     const selection = window.getSelection();
-    const sel = window.getSelection();
     if (!selection.rangeCount) return;
     selection.deleteFromDocument();
     selection.getRangeAt(0).insertNode(textNode);
     selection.collapseToEnd();
 }
 document.addEventListener("paste", paste);
+
+function openComputer() {
+    const loginScreen = document.createElement("login-screen");
+    document.querySelector("main-screen").prepend(loginScreen);
+    
+    if (Apartment.activeApartment.pc.loggedIn) loginScreen.openComputer();
+}

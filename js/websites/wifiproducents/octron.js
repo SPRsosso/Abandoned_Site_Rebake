@@ -1,4 +1,4 @@
-class Octron {
+class Octron extends AdminPanel {
     static ip = wifiCompanies[1].adminPanelIp;
     static dns = wifiCompanies[1].adminPanelIp;
     static port = 1001;
@@ -16,7 +16,7 @@ class Octron {
             <div class="main">
                 <input type="text" placeholder="Nickname...">
                 <input type="password" placeholder="Password...">
-                <button onclick="">Log in</button>
+                <button onclick="Octron.login()">Log in</button>
             </div>
         </div>
     `;

@@ -1,4 +1,4 @@
-class WireLink {
+class WireLink extends AdminPanel {
     static ip = wifiCompanies[5].adminPanelIp;
     static dns = wifiCompanies[5].adminPanelIp;
     static port = 1005;
@@ -16,7 +16,7 @@ class WireLink {
             <div class="main">
                 <input type="text" placeholder="Nickname...">
                 <input type="password" placeholder="Password...">
-                <button onclick="">Log in</button>
+                <button onclick="WireLink.login()">Log in</button>
             </div>
         </div>
     `;

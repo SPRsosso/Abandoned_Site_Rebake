@@ -120,14 +120,3 @@ class LoginScreen extends HTMLElement {
 }
 
 customElements.define("login-screen", LoginScreen);
-
-if (Apartment.activeApartment.pc.on) {
-    openComputer();
-}
-
-function openComputer() {
-    const loginScreen = document.createElement("login-screen");
-    document.querySelector("main-screen").prepend(loginScreen);
-    
-    if (Apartment.activeApartment.pc.loggedIn) loginScreen.openComputer();
-}

@@ -1,4 +1,4 @@
-class SeagulNetworks {
+class SeagulNetworks extends AdminPanel {
     static ip = wifiCompanies[3].adminPanelIp;
     static dns = wifiCompanies[3].adminPanelIp;
     static port = 1003;
@@ -16,7 +16,7 @@ class SeagulNetworks {
             <div class="main">
                 <input type="text" placeholder="Nickname...">
                 <input type="password" placeholder="Password...">
-                <button onclick="">Log in</button>
+                <button onclick="SeagulNetworks.login()">Log in</button>
             </div>
         </div>
     `;

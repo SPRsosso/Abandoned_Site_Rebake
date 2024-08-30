@@ -1,4 +1,4 @@
-class EasyConnect {
+class EasyConnect extends AdminPanel {
     static ip = wifiCompanies[2].adminPanelIp;
     static dns = wifiCompanies[2].adminPanelIp;
     static port = 1002;
@@ -16,7 +16,7 @@ class EasyConnect {
             <div class="main">
                 <input type="text" placeholder="Nickname...">
                 <input type="password" placeholder="Password...">
-                <button onclick="">Log in</button>
+                <button onclick="EasyConnect.login()">Log in</button>
             </div>
         </div>
     `;

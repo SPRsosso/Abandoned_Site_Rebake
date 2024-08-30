@@ -1,1 +1,0 @@
-const routers = Apartment.activeApartment.routers;
