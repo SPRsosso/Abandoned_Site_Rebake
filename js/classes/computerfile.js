@@ -4,8 +4,4 @@ class ComputerFile {
         this.type = type;
         this.content = content;
     }
-
-    edit(content) {
-        this.content = content;
-    }
 }

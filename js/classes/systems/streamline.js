@@ -10,6 +10,7 @@ class Streamline {
         MessX,
         Browser,
         Notepad,
+        Canvas,
     }
 
     static cmdApps = {

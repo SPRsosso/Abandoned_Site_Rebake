@@ -69,8 +69,8 @@ class PC {
         this.ip = generateIP(pcs);
 
         this.os = {
-            system: null,
-            version: null,
+            system: "Streamline",
+            version: "V",
             commands: Object.setPrototypeOf( Object.assign( {}, OS ), OS )
         };
 

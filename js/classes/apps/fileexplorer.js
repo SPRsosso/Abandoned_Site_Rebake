@@ -142,6 +142,12 @@ class FileExplorer extends App {
                     Notepad.openApp(obj);
                 });
             }
+            if (obj.constructor.name === "ImageFile") {
+                li.innerHTML = `<img src="./icons/Image.png">${obj.name}`;
+                li.addEventListener("dblclick", () => {
+                    Canvas.openApp(obj);
+                });
+            }
 
             ul.append(li);
         });
