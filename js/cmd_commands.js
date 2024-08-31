@@ -192,12 +192,38 @@ const GLOBAL_COMMANDS = {
 
         let files = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
         let index = files.findIndex(file => {
-            return file.name === fileName && Object.getPrototypeOf(file).constructor.name === "ComputerFile";
+            return file.name === fileName && (file.constructor.name === "ComputerFile" || file.constructor.name === "ImageFile");
         });
         if (index !== -1)
             files.splice(index, 1);
         else
             CMD.error(cmd.window, "File " + fileName + " not found");
+    },
+    createimage: (tokenized, cmd) => {
+        tokenized.shift();
+        if (tokenized.length < 1) {
+            CMD.error(cmd.window, "Needs at least 1 arguments!");
+            return;
+        }
+
+        let fileName = tokenized.shift().value;
+
+        if (cmd.path === "") {
+            CMD.error(cmd.window, "Cannot create image in this path");
+            return;
+        }
+
+        const pathFiles = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+        const foundFile = pathFiles.find(file => {
+            return file.name === fileName && file.constructor.name === "ImageFile";
+        });
+
+        if (foundFile) {
+            CMD.error(cmd.window, "Cannot create image with duplicate name");
+            return;
+        }
+
+        pathFiles.push(new ImageFile(fileName));
     },
     createdir: (tokenized, cmd) => {
         tokenized.shift();
@@ -402,7 +428,7 @@ const GLOBAL_COMMANDS = {
 
         const pathFiles = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
         const foundFile = pathFiles.find(file => {
-            return file.name === fileName && file.constructor.name === "ComputerFile";
+            return file.name === fileName && (file.constructor.name === "ComputerFile" || file.constructor.name === "ImageFile");
         });
 
         if (!foundFile) {
@@ -524,7 +550,6 @@ const GLOBAL_COMMANDS = {
             CMD.error(cmd.window, "Needs at least 1 argument!");
             return;
         }
-
         const wifiIP = tokenized.shift().value;
 
         const wifi = wifis.find(wifi => wifi.ip === wifiIP);
@@ -588,6 +613,28 @@ const GLOBAL_COMMANDS = {
         CMD.log(cmd.window, "Name: " + Apartment.activeApartment.pc.os.system);
         CMD.log(cmd.window, "Version: " + Apartment.activeApartment.pc.os.version);
     },
+    paint: (tokenized, cmd) => {
+        tokenized.shift();
+
+        if (tokenized.length < 1) {
+            CMD.error(cmd.window, "Needs at least 1 argument!");
+            return;
+        }
+      
+        const fileName = tokenized.shift().value;
+
+        const pathFiles = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+        const foundFile = pathFiles.find(file => {
+            return file.name === fileName && file.constructor.name === "ImageFile";
+        });
+
+        if (!foundFile) {
+            CMD.error(cmd.window, "Cannot find file in this path");
+            return;
+        }
+
+        Canvas.openApp(foundFile);
+    },
 }
 
 const OS = {
@@ -629,6 +676,7 @@ const OS = {
             cdir: GLOBAL_COMMANDS.cdir,
             createfile: GLOBAL_COMMANDS.createfile,
             deletefile: GLOBAL_COMMANDS.deletefile,
+            createimage: GLOBAL_COMMANDS.createimage,
             createdir: GLOBAL_COMMANDS.createdir,
             deletedir: GLOBAL_COMMANDS.deletedir,
             pingpc: GLOBAL_COMMANDS.pingpc,
@@ -643,6 +691,7 @@ const OS = {
             alocate: GLOBAL_COMMANDS.alocate,
             codetable: GLOBAL_COMMANDS.codetable,
             forcepassword: GLOBAL_COMMANDS.forcepassword,
+            paint: GLOBAL_COMMANDS.paint,
         },
         "X": {
             info: GLOBAL_COMMANDS.systeminfo,

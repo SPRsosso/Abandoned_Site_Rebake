@@ -9,4 +9,5 @@ const apps = {
     MessX,
     Browser,
     Notepad,
+    Canvas,
 };
