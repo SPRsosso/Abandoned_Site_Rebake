@@ -28,6 +28,16 @@ class Wifi {
         this.strength = null;
 
         this.ip = generateIP(wifis);
+        this.company = wifiCompanies[Math.floor(Math.random() * wifiCompanies.length)];
+        // this.company = wifiCompanies[0];
+
+        this._maxAdminPanelPasswordLength = 7;
+        this.adminPanelPassword = "";
+        for (let i = 0; i < this._maxAdminPanelPasswordLength; i++)
+            this.adminPanelPassword += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];
+
+        this.activePorts = []
+        this.command = Math.floor(Math.random() * 6);
     }
 
     changeStrength(startPos) {
@@ -121,11 +131,14 @@ class Wifi {
         return sum;
     }
 
-    static connectToWifi(app, name, pwd) {
-        const foundWifi = Apartment.activeApartment.wifis.find(wifi => wifi.name == name && wifi.password == pwd);
+    static connectToWifi(app, name, pwd, apartment = Apartment.activeApartment) {
+        const foundWifi = apartment.wifis.find(wifi => wifi.name == name && wifi.password == pwd);
         if (foundWifi) {
-            Apartment.activeApartment.router.connectedWifi = foundWifi;
-            routers.find(router => router.name == Apartment.activeApartment.router.name).connectedWifi = foundWifi;
+            apartment.router.connectedWifi = foundWifi;
+            routers.find(router => router.name == apartment.router.name).connectedWifi = foundWifi;
+
+            Browser.updateActivePorts(apartment);
+
             CMD.log(app, "Successfully connected to Wifi.");
         } else {
             CMD.error(app, "Cannot connect to Wifi: " + name);

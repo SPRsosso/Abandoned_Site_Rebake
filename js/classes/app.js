@@ -1,20 +1,25 @@
 class App {
     static screen = document.querySelector("main-screen");
     static lastAppClassName;
-    constructor(window) {
+    constructor(window = null) {
         this.window = window;
         App.lastAppClassName = this.constructor.name;
     }
 
-    static openApp() {
+    static openApp(apartment = Apartment.activeApartment) {
         const appComponent = document.createElement("app-component");
-        appComponent.innerHTML = `
-            <span slot="name">Default app (not modded yet)</span>
-        `;
+        if (apartment == Apartment.activeApartment) {
+            appComponent.innerHTML = `
+                <span slot="name">Default app (not modded yet)</span>
+            `;
+    
+            App.defaultValues(appComponent);
+            this.screen.prepend(appComponent);
 
-        App.defaultValues(appComponent);
-        this.screen.prepend(appComponent);
-        openedApps.push(new App(appComponent));
+            apartment.pc.openedApps.push(new App(appComponent));
+        } else {
+            apartment.pc.openedApps.push(new App());
+        }
     }
 
     static defaultValues(app) {
@@ -33,11 +38,11 @@ class App {
         }, 0);
     }
     
-    static closeApp(app) {
-        app.remove();
+    static closeApp(app, apartment = Apartment.activeApartment) {
+        if (app) app.remove();
 
-        let openedAppIndex = openedApps.findIndex(openedApp => openedApp.window == app);
-        openedApps.splice(openedAppIndex, 1);
+        let openedAppIndex = apartment.pc.openedApps.findIndex(openedApp => openedApp.window == app);
+        apartment.pc.openedApps.splice(openedAppIndex, 1);
     }
 
     static showName(appIcon, name) {
@@ -86,25 +91,25 @@ class App {
         app.style.zIndex = parseInt(maxZIndex) + 1;
     }
 
-    static getAppIcons() {
+    static getAppIcons(apartment = Apartment.activeApartment) {
         const mainBar = document.querySelector("main-bar");
         mainBar.innerHTML = "";
-        let keys = Apartment.activeApartment.pc.downloadedApps;
+        let keys = apartment.pc.downloadedApps;
         Object.keys(keys).forEach(downloadedApp => {
             mainBar.innerHTML += `<app-icon icon-path="./icons/${downloadedApp}.png" app-name="${downloadedApp}"></app-icon>`;
         });
     }
 
-    static downloadApp(app, appName, system) {
-        if (!Apartment.activeApartment.router.connectedWifi) {
-            CMD.error(app, "No Wifi connected!");
+    static downloadApp(app, appName, system, apartment = Apartment.activeApartment) {
+        if (!apartment.router.connectedWifi) {
+            if (app) CMD.error(app, "No Wifi connected!");
             return;
         }
 
-        const appSize = 5000 / Apartment.activeApartment.router.connectedWifi.strength;
+        const appSize = 5000 / apartment.router.connectedWifi.strength;
         return new Promise(async ( resolve, reject ) => {
-            await App.wait(app, appSize);
-            Apartment.activeApartment.pc.downloadedApps[appName] = system.apps[appName];
+            await App.wait(app, appSize * trojanMultiplier);
+            apartment.pc.downloadedApps[appName] = system.apps[appName];
             App.getAppIcons();
 
             resolve();
@@ -112,9 +117,9 @@ class App {
     }
 
     static wait(app, time) {
-        app = app.querySelector("#cmd");
+        if (app) app = app.querySelector("#cmd");
         return new Promise(( resolve, reject ) => {
-            app.innerHTML += `
+            if (app) app.innerHTML += `
                 <p id="download"></p>
                 <p id="percentage">0%</p>
             `;
@@ -128,16 +133,16 @@ class App {
             const waitInterval = setInterval(() => {
                 if (lineCounter >= time / waitMaxLines) {
                     waitLines++;
-                    app.querySelector("#download").innerHTML += "|";
+                    if (app) app.querySelector("#download").innerHTML += "|";
                     const percentage = Math.round((100 * (time / waitMaxLines) * waitLines) / time);
-                    app.querySelector("#percentage").innerHTML = `${percentage}%`;
+                    if (app) app.querySelector("#percentage").innerHTML = `${percentage}%`;
                     lineCounter = 0;
                 }
 
                 if (counter >= time) {
                     clearInterval(waitInterval);
-                    app.querySelector("#download").remove();
-                    app.querySelector("#percentage").remove();
+                    if (app) app.querySelector("#download").remove();
+                    if (app) app.querySelector("#percentage").remove();
 
                     resolve();
                 }
@@ -150,10 +155,10 @@ class App {
         });
     }
 
-    static closeAllApps() {
-        while (openedApps[0]) {
-            openedApps[0].window.remove();
-            openedApps.shift();
+    static closeAllApps(apartment = Apartment.activeApartment) {
+        while (apartment.pc.openedApps[0]) {
+            apartment.pc.openedApps[0].window.remove();
+            apartment.pc.openedApps.shift();
         }
     }
 }

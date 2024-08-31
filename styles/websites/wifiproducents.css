@@ -1,0 +1,26 @@
+#wifiproducents {
+    width: 100%;
+    height: 100%;
+}
+
+#wifiproducents ul {
+    padding-left: 20px;
+}
+
+#wifiproducents .main {
+    padding: 20px;
+}
+
+#wifiproducents .main:not(.pcs) {
+    height: calc(100% - 35px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#wifiproducents #err {
+    color: red;
+}

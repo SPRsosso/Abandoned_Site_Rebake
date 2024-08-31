@@ -1,5 +1,5 @@
 class CMD extends App {
-    constructor(window) {
+    constructor(window = null) {
         super();
 
         this.window = window;
@@ -11,121 +11,133 @@ class CMD extends App {
         this.path = "";
     }
 
-    static openApp() {
+    static openApp(apartment = Apartment.activeApartment) {
         const appComponent = document.createElement("app-component");
-        const shadow = appComponent.shadowRoot;
-        const mainOptions = shadow.querySelector("main-options");
 
-        appComponent.innerHTML = /*html*/`
-            <style>
-                ${styles}
+        if (apartment == Apartment.activeApartment) {
+            appComponent.innerHTML = /*html*/`
+                <style>
+                    ${styles}
 
-                #cmd {
-                    width: 100%;
-                    height: 100%;
+                    #cmd {
+                        width: 100%;
+                        height: 100%;
 
-                    overflow-y: auto;
+                        overflow-y: auto;
 
-                    cursor: text;
+                        cursor: text;
 
-                    padding: 10px;
+                        padding: 10px;
 
-                    display: flex;
-                    flex-direction: column;
-                }
+                        display: flex;
+                        flex-direction: column;
+                    }
 
-                #cmd span {
-                    width: 100%;
-                }
+                    #cmd * {
+                        overflow-wrap: break-word;
+                    }
 
-                #cmd [contentEditable] {
-                    outline: none;
-                }
+                    #cmd span {
+                        width: 100%;
+                    }
 
-                #cmd .alert {
-                    color: red;
-                }
+                    #cmd [contentEditable] {
+                        outline: none;
+                    }
 
-                #cmd .log,
-                #cmd .log * {
-                    color: gray;
-                }
-            </style>
+                    #cmd .alert {
+                        color: red;
+                    }
 
-            <span slot="name">Console</span>
-            <div id="cmd">
-                
-            </div>
-        `;
+                    #cmd .log,
+                    #cmd .log * {
+                        color: gray;
+                    }
 
-        const mainScreen = appComponent.querySelector("#cmd");
+                    #cmd .can-copy,
+                    #cmd .can-copy * {
+                        user-select: text;
+                    }
+                </style>
 
-        let editable = mainScreen.querySelector("[contentEditable]");
-        mainScreen.addEventListener("click", () => {
-            editable = mainScreen.querySelector("[contentEditable]");
-            if (editable) {
-                editable.blur();
-                editable.focus();
-            }
-        });
+                <span slot="name">Console</span>
+                <div id="cmd">
+                    
+                </div>
+            `;
 
-        mainScreen.addEventListener("keydown", ( event ) => {
-            if (event.keyCode == 13) {
-                event.preventDefault();
+            const mainScreen = appComponent.querySelector("#cmd");
 
-                const openedApp = openedApps[openedApps.findIndex(openedApp => openedApp.window == appComponent)];
+            let editable = mainScreen.querySelector("[contentEditable]");
+            mainScreen.addEventListener("click", ( e ) => {
                 editable = mainScreen.querySelector("[contentEditable]");
-                openedApp.executeCommand(editable.innerText);
-            }
+                if (editable && !e.target.classList.contains("can-copy")) {
+                    editable.blur();
+                    editable.focus();
+                }
+            });
 
-            if (event.keyCode == 38) {
-                event.preventDefault();
+            mainScreen.addEventListener("keydown", ( event ) => {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
 
-                const openedApp = openedApps[openedApps.findIndex(openedApp => openedApp.window == appComponent)];
-                if (openedApp.selectedLine >= openedApp.lines.length - 1)
-                    return;
+                    const openedApp = apartment.pc.openedApps[apartment.pc.openedApps.findIndex(openedApp => openedApp.window == appComponent)];
+                    editable = mainScreen.querySelector("[contentEditable]");
+                    openedApp.executeCommand(editable.innerText);
+                }
 
-                openedApp.selectedLine++;
-                editable = mainScreen.querySelector("[contentEditable]");
-                editable.innerText = openedApp.lines[openedApp.selectedLine];
+                if (event.keyCode == 38) {
+                    event.preventDefault();
 
-                const range = document.createRange();
-                range.selectNodeContents(editable);
-                range.collapse(false);
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
+                    const openedApp = apartment.pc.openedApps[apartment.pc.openedApps.findIndex(openedApp => openedApp.window == appComponent)];
+                    if (openedApp.selectedLine >= openedApp.lines.length - 1)
+                        return;
 
-                mainScreen.scrollTop = mainScreen.scrollHeight;
-            }
+                    openedApp.selectedLine++;
+                    editable = mainScreen.querySelector("[contentEditable]");
+                    editable.innerText = openedApp.lines[openedApp.selectedLine];
 
-            if (event.keyCode == 40) {
-                event.preventDefault();
-                
-                const openedApp = openedApps[openedApps.findIndex(openedApp => openedApp.window == appComponent)];
-                if (openedApp.selectedLine <= 0)
-                    return;
+                    const range = document.createRange();
+                    range.selectNodeContents(editable);
+                    range.collapse(false);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
 
-                openedApp.selectedLine--;
-                editable = mainScreen.querySelector("[contentEditable]");
-                editable.innerText = openedApp.lines[openedApp.selectedLine];
+                    mainScreen.scrollTop = mainScreen.scrollHeight;
+                }
 
-                const range = document.createRange();
-                range.selectNodeContents(editable);
-                range.collapse(false);
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
+                if (event.keyCode == 40) {
+                    event.preventDefault();
+                    
+                    const openedApp = apartment.pc.openedApps[apartment.pc.openedApps.findIndex(openedApp => openedApp.window == appComponent)];
+                    if (openedApp.selectedLine <= 0)
+                        return;
 
-                mainScreen.scrollTop = mainScreen.scrollHeight;
-            }
-        });
+                    openedApp.selectedLine--;
+                    editable = mainScreen.querySelector("[contentEditable]");
+                    editable.innerText = openedApp.lines[openedApp.selectedLine];
 
-        App.defaultValues(appComponent);
-        this.screen.prepend(appComponent);
-        const cmd = new CMD(appComponent);
-        cmd.getStartLine();
-        openedApps.push(cmd);
+                    const range = document.createRange();
+                    range.selectNodeContents(editable);
+                    range.collapse(false);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+                    mainScreen.scrollTop = mainScreen.scrollHeight;
+                }
+            });
+
+            App.defaultValues(appComponent);
+            this.screen.prepend(appComponent);
+            const cmd = new CMD(appComponent);
+            cmd.getStartLine();
+            apartment.pc.openedApps.push(cmd);
+        } else {
+            apartment.pc.openedApps.push(new CMD());
+        }
+        
     }
 
     async executeCommand(command) {
@@ -191,6 +203,33 @@ class CMD extends App {
     static log(app, text) {
         const mainScreen = app.querySelector("#cmd");
         mainScreen.innerHTML += `<span class="log">${text}</span>`;
+
+        mainScreen.scrollTop = mainScreen.scrollHeight;
+    }
+
+    static slog(app) {
+        const mainScreen = app.querySelector("#cmd");
+
+        const span = document.createElement("span");
+        span.classList.add("log", "can-copy");
+
+        function copy(e) {
+            e.preventDefault();
+            e.clipboardData.clearData("text/plain");
+            e.clipboardData.setData('text/plain', span.innerText);
+        }
+
+        span.addEventListener('copy', copy);
+
+        mainScreen.append(span);
+
+        mainScreen.scrollTop = mainScreen.scrollHeight;
+        return span;
+    }
+
+    static inlog(app, element, text) {
+        const mainScreen = app.querySelector("#cmd");
+        element.innerHTML += text;
 
         mainScreen.scrollTop = mainScreen.scrollHeight;
     }

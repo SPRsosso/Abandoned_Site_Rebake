@@ -1,271 +1,276 @@
 class MessX extends App {
-    constructor(window) {
+    constructor(window = null) {
         super();
         this.window = window;
         this.userId = null;
     }
 
-    static openApp() {
+    static openApp(apartment = Apartment.activeApartment) {
         const appComponent = document.createElement("app-component");
-        appComponent.innerHTML = /*html*/`
-            <style>
-                ${styles}
 
-                #messx {
-                    width: 100%;
-                    height: 100%;
+        if (apartment == Apartment.activeApartment) {
+            appComponent.innerHTML = /*html*/`
+                <style>
+                    ${styles}
 
-                    overflow: hidden;
+                    #messx {
+                        width: 100%;
+                        height: 100%;
 
-                    position: relative;
-                }
+                        overflow: hidden;
 
-                #messx .menu {
-                    width: 50px;
-                    height: 100%;
-                    padding: 5px;
+                        position: relative;
+                    }
 
-                    background-color: var(--bg-color);
+                    #messx .menu {
+                        width: 50px;
+                        height: 100%;
+                        padding: 5px;
 
-                    border-right: 1px solid var(--accent-color);
+                        background-color: var(--bg-color);
 
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    z-index: 1;
-                }
+                        border-right: 1px solid var(--accent-color);
 
-                #messx .hamburger-btn, 
-                #messx .close-btn {
-                    width: 100%;
-                    aspect-ratio: 1;
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        z-index: 1;
+                    }
 
-                    background: none;
-                    border: none;
+                    #messx .hamburger-btn, 
+                    #messx .close-btn {
+                        width: 100%;
+                        aspect-ratio: 1;
 
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
+                        background: none;
+                        border: none;
 
-                    cursor: pointer;
-                }
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
 
-                #messx button.inactive {
-                    display: none;
-                }
+                        cursor: pointer;
+                    }
 
-                #messx .hamburger-btn:hover, 
-                #messx .close-btn:hover {
-                    background-color: var(--accent-color-faded);
-                }
+                    #messx button.inactive {
+                        display: none;
+                    }
 
-                #messx .hamburger-btn img, 
-                #messx .close-btn img {
-                    width: 100%;
-                }
+                    #messx .hamburger-btn:hover, 
+                    #messx .close-btn:hover {
+                        background-color: var(--accent-color-faded);
+                    }
 
-                #messx .users {
-                    width: 200px;
-                    height: 100%;
+                    #messx .hamburger-btn img, 
+                    #messx .close-btn img {
+                        width: 100%;
+                    }
 
-                    background-color: var(--bg-color);
+                    #messx .users {
+                        width: 200px;
+                        height: 100%;
 
-                    padding: 10px;
+                        background-color: var(--bg-color);
 
-                    position: absolute;
-                    left: -200px;
+                        padding: 10px;
 
-                    overflow-y: auto;
-                    z-index: 1;
-                }
+                        position: absolute;
+                        left: -200px;
 
-                #messx .user {
-                    padding: 5px;
-                    width: 100%;
-                    height: 40px;
+                        overflow-y: auto;
+                        z-index: 1;
+                    }
 
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
+                    #messx .user {
+                        padding: 5px;
+                        width: 100%;
+                        height: 40px;
 
-                    cursor: pointer;
-                }
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
 
-                #messx .user:hover {
-                    background-color: var(--accent-color-faded);
-                }
+                        cursor: pointer;
+                    }
 
-                #messx .user img {
-                    height: 100%;
-                }
+                    #messx .user:hover {
+                        background-color: var(--accent-color-faded);
+                    }
 
-                #messx .messages-holder {
-                    width: calc(100% - 50px);
-                    height: 100%;
+                    #messx .user img {
+                        height: 100%;
+                    }
 
-                    float: right;
-                }
+                    #messx .messages-holder {
+                        width: calc(100% - 50px);
+                        height: 100%;
 
-                #messx .menu-user-title {
-                    width: 100%;
-                    height: 30px;
-                    padding: 7px;
+                        float: right;
+                    }
 
-                    display: flex;
-                    align-items: center;
+                    #messx .menu-user-title {
+                        width: 100%;
+                        height: 30px;
+                        padding: 7px;
 
-                    border-bottom: 1px solid var(--accent-color);
-                }
+                        display: flex;
+                        align-items: center;
 
-                #messx .messages {
-                    padding: 10px;
+                        border-bottom: 1px solid var(--accent-color);
+                    }
 
-                    width: 100%;
-                    height: calc(100% - 30px - 50px);
+                    #messx .messages {
+                        padding: 10px;
 
-                    overflow-y: auto;
+                        width: 100%;
+                        height: calc(100% - 30px - 50px);
+
+                        overflow-y: auto;
+                        
+                        display: flex;
+                        flex-direction: column;
+                        gap: 20px;
+
+                        position: relative;
+                    }
+
+                    #messx .message {
+                        width: 100%;
+
+                        display: flex;
+                        gap: 10px;
+                    }
+
+                    #messx .message-wrapper {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 5px;
+                    }
+
+                    #messx .message img {
+                        width: 40px;
+                        height: 40px;
+                    }
+
+                    #messx .name-date {
+                        display: flex;
+                        gap: 10px;
+                    }
+
+                    #messx .name-date small {
+                        color: gray;
+                    }
+
+                    #messx .textbox {
+                        width: 100%;
+                        height: 50px;
+                        padding: 10px;
+
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 10px;
+                    }
+
+                    #messx .textbox.inactive {
+                        display: none;
+                    }
+
+                    #messx .textbox input {
+                        flex-grow: 1;
+                    }
+
+                    #messx .option-box {
+                        width: 100%;
+                        height: 40px;
+
+                        display: flex;
+                        gap: 30px;
+
+                        padding: 0 20px;
+                    }
+
+                    #messx .option-box.inactive {
+                        display: none;
+                    }
                     
-                    display: flex;
-                    flex-direction: column;
-                    gap: 20px;
-
-                    position: relative;
-                }
-
-                #messx .message {
-                    width: 100%;
-
-                    display: flex;
-                    gap: 10px;
-                }
-
-                #messx .message-wrapper {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 5px;
-                }
-
-                #messx .message img {
-                    width: 40px;
-                    height: 40px;
-                }
-
-                #messx .name-date {
-                    display: flex;
-                    gap: 10px;
-                }
-
-                #messx .name-date small {
-                    color: gray;
-                }
-
-                #messx .textbox {
-                    width: 100%;
-                    height: 50px;
-                    padding: 10px;
-
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 10px;
-                }
-
-                #messx .textbox.inactive {
-                    display: none;
-                }
-
-                #messx .textbox input {
-                    flex-grow: 1;
-                }
-
-                #messx .option-box {
-                    width: 100%;
-                    height: 40px;
-
-                    display: flex;
-                    gap: 30px;
-
-                    padding: 0 20px;
-                }
-
-                #messx .option-box.inactive {
-                    display: none;
-                }
-                
-                #messx .option-box button {
-                    flex: 1;
-                }
-            </style>
-            <span slot="name">MessX</span>
-            <div id="messx">
-                <div class="users">
-                    
-                </div>
-                <div class="menu">
-                    <button class="hamburger-btn"><img src="./icons/Hamburger.png"></button>
-                    <button class="close-btn inactive"><img src="./icons/CloseButton.png"></button>
-                </div>
-                <div class="messages-holder">
-                    <div class="menu-user-title">
-
+                    #messx .option-box button {
+                        flex: 1;
+                    }
+                </style>
+                <span slot="name">MessX</span>
+                <div id="messx">
+                    <div class="users">
+                        
                     </div>
-                    <div class="messages">
-
+                    <div class="menu">
+                        <button class="hamburger-btn"><img src="./icons/Hamburger.png"></button>
+                        <button class="close-btn inactive"><img src="./icons/CloseButton.png"></button>
                     </div>
-                    <div class="option-box inactive">
+                    <div class="messages-holder">
+                        <div class="menu-user-title">
 
-                    </div>
-                    <div class="textbox inactive">
-                        <input type="text" class="textInput">
-                        <button class="send-btn">></button>
+                        </div>
+                        <div class="messages">
+
+                        </div>
+                        <div class="option-box inactive">
+
+                        </div>
+                        <div class="textbox inactive">
+                            <input type="text" class="textInput">
+                            <button class="send-btn">></button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
 
-        App.defaultValues(appComponent);
-        this.screen.prepend(appComponent);
-        const messx = new MessX(appComponent);
-        openedApps.push(messx);
+            App.defaultValues(appComponent);
+            this.screen.prepend(appComponent);
+            const messx = new MessX(appComponent);
+            apartment.pc.openedApps.push(messx);
 
-        const hamburgerBtn = appComponent.querySelector(".hamburger-btn");
-        const closeBtn = appComponent.querySelector(".close-btn");
-        const usersDiv = appComponent.querySelector(".users");
-        const menuDiv = appComponent.querySelector(".menu");
+            const hamburgerBtn = appComponent.querySelector(".hamburger-btn");
+            const closeBtn = appComponent.querySelector(".close-btn");
+            const usersDiv = appComponent.querySelector(".users");
+            const menuDiv = appComponent.querySelector(".menu");
 
-        function showUsers() {
-            hamburgerBtn.classList.add("inactive");
-            closeBtn.classList.remove("inactive");
+            function showUsers() {
+                hamburgerBtn.classList.add("inactive");
+                closeBtn.classList.remove("inactive");
 
-            menuDiv.animate([ { left: "0" }, { left: "200px" } ], { duration: 500, fill: "forwards", easing: "ease-out" });
-            usersDiv.animate([ { left: "-200px" }, { left: "0" } ], { duration: 500, fill: "forwards", easing: "ease-out" });
+                menuDiv.animate([ { left: "0" }, { left: "200px" } ], { duration: 500, fill: "forwards", easing: "ease-out" });
+                usersDiv.animate([ { left: "-200px" }, { left: "0" } ], { duration: 500, fill: "forwards", easing: "ease-out" });
+            }
+            hamburgerBtn.addEventListener("click", showUsers);
+
+            function hideUsers() {
+                closeBtn.classList.add("inactive");
+                hamburgerBtn.classList.remove("inactive");
+
+                menuDiv.animate([ { left: "200px" }, { left: "0" } ], { duration: 500, fill: "forwards", easing: "ease-out" });
+                usersDiv.animate([ { left: "0" }, { left: "-200px" } ], { duration: 500, fill: "forwards", easing: "ease-out" });
+            }
+            closeBtn.addEventListener("click", hideUsers);
+
+            MessX.refreshMessages();
+
+            const sendBtn = appComponent.querySelector(".send-btn");
+            const textInput = appComponent.querySelector(".textInput");
+
+            sendBtn.addEventListener("click", () => {
+                MessX.sendMessage(messx, textInput.value, textInput)
+            });
+            textInput.addEventListener("keypress", ( e ) => {
+                if (e.keyCode === 13) MessX.sendMessage(messx, textInput.value, textInput);
+            });
+        } else {
+            apartment.pc.openedApps.push(new MessX());
         }
-        hamburgerBtn.addEventListener("click", showUsers);
-
-        function hideUsers() {
-            closeBtn.classList.add("inactive");
-            hamburgerBtn.classList.remove("inactive");
-
-            menuDiv.animate([ { left: "200px" }, { left: "0" } ], { duration: 500, fill: "forwards", easing: "ease-out" });
-            usersDiv.animate([ { left: "0" }, { left: "-200px" } ], { duration: 500, fill: "forwards", easing: "ease-out" });
-        }
-        closeBtn.addEventListener("click", hideUsers);
-
-        MessX.refreshMessages();
-
-        const sendBtn = appComponent.querySelector(".send-btn");
-        const textInput = appComponent.querySelector(".textInput");
-
-        sendBtn.addEventListener("click", () => {
-            MessX.sendMessage(messx, textInput.value, textInput)
-        });
-        textInput.addEventListener("keypress", ( e ) => {
-            if (e.keyCode === 13) MessX.sendMessage(messx, textInput.value, textInput);
-        });
     }
 
-    static refreshMessages() {
-        openedApps.forEach(openedApp => {
+    static refreshMessages(apartment = Apartment.activeApartment) {
+        apartment.pc.openedApps.forEach(openedApp => {
             const appComponent = openedApp.window;
 
             const messx = appComponent.querySelector("#messx");
@@ -315,7 +320,7 @@ class MessX extends App {
             const menuDiv = appComponent.querySelector(".menu");
             
             const messagesEl = appComponent.querySelector(".messages");
-            const messages = Apartment.activeApartment.pc.messages;
+            const messages = apartment.pc.messages;
             usersDiv.innerHTML = "";
             Object.keys(messages).forEach(key => {
                 const div = document.createElement("div");
@@ -374,8 +379,8 @@ class MessX extends App {
         });
     }
 
-    static sendMessage(messx, description, textInput = null) {
-        const user = Apartment.activeApartment.pc.user;
+    static sendMessage(messx, description, textInput = null, apartment = Apartment.activeApartment) {
+        const user = apartment.pc.user;
         user.sendMessage(messx.userId, description);
 
         MessX.refreshMessages();

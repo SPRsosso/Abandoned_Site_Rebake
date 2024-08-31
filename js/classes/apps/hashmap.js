@@ -5,95 +5,100 @@ class HashMap extends App {
         { value: FileTypes.transmission, title: "Transmission", description: "Transmission security is great for securing your computer from loud attacks, for example via message cloning or via computer wiretapping"},
     ];
 
-    constructor(window) {
+    constructor(window = null) {
         super();
 
         this.window = window;
     }
 
-    static openApp() {
+    static openApp(apartment = Apartment.activeApartment) {
         const appComponent = document.createElement("app-component");
         
-        appComponent.innerHTML = /*html*/`
-            <style>
-                ${styles}
+        if (apartment = Apartment.activeApartment) {
+            appComponent.innerHTML = /*html*/`
+                <style>
+                    ${styles}
 
-                #hashmap {
-                    width: 100%;
-                    height: 100%;
+                    #hashmap {
+                        width: 100%;
+                        height: 100%;
 
-                    padding: 10px;
+                        padding: 10px;
 
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
 
-                #hashmap .cards {
-                    width: 60%;
-                    height: 100%;
+                    #hashmap .cards {
+                        width: 60%;
+                        height: 100%;
 
-                    border-right: 1px solid var(--accent-color);
-                    padding-right: 10px;
+                        border-right: 1px solid var(--accent-color);
+                        padding-right: 10px;
 
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 20px;
-                }
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 20px;
+                    }
 
-                #hashmap .card {
-                    width: 75px;
-                    height: 75px;
+                    #hashmap .card {
+                        width: 75px;
+                        height: 75px;
 
-                    border-radius: 10px;
-                    padding: 5px;
+                        border-radius: 10px;
+                        padding: 5px;
 
-                    cursor: pointer;
-                }
+                        cursor: pointer;
+                    }
 
-                #hashmap .card:hover {
-                    background-color: var(--accent-color-faded);
-                }
+                    #hashmap .card:hover {
+                        background-color: var(--accent-color-faded);
+                    }
 
-                #hashmap .card.active {
-                    background-color: var(--accent-color-faded);
-                }
+                    #hashmap .card.active {
+                        background-color: var(--accent-color-faded);
+                    }
 
-                #hashmap .card img {
-                    width: 100%;
-                    height: 100%;
-                }
+                    #hashmap .card img {
+                        width: 100%;
+                        height: 100%;
+                    }
 
-                #hashmap .information {
-                    width: 40%;
-                    height: 100%;
-                    padding: 10px;
+                    #hashmap .information {
+                        width: 40%;
+                        height: 100%;
+                        padding: 10px;
 
-                    position: relative;
-                }
+                        position: relative;
+                    }
 
-                #hashmap .download-btn {
-                    position: absolute;
-                    bottom: 0;
-                    right: 0;
-                }
+                    #hashmap .download-btn {
+                        position: absolute;
+                        bottom: 0;
+                        right: 0;
+                    }
 
-                #hashmap .information h3 {
-                    text-align: center;
-                }
-            </style>
-            <span slot="name"># Map</span>
-            <div id="hashmap">
-                
-            </div>
-        `;
+                    #hashmap .information h3 {
+                        text-align: center;
+                    }
+                </style>
+                <span slot="name"># Map</span>
+                <div id="hashmap">
+                    
+                </div>
+            `;
 
-        HashMap.ui(appComponent);
+            HashMap.ui(appComponent);
 
-        App.defaultValues(appComponent);
-        this.screen.prepend(appComponent);
-        openedApps.push(new HashMap(appComponent));
+            App.defaultValues(appComponent);
+            this.screen.prepend(appComponent);
+            apartment.pc.openedApps.push(new HashMap(appComponent));
+        } else {
+            apartment.pc.openedApps.push(new HashMap());
+        }
+        
     }
 
     static ui(app) {

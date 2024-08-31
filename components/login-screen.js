@@ -114,22 +114,9 @@ class LoginScreen extends HTMLElement {
         audio.volume = 0.3;
         audio.play();
         this.shadow.host.remove();
-
-        if (firstTimeInTheGame) messagesAfterLogin();
         
-        firstTimeInTheGame = false;
+        isGameStarted = true;
     }
 }
 
 customElements.define("login-screen", LoginScreen);
-
-if (Apartment.activeApartment.pc.on) {
-    openComputer();
-}
-
-function openComputer() {
-    const loginScreen = document.createElement("login-screen");
-    document.querySelector("main-screen").prepend(loginScreen);
-    
-    if (Apartment.activeApartment.pc.loggedIn) loginScreen.openComputer();
-}

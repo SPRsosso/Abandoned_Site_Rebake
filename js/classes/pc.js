@@ -83,6 +83,9 @@ class PC {
             activePorts: [],
         }
 
+        this.openedApps = [];
+
+        this.password = "";
         pcs.push(this);
     }
 
@@ -169,6 +172,8 @@ class PC {
             App.screen.prepend(loading);
 
             await wait(3000);
+
+            Apartment.activeApartment.pc.openedApps = [];
 
             App.screen.innerHTML = "";
             Apartment.activeApartment.pc.state = "open";

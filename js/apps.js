@@ -11,18 +11,3 @@ const apps = {
     Notepad,
     Canvas,
 };
-
-const openedApps = [];
-Apartment.activeApartment.pc.downloadedApps = {
-    CMD,
-    FileExplorer,
-    Calculator,
-    MessX,
-    Notepad,
-    Canvas,
-    Browser,
-    WiTracker,
-    HomeDefence,
-    HashMap,
-    Personide,
-}
