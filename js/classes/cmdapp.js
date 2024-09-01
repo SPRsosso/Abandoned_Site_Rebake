@@ -7,55 +7,58 @@ class CMDApp {
         CMD.log(cmd.window, "Default CMD App, not implemented yet!");
     }
 
-    static install(app, appName, system) {
+    static install(cmd, appName, system) {
+        const app = cmd.window;
         if (!Apartment.activeApartment.router.connectedWifi) {
             CMD.error(app, "No Wifi connected!");
             return;
         }
 
-        const appSize = 5000 / Apartment.activeApartment.router.connectedWifi.strength;
+        let name = "";
+        const currentOS = Apartment.activeApartment.pc.os;
+        switch (appName.toLowerCase()) {
+            case "portscanner":
+                switch(currentOS.system) {
+                    case "Streamline":
+                        switch(currentOS.version) {
+                            case "V":
+                                name = "portscanner";
+                                break;
+                            case "X":
+                                name = "portscan";
+                                break;
+                            default:
+                                name = "ps";
+                                break;
+                        }
+                        break;
+                }
+                break;
+            case "decoder":
+                switch(currentOS.system) {
+                    case "Streamline":
+                        switch(currentOS.version) {
+                            default:
+                                name = "decode";
+                                break;
+                        }
+                        break;
+                }
+                break;
+        }
+
+        if (Apartment.activeApartment.pc.os.commands[currentOS.system][currentOS.version][name]) {
+            CMD.error(app, "App already downloaded!");
+            return;
+        }
+
+        const appSize = 30000 / Apartment.activeApartment.router.connectedWifi.strength;
         return new Promise(async ( resolve, reject ) => {
             await App.wait(app, appSize * trojanMultiplier);
 
-            let name = "";
-            const currentOS = Apartment.activeApartment.pc.os
-            switch (appName.toLowerCase()) {
-                case "portscanner":
-
-                    switch(currentOS.system) {
-                        case "Streamline":
-
-                            switch(currentOS.version) {
-                                case "V":
-                                    name = "portscanner";
-                                    break;
-                                case "X":
-                                    name = "portscan";
-                                    break;
-                                default:
-                                    name = "ps";
-                                    break;
-                            }
-
-                            break;
-                    }
-
-                    break;
-                case "decoder":
-
-                    switch(currentOS.system) {
-                        case "Streamline":
-
-                            switch(currentOS.version) {
-                                default:
-                                    name = "decode";
-                                    break;
-                            }
-
-                            break;
-                    }
-
-                    break;
+            if (!Apartment.activeApartment.pc.openedApps.find(app => app == cmd)) {
+                resolve();
+                return;
             }
 
             Apartment.activeApartment.pc.os.commands[currentOS.system][currentOS.version][name] = system.cmdApps[appName].command;

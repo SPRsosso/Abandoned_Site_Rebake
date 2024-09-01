@@ -3,6 +3,7 @@ const phoneApps = {
     PhoneCrack,
     PhoneCalculator,
     PhoneNotes,
+    PhoneBank,
 }
 
 const openedPhoneApps = [];

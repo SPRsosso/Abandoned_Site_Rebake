@@ -1,4 +1,5 @@
 class PortScanner extends CMDApp {
+    static isFree = true;
     constructor() {
         super();
     }

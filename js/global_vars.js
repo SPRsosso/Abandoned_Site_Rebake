@@ -12,6 +12,9 @@ let anonymousUserMessageTick = 0;
 // Viruses
 let trojanMultiplier = 1;
 
+// Player
+const player = new Player();
+
 function wait(ms) {
     return new Promise(( resolve, reject ) => {
         setTimeout(() => {

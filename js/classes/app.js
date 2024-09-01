@@ -100,15 +100,34 @@ class App {
         });
     }
 
-    static downloadApp(app, appName, system, apartment = Apartment.activeApartment) {
+    static downloadApp(cmd, appName, system, apartment = Apartment.activeApartment) {
+        const app = cmd.window;
         if (!apartment.router.connectedWifi) {
             if (app) CMD.error(app, "No Wifi connected!");
             return;
         }
 
-        const appSize = 5000 / apartment.router.connectedWifi.strength;
+        // if (Object.keys(apartment.pc.downloadedApps).find(app => app === appName)) {
+        //     CMD.error(app, "App already downloaded!");
+        //     return;
+        // }
+
+        if (!system.apps[appName].isFree) {
+            if (player.boughtApps.constructor.name !== appName) {
+                CMD.error(app, "App is not bought!");
+                return;
+            }
+        }
+
+        const appSize = 30000 / apartment.router.connectedWifi.strength;
         return new Promise(async ( resolve, reject ) => {
             await App.wait(app, appSize * trojanMultiplier);
+
+            if (!apartment.pc.openedApps.find(app => app == cmd)) {
+                resolve();
+                return;
+            }
+
             apartment.pc.downloadedApps[appName] = system.apps[appName];
             App.getAppIcons();
 

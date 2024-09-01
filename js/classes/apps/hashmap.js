@@ -1,4 +1,6 @@
 class HashMap extends App {
+    static isFree = false;
+    static price = 21.49;
     static informations = [
         { value: FileTypes.firewall, title: "Firewall", description: "Firewall is great for securing your computer from standard attacks, for example via Wifi network or via pendrive" },
         { value: FileTypes.authorized, title: "Authorized", description: "Authorized security is great for securing your computer from unnoticed attacks, for example via computer merging or via computer scanning" },

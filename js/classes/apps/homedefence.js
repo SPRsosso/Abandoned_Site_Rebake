@@ -1,4 +1,6 @@
 class HomeDefence extends App {
+    static isFree = false;
+    static price = 14.99;
     constructor(window = null) {
         super();
 

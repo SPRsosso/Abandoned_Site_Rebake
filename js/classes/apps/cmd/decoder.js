@@ -1,4 +1,6 @@
 class Decoder extends CMDApp {
+    static isFree = false;
+    static price = 29.99;
     constructor() {
 
     }

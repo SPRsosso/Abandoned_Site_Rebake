@@ -1,4 +1,5 @@
 class CMD extends App {
+    static isFree = true;
     constructor(window = null) {
         super();
 

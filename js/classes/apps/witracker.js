@@ -1,4 +1,5 @@
 class WiTracker extends App {
+    static isFree = true;
     constructor(window = null) {
         super();
 

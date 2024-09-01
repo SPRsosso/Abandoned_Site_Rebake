@@ -11,6 +11,7 @@ class BrowserUser {
 }
 
 class Browser extends App {
+    static isFree = true;
     static users = [
         new BrowserUser("test123", "123", "Test", "123", 24, "Welcome to my Fit!", "Chive Apartment 301"),
         new BrowserUser("test456", "456", "Test", "456", 24, "Welcome to my Fit!", "Chive Apartment 301"),
@@ -298,7 +299,7 @@ class Browser extends App {
         wifis.forEach(wifi => {
             const wifiActivePorts = [];
             apartments.forEach(tApartment => {
-                if (tApartment.router.connectedWifi.ip !== wifi.ip) return;
+                if (tApartment.router.connectedWifi?.ip !== wifi.ip) return;
                 
                 tApartment.pc.openedApps.forEach(openedApp => {
                     if (openedApp.constructor.name !== "Browser") return;

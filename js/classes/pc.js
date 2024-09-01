@@ -21,6 +21,7 @@ class PC {
             MessX,
             Browser,
             Notepad,
+            Canvas,
         };
 
         const name = pc_names[Math.floor(Math.random() * pc_names.length)];
