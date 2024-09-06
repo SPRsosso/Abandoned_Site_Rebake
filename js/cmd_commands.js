@@ -561,6 +561,21 @@ const GLOBAL_COMMANDS = {
     forcepassword: async (tokenized, cmd, system) => {
         tokenized.shift();
 
+        const allowedFlags = [
+            { value: "wifi", output: "wifi"},
+            { value: "w", output: "wifi" },
+            { value: "adminpanel", output: "adminpanel" },
+            { value: "ap", output: "adminpanel" },
+        ]
+        const flagArray = CMD.getFlags(allowedFlags, tokenized);
+
+        let whatToForce;
+        flagArray.forEach(flag => {
+            whatToForce = flag;
+        });
+
+        removeFlags(tokenized);
+
         if (tokenized.length < 1) {
             CMD.error(cmd.window, "Needs at least 1 argument!");
             return;
@@ -573,6 +588,13 @@ const GLOBAL_COMMANDS = {
             return;
         }
 
+        let toCheck;
+        if (whatToForce === "adminpanel") {
+            toCheck = wifi.adminPanelPassword;
+        } else {
+            toCheck = wifi.password;
+        }
+
         await new Promise(async ( resolve, reject ) => {
             CMD.log(cmd.window, "Forcing password...");
 
@@ -581,13 +603,18 @@ const GLOBAL_COMMANDS = {
             let testPassword = "aa".split("");
             let passwordIndex = 0;
 
+            let intervalTicks = 0;
+            let interval = setInterval(() => {
+                intervalTicks++;
+            }, tps);
+
             while(true) {
                 let passStr = "";
                 testPassword.forEach(char => {
                     passStr += char;
                 });
 
-                if (passStr === wifi.password[passwordIndex] + wifi.password[passwordIndex + 1]) {
+                if (passStr === toCheck[passwordIndex] + toCheck[passwordIndex + 1]) {
                     testPassword.forEach(char => {
                         password += char
                     });
@@ -596,8 +623,10 @@ const GLOBAL_COMMANDS = {
                     testPassword = "aa".split("");
                 }
 
-                if (password === wifi.password) {
+                if (password === toCheck) {
                     CMD.log(cmd.window, `Password: ${password}`);
+                    CMD.log(cmd.window, `Time elapsed: ${tickstoms(intervalTicks)}ms`);
+                    clearInterval(interval);
                     resolve();
                     break;
                 }
@@ -611,6 +640,8 @@ const GLOBAL_COMMANDS = {
                             testPassword[j + 1] = Wifi.possibleChars[Wifi.possibleChars.indexOf(testPassword[j + 1]) + 1];
                     }
                 }
+
+                console.log(toCheck, password, testPassword);
 
                 if (i >= Wifi.possibleChars.length) {
                     i = 0;
@@ -684,6 +715,13 @@ const GLOBAL_COMMANDS = {
                 CMD.log(cmd.window, `${app} - ${Cronos.cmdApps[app].price} DigiCoins`);
             }
         });
+
+        CMD.log(cmd.window, "<br>");
+
+        CMD.log(cmd.window, "---Items---");
+        Object.keys(items).forEach(item => {
+            CMD.log(cmd.window, `${item} - ${items[item].price} DigiCoins`);
+        });
     },
     buy: (tokenized, cmd, syystem) => {
         tokenized.shift();
@@ -708,27 +746,48 @@ const GLOBAL_COMMANDS = {
         Object.keys(Cronos.cmdApps).forEach(app => {
             if (app.toLowerCase() === appName.toLowerCase()) name = app;
         });
+        Object.keys(items).forEach(item => {
+            if (item.toLowerCase() === appName.toLowerCase()) name = item;
+        });
 
         const app = apps[name] || Streamline.cmdApps[name] || NeoX.cmdApps[name] || Cronos.cmdApps[name];
+        const item = items[name];
 
-        if (!app) {
-            CMD.error(cmd.window, "App not found");
+        if (!app && !item) {
+            CMD.error(cmd.window, "App or item not found");
             return;
         }
 
-        if (app.isFree) {
-            CMD.log(cmd.window, "App is free");
-            return;
+        if (app) {
+            if (player.boughtApps[name]) {
+                CMD.error(cmd.window, "You have already bought this app");
+                return;
+            }
+    
+            if (app.isFree) {
+                return;
+            }
+    
+            if (app.price > player.digiCoins) {
+                CMD.error(cmd.window, "Not enough DigiCoins to buy app: " + name);
+                return;
+            }
+    
+            CMD.log(cmd.window, name + " bought!");
+            player.digiCoins -= app.price;
+            player.boughtApps[name] = app;
         }
 
-        if (app.price > player.digiCoins) {
-            CMD.error(cmd.window, "Not enough DigiCoins to buy app: " + name);
-            return;
+        if (item) {
+            if (item.price > player.digiCoins) {
+                CMD.error(cmd.window, "Not enough DigiCoins to buy app: " + name);
+                return;
+            }
+    
+            CMD.log(cmd.window, name + " bought!");
+            player.digiCoins -= item.price;
+            player.boughtItems.push(new item());
         }
-
-        CMD.log(cmd.window, name + " bought!");
-        player.digiCoins -= app.price;
-        player.boughtApps.push(app);
     },
 }
 
@@ -763,6 +822,8 @@ const OS = {
                     <p>alocate *packets* *command* - Alocates packets with given command</p>
                     <p>codetable - Returns table of code contents</p>
                     <p>forcepassword *wifi ip* - Brute forces the Wifi password and gives 2 outputs</p>
+                    <p>shop - Returns shop items</p>
+                    <p>buy *appname* - Buys app</p>
                 `);
             },
             downapp: async (tokenized, cmd) => {

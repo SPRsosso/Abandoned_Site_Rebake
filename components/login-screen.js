@@ -110,9 +110,12 @@ class LoginScreen extends HTMLElement {
         `;
         App.getAppIcons();
 
-        const audio = new Audio("./sounds/Login.mp3");
-        audio.volume = 0.3;
-        audio.play();
+        if(isInteracted) {
+            const audio = new Audio("./sounds/Login.mp3");
+            audio.volume = 0.3;
+            audio.play();
+        }
+        
         this.shadow.host.remove();
         
         isGameStarted = true;

@@ -1,7 +1,7 @@
 class Octron extends AdminPanel {
     static ip = wifiCompanies[1].adminPanelIp;
     static dns = wifiCompanies[1].adminPanelIp;
-    static port = 1001;
+    static port = null;
     static info = {
         state: "private",
         access: "wificompany",
@@ -13,10 +13,11 @@ class Octron extends AdminPanel {
             <nav>
                 <h3>${wifiCompanies[1].name} Admin Panel</h3>
             </nav>
-            <div class="main">
+            <div class="main" onload="Octron.keydownLogin(this)">
                 <input type="text" placeholder="Nickname...">
                 <input type="password" placeholder="Password...">
-                <button onclick="Octron.login()">Log in</button>
+                <button onclick="Octron.login(this)">Log in</button>
+                <p id="err"></p>
             </div>
         </div>
     `;

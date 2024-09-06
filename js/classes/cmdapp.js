@@ -52,6 +52,13 @@ class CMDApp {
             return;
         }
 
+        if (!system.cmdApps[appName].isFree) {
+            if (!player.boughtApps[appName]) {
+                CMD.error(app, "App is not bought!");
+                return;
+            }
+        }
+
         const appSize = 30000 / Apartment.activeApartment.router.connectedWifi.strength;
         return new Promise(async ( resolve, reject ) => {
             await App.wait(app, appSize * trojanMultiplier);

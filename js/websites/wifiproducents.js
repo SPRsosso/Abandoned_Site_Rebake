@@ -1,7 +1,7 @@
 class Wifiproducents {
     static ip = "198.32.15.143";
     static dns = "wifiproducents.com";
-    static port = 93;
+    static port = null;
     static info = { 
         state: "public"
     };

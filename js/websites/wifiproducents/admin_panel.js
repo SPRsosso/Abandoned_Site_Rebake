@@ -15,19 +15,21 @@ class AdminPanel {
     static login(btnEl) {
         const main = btnEl.parentElement;
 
-        const nicknameEl = main.querySelector("#nickname");
-        const passwordEl = main.querySelector("#password");
+        const elements = main.querySelectorAll("input");
+        const nicknameEl = elements[0];
+        const passwordEl = elements[1];
         const errEl = main.querySelector("#err");
 
-        console.log(this.name);
-
-        if (nicknameEl.value !== wifiCompanies.find(company => company.name === this.name).adminPanelNickname 
+        if (!wifiCompanies.find(company => company.adminPanelNickname === nicknameEl.value)
             ||
             passwordEl.value !== Apartment.activeApartment.router.connectedWifi.adminPanelPassword) {
-            
+
             errEl.innerHTML = "Nickname or password is incorrect!";
             return;
         }
+
+        var new_element = main.cloneNode(true);
+        main.parentNode.replaceChild(new_element, main);
 
         const connectedPCs = AdminPanel.getConnectedPCs();
         let connectedPCsList = "";
@@ -42,5 +44,25 @@ class AdminPanel {
             </ul>
         `;
         main.classList.add("pcs");
+    }
+
+    static keydownLogin(obj) {
+        console.log("loaded!");
+        let keyPushed = false;
+        obj.addEventListener("keydown", (e) => {
+            if (e.keyCode !== 13 || keyPushed) return;
+
+            keyPushed = true;
+
+            const button = obj.querySelector("button");
+            console.log(button);
+            this.login(button);
+        });
+
+        obj.addEventListener("keyup", (e) => {
+            if (e.keyCode !== 13) return;
+            
+            keyPushed = false;
+        });
     }
 }

@@ -1,5 +1,6 @@
 // Game starts the first time that the user logs in to the computer
 let isGameStarted = false;
+let isInteracted = false;
 
 // Game ticks
 const ticks = 20;

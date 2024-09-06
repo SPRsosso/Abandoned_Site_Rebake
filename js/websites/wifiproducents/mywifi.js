@@ -1,7 +1,7 @@
 class Mywifi extends AdminPanel {
     static ip = wifiCompanies[4].adminPanelIp;
     static dns = wifiCompanies[4].adminPanelIp;
-    static port = 1004;
+    static port = null;
     static info = {
         state: "private",
         access: "wificompany",
@@ -13,10 +13,11 @@ class Mywifi extends AdminPanel {
             <nav>
                 <h3>${wifiCompanies[4].name} Admin Panel</h3>
             </nav>
-            <div class="main">
+            <div class="main" onload="Mywifi.keydownLogin(this)">
                 <input type="text" placeholder="Nickname...">
                 <input type="password" placeholder="Password...">
-                <button onclick="Mywifi.login()">Log in</button>
+                <button onclick="Mywifi.login(this)">Log in</button>
+                <p id="err"></p>
             </div>
         </div>
     `;

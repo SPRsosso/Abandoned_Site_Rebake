@@ -1,7 +1,7 @@
 class Perfit {
     static ip = "196.92.211.11";
     static dns = "perfit.com";
-    static port = 80;
+    static port = null;
     static info = { 
         state: "public"
     };

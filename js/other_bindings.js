@@ -5,3 +5,7 @@ addEventListener("click", () => {
         dropdown.remove();
     });
 });
+
+addEventListener("mousedown", () => {
+    isInteracted = true;
+});

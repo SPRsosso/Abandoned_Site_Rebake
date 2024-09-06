@@ -1,7 +1,7 @@
 class Netfinity extends AdminPanel {
     static ip = wifiCompanies[0].adminPanelIp;
     static dns = wifiCompanies[0].adminPanelIp;
-    static port = 1000;
+    static port = null;
     static info = {
         state: "private",
         access: "wificompany",
@@ -13,9 +13,9 @@ class Netfinity extends AdminPanel {
             <nav>
                 <h3>${wifiCompanies[0].name} Admin Panel</h3>
             </nav>
-            <div class="main">
-                <input type="text" id="nickname" placeholder="Nickname...">
-                <input type="password" id="password" placeholder="Password...">
+            <div class="main" onload="Netfinity.keydownLogin(this)">
+                <input type="text" placeholder="Nickname...">
+                <input type="password" placeholder="Password...">
                 <button onclick="Netfinity.login(this)">Log in</button>
                 <p id="err"></p>
             </div>

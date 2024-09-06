@@ -1,7 +1,7 @@
 class SeagulNetworks extends AdminPanel {
     static ip = wifiCompanies[3].adminPanelIp;
     static dns = wifiCompanies[3].adminPanelIp;
-    static port = 1003;
+    static port = null;
     static info = {
         state: "private",
         access: "wificompany",
@@ -13,10 +13,11 @@ class SeagulNetworks extends AdminPanel {
             <nav>
                 <h3>${wifiCompanies[3].name} Admin Panel</h3>
             </nav>
-            <div class="main">
+            <div class="main" onload="SeagulNetworks.keydownLogin(this)">
                 <input type="text" placeholder="Nickname...">
                 <input type="password" placeholder="Password...">
-                <button onclick="SeagulNetworks.login()">Log in</button>
+                <button onclick="SeagulNetworks.login(this)">Log in</button>
+                <p id="err"></p>
             </div>
         </div>
     `;

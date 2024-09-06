@@ -107,13 +107,13 @@ class App {
             return;
         }
 
-        // if (Object.keys(apartment.pc.downloadedApps).find(app => app === appName)) {
-        //     CMD.error(app, "App already downloaded!");
-        //     return;
-        // }
+        if (Object.keys(apartment.pc.downloadedApps).find(app => app === appName)) {
+            CMD.error(app, "App already downloaded!");
+            return;
+        }
 
         if (!system.apps[appName].isFree) {
-            if (player.boughtApps.constructor.name !== appName) {
+            if (!player.boughtApps[appName]) {
                 CMD.error(app, "App is not bought!");
                 return;
             }

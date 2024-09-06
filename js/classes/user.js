@@ -52,8 +52,10 @@ class User {
         `;
         App.screen.append(messageEl);
 
-        const notificationSound = new Audio("./sounds/Notification.mp3");
-        notificationSound.volume = 1;
-        notificationSound.play();
+        if (isInteracted) {
+            const notificationSound = new Audio("./sounds/Notification.mp3");
+            notificationSound.volume = 1;
+            notificationSound.play();
+        }
     }
 }

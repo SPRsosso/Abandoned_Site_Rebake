@@ -2,7 +2,8 @@ class Player {
     #digiCoins;
     constructor() {
         this.#digiCoins = 0;
-        this.boughtApps = [];
+        this.boughtApps = {};
+        this.boughtItems = [];
     }
 
     get digiCoins() {

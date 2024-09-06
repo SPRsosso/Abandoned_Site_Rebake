@@ -31,7 +31,7 @@ class Wifi {
         this.company = wifiCompanies[Math.floor(Math.random() * wifiCompanies.length)];
         // this.company = wifiCompanies[0];
 
-        this._maxAdminPanelPasswordLength = 7;
+        this._maxAdminPanelPasswordLength = 6;
         this.adminPanelPassword = "";
         for (let i = 0; i < this._maxAdminPanelPasswordLength; i++)
             this.adminPanelPassword += Wifi.possibleChars[Math.floor(Math.random() * Wifi.possibleChars.length)];

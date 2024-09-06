@@ -23,7 +23,7 @@ class Browser extends App {
         this.window = window;
         this.historyPointer = 0;
         this.history = [""];
-        this.activePort = 0;
+        this.activePort = BlankPage.port;
     }
 
     static openApp(apartment = Apartment.activeApartment) {
@@ -336,8 +336,13 @@ class Browser extends App {
                             if (websites[website].port !== activePort.port) return;
     
                             const parsedSite = websites[website].site.replace(/[^A-Za-z0-9]+/g, " ");
-                                
-                            packets = `site ${parsedSite} wifipassword ${wifi.password} wifiname ${wifi.name}`;
+                            
+                            let adminPanelPassword = "";
+                            for (let i = 0; i < wifi.adminPanelPassword.length; i++) {
+                                adminPanelPassword += hashChar(wifi.adminPanelPassword[i], apartment);
+                            }
+
+                            packets = `site ${parsedSite} adminpanelpassword ${adminPanelPassword} wifipassword ${wifi.password} wifiname ${wifi.name}`;
                         });
                         pc.packets = packets;
                     }
