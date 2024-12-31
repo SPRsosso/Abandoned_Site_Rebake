@@ -80,8 +80,7 @@ class PC {
         this.state = "open";
 
         this.browser = {
-            loggedAs: null,
-            activePorts: [],
+            sessions: [],
         }
 
         this.openedApps = [];

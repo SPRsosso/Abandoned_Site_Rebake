@@ -17,7 +17,7 @@ class PortScanner extends CMDApp {
         flagArray.forEach(flag => {
             switch (flag) {
                 case "help":
-                    CMD.log(cmd.window, "portscanner *wifi_ip* *from* *to* <br> *wifi_ip* - Wifi IP to be scanned <br> *from* - from port <br> *to* - to port");
+                    CMD.log(cmd.window, "portscanner *sender_ip* *from* *to* <br> *sender_ip* - Sender IP to be scanned, sender is the PC/Server that sent connection request <br> *from* - from port <br> *to* - to port");
 
                     helpFlag = true;
                     break;
@@ -31,7 +31,7 @@ class PortScanner extends CMDApp {
             return;
         }
 
-        const wifiIP = tokenized.shift().value;
+        const senderIP = tokenized.shift().value;
         const from = tokenized.shift().value;
         const to = tokenized.shift().value;
 
@@ -40,10 +40,10 @@ class PortScanner extends CMDApp {
             return;
         }
 
-        const wifi = wifis.find(wifi => wifi.ip === wifiIP);
+        const connection = Web.connections.find(conn => conn.sender === senderIP);
 
-        if (!wifi) {
-            CMD.error(cmd.window, "Wifi IP not found");
+        if (!connection) {
+            CMD.error(cmd.window, "Sender IP not found");
             return;
         }
 
@@ -64,7 +64,7 @@ class PortScanner extends CMDApp {
                     break;
                 }
 
-                if (wifi.activePorts.find(portInfo => portInfo.port == i)) CMD.log(cmd.window, i);
+                if (connection.port === i) CMD.log(cmd.window, i);
 
                 i++;
 

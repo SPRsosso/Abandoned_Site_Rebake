@@ -35,21 +35,3 @@ document.querySelector("sticky-note").innerHTML = `<p style="color: black;">Wifi
 if (Apartment.activeApartment.pc.on) {
     openComputer();
 }
-
-// Randomize website ports
-Object.keys(websites).forEach(website => {
-    let randInt, still;
-
-    do {
-        randInt = randomInt(0, 1000);
-        still = false;
-
-        Object.keys(websites).forEach(name => {
-            if (websites[name].port === randInt) {
-                still = true;
-            }
-        });
-    } while(still);
-    
-    websites[website].port = randInt;
-});

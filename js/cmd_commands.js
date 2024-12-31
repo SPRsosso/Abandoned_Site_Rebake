@@ -641,8 +641,6 @@ const GLOBAL_COMMANDS = {
                     }
                 }
 
-                console.log(toCheck, password, testPassword);
-
                 if (i >= Wifi.possibleChars.length) {
                     i = 0;
                 }
