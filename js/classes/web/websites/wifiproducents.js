@@ -1,8 +1,7 @@
-class Wifiproducents {
+class Wifiproducents extends Website {
     static ip = "198.32.15.143";
     static dns = "wifiproducents.com";
-    static port = 93;
-    static info = { 
+    static info = {
         state: "public"
     };
     static site = /*html*/`

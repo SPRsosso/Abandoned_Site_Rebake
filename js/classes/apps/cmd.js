@@ -1,4 +1,5 @@
 class CMD extends App {
+    static isFree = true;
     constructor(window = null) {
         super();
 
@@ -141,10 +142,6 @@ class CMD extends App {
     }
 
     async executeCommand(command) {
-        function isFlag(flag) {
-            return flag.type == TokenType.Flag;
-        }
-
         const mainScreen = this.window.querySelector("#cmd");
         
         this.lines.shift();

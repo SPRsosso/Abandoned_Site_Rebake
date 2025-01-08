@@ -4,7 +4,7 @@ class PhoneComponent extends HTMLElement {
 
         this.shadow = this.attachShadow({ mode: "open" });
         this.barHeight = 50;
-        this.shadow.innerHTML = `
+        this.shadow.innerHTML = /*html*/`
             <style>
                 #phone {
                     width: 300px;
@@ -48,7 +48,6 @@ class PhoneComponent extends HTMLElement {
 
                 #app-grid {
                     width: 100%;
-                    height: calc(100% - ${this.barHeight}px);
 
                     display: grid;
                     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -65,16 +64,16 @@ class PhoneComponent extends HTMLElement {
                 </div>
             </div>
         `;
-        let time = 100;
+        let time = 300;
         if (navigator.userAgent.match(/Android/i)
-         || navigator.userAgent.match(/webOS/i)
-         || navigator.userAgent.match(/iPhone/i)
-         || navigator.userAgent.match(/iPad/i)
-         || navigator.userAgent.match(/iPod/i)
-         || navigator.userAgent.match(/BlackBerry/i)
-         || navigator.userAgent.match(/Windows Phone/i))
-          time = 200;
-          
+            || navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgent.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i))
+            time = 500;
+
         setTimeout(() => {
             PhoneApp.showAppIcons(this.shadow);
         }, time);

@@ -23,11 +23,20 @@ class PhoneAppIcon extends HTMLElement {
             case "PhoneNotes":
                 appShowName = "Notes";
                 break;
+            case "PhoneBank":
+                appShowName = "Bank";
+                break;
         }
 
-        this.shadow.innerHTML = `
+        this.shadow.innerHTML = /*html*/`
             <style>
                 ${styles}
+
+                :host {
+                    height: max-content;
+                    display: grid;
+                    place-items: center;
+                }
 
                 #icon {
                     width: ${barHeight - 10}px;

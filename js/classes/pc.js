@@ -21,6 +21,7 @@ class PC {
             MessX,
             Browser,
             Notepad,
+            Canvas,
         };
 
         const name = pc_names[Math.floor(Math.random() * pc_names.length)];
@@ -79,8 +80,7 @@ class PC {
         this.state = "open";
 
         this.browser = {
-            loggedAs: null,
-            activePorts: [],
+            sessions: [],
         }
 
         this.openedApps = [];

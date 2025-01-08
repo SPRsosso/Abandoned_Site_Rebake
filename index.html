@@ -21,6 +21,7 @@
 
     <script src="./js/sound.js"></script>
 
+    <!-- COMPONENTS -->
     <script src="./components/main-options.js"></script>
     <script src="./components/main-screen.js"></script>
     <script src="./components/main-bar.js"></script>
@@ -47,6 +48,10 @@
     <script defer src="./js/classes/user.js"></script>
     <script defer src="./js/classes/pc.js"></script>
     <script defer src="./js/classes/anonymous_user.js"></script>
+    <script defer src="./js/classes/web/browser_user.js"></script>
+    <script defer src="./js/classes/web/connection.js"></script>
+    <script defer src="./js/classes/web/packet.js"></script>
+    <script defer src="./js/classes/web/website.js"></script>
     
     <script defer src="./js/classes/app.js"></script>
     <script defer src="./js/classes/cmdapp.js"></script>
@@ -70,22 +75,23 @@
     <script defer src="./js/classes/apps/cmd/decoder.js"></script>
     
     <!-- WEBSITES -->
-    <script defer src="./js/websites/404.js"></script>
-    <script defer src="./js/websites/perfit.js"></script>
-    <script defer src="./js/websites/wifiproducents.js"></script>
-    <script defer src="./js/websites/blankpage.js"></script>
+    <script defer src="./js/classes/web/websites/404.js"></script>
+    <script defer src="./js/classes/web/websites/perfit.js"></script>
+    <script defer src="./js/classes/web/websites/wifiproducents.js"></script>
+    <script defer src="./js/classes/web/websites/blankpage.js"></script>
 
     <!-- ADMIN PANELS -->
-    <script defer src="./js/websites/wifiproducents/admin_panel.js"></script>
+    <script defer src="./js/classes/web/websites/wifiproducents/admin_panel.js"></script>
 
-    <script defer src="./js/websites/wifiproducents/netfinity.js"></script>
-    <script defer src="./js/websites/wifiproducents/octron.js"></script>
-    <script defer src="./js/websites/wifiproducents/easyconnect.js"></script>
-    <script defer src="./js/websites/wifiproducents/seagulnetworks.js"></script>
-    <script defer src="./js/websites/wifiproducents/mywifi.js"></script>
-    <script defer src="./js/websites/wifiproducents/wirelink.js"></script>
+    <script defer src="./js/classes/web/websites/wifiproducents/netfinity.js"></script>
+    <script defer src="./js/classes/web/websites/wifiproducents/octron.js"></script>
+    <script defer src="./js/classes/web/websites/wifiproducents/easyconnect.js"></script>
+    <script defer src="./js/classes/web/websites/wifiproducents/seagulnetworks.js"></script>
+    <script defer src="./js/classes/web/websites/wifiproducents/mywifi.js"></script>
+    <script defer src="./js/classes/web/websites/wifiproducents/wirelink.js"></script>
 
-    <script defer src="./js/websites/websites.js"></script>
+    <!-- THE WEB -->
+    <script defer src="./js/classes/web/web.js"></script>
 
 
     <!-- SYSTEMS -->
@@ -114,10 +120,17 @@
     <script defer src="./js/phone/apps/phonecrack.js"></script>
     <script defer src="./js/phone/apps/phonecalculator.js"></script>
     <script defer src="./js/phone/apps/phonenotes.js"></script>
+    <script defer src="./js/phone/apps/phonebank.js"></script>
     <script defer src="./js/phone/phoneapps.js"></script>
     <script defer src="./js/phone/openphone.js"></script>
 
+    <!-- ITEMS -->
+    <script src="./js/classes/items/digiminer.js"></script>
+
     <!-- MAIN FILES -->
+    <script src="./js/classes/player.js"></script>
+    <script src="./js/browser_observer.js"></script>
+    <script defer src="./js/items.js"></script>
     <script src="./js/global_vars.js"></script>
     <script defer src="./js/setup.js"></script>
     <script defer src="./js/main.js"></script>
@@ -130,12 +143,7 @@
     <main>
         <main-options red="App.closeAllApps()" yellow="FullscreenWindow.maximizeWindow()" green="PC.shutdown()">Abandoned Site: Rebake</main-options>
         <main-screen>
-            <!-- <div class="loading">
 
-            </div> -->
-            <!-- <main-bar slot="bar">
-                <app-icon icon-path="./icons/CMD.png" app-name="CMD"></app-icon>
-            </main-bar> -->
         </main-screen>
     </main>
 

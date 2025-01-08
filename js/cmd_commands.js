@@ -113,9 +113,14 @@ const GLOBAL_COMMANDS = {
     },
     cdir: (tokenized, cmd) => {
         tokenized.shift();
-        // debugger;
+        
         while(tokenized.length > 0) {
             const path = tokenized[0].value;
+
+            if (path == "/") {
+                tokenized.shift();
+                continue;
+            }
 
             if (path == ".." && cmd.path.length > 0) {
                 const pathArray = cmd.path.split("/");
@@ -139,8 +144,12 @@ const GLOBAL_COMMANDS = {
                     })?.name;
                 }
                     
-                if (foundFolder)
+                if (!foundFolder) {
+                    CMD.error(cmd.window, "Couldn't find folder: " + path);
+                } else {
                     cmd.path += `/${foundFolder}`;
+                }
+
             }
 
             tokenized.shift();
@@ -404,7 +413,7 @@ const GLOBAL_COMMANDS = {
         });
 
         if (system.cmdApps[string])
-            await CMDApp.install(cmd.window, string, system);
+            await CMDApp.install(cmd, string, system);
         else
             CMD.error(cmd.window, "App does not exist: " + string);
     },
@@ -427,6 +436,12 @@ const GLOBAL_COMMANDS = {
         const fileName = tokenized.shift().value;
 
         const pathFiles = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+
+        if (pathFiles.name) {
+            CMD.error(cmd.window, "Cannot edit file in this path");
+            return;
+        }
+
         const foundFile = pathFiles.find(file => {
             return file.name === fileName && (file.constructor.name === "ComputerFile" || file.constructor.name === "ImageFile");
         });
@@ -457,7 +472,7 @@ const GLOBAL_COMMANDS = {
         });
 
         if (system.apps[string])
-            await App.downloadApp(cmd.window, string, system);
+            await App.downloadApp(cmd, string, system);
         else
             CMD.error(cmd.window, "App does not exist: " + string);
     },
@@ -546,6 +561,21 @@ const GLOBAL_COMMANDS = {
     forcepassword: async (tokenized, cmd, system) => {
         tokenized.shift();
 
+        const allowedFlags = [
+            { value: "wifi", output: "wifi"},
+            { value: "w", output: "wifi" },
+            { value: "adminpanel", output: "adminpanel" },
+            { value: "ap", output: "adminpanel" },
+        ]
+        const flagArray = CMD.getFlags(allowedFlags, tokenized);
+
+        let whatToForce;
+        flagArray.forEach(flag => {
+            whatToForce = flag;
+        });
+
+        removeFlags(tokenized);
+
         if (tokenized.length < 1) {
             CMD.error(cmd.window, "Needs at least 1 argument!");
             return;
@@ -558,6 +588,13 @@ const GLOBAL_COMMANDS = {
             return;
         }
 
+        let toCheck;
+        if (whatToForce === "adminpanel") {
+            toCheck = wifi.adminPanelPassword;
+        } else {
+            toCheck = wifi.password;
+        }
+
         await new Promise(async ( resolve, reject ) => {
             CMD.log(cmd.window, "Forcing password...");
 
@@ -566,13 +603,18 @@ const GLOBAL_COMMANDS = {
             let testPassword = "aa".split("");
             let passwordIndex = 0;
 
+            let intervalTicks = 0;
+            let interval = setInterval(() => {
+                intervalTicks++;
+            }, tps);
+
             while(true) {
                 let passStr = "";
                 testPassword.forEach(char => {
                     passStr += char;
                 });
 
-                if (passStr === wifi.password[passwordIndex] + wifi.password[passwordIndex + 1]) {
+                if (passStr === toCheck[passwordIndex] + toCheck[passwordIndex + 1]) {
                     testPassword.forEach(char => {
                         password += char
                     });
@@ -581,8 +623,10 @@ const GLOBAL_COMMANDS = {
                     testPassword = "aa".split("");
                 }
 
-                if (password === wifi.password) {
+                if (password === toCheck) {
                     CMD.log(cmd.window, `Password: ${password}`);
+                    CMD.log(cmd.window, `Time elapsed: ${tickstoms(intervalTicks)}ms`);
+                    clearInterval(interval);
                     resolve();
                     break;
                 }
@@ -620,10 +664,16 @@ const GLOBAL_COMMANDS = {
             CMD.error(cmd.window, "Needs at least 1 argument!");
             return;
         }
-      
+
         const fileName = tokenized.shift().value;
 
         const pathFiles = Apartment.activeApartment.pc.get(cmd.path.replace("/", ""));
+
+        if (pathFiles.name) {
+            CMD.error(cmd.window, "Cannot edit file in this path");
+            return;
+        }
+
         const foundFile = pathFiles.find(file => {
             return file.name === fileName && file.constructor.name === "ImageFile";
         });
@@ -634,6 +684,108 @@ const GLOBAL_COMMANDS = {
         }
 
         Canvas.openApp(foundFile);
+    },
+    shop: (tokenized, cmd, system) => {
+        tokenized.shift();
+
+        CMD.log(cmd.window, "---Apps---");
+        Object.keys(apps).forEach(app => {
+            if (!apps[app].isFree) {
+                CMD.log(cmd.window, `${app} - ${apps[app].price} DigiCoins`);
+            }
+        });
+
+        CMD.log(cmd.window, "<br>");
+        
+        CMD.log(cmd.window, "---CMD Apps---");
+        Object.keys(Streamline.cmdApps).forEach(app => {
+            if (!Streamline.cmdApps[app].isFree) {
+                CMD.log(cmd.window, `${app} - ${Streamline.cmdApps[app].price} DigiCoins`);
+            }
+        });
+        Object.keys(NeoX.cmdApps).forEach(app => {
+            if (!NeoX.cmdApps[app].isFree) {
+                CMD.log(cmd.window, `${app} - ${NeoX.cmdApps[app].price} DigiCoins`);
+            }
+        });
+        Object.keys(Cronos.cmdApps).forEach(app => {
+            if (!Cronos.cmdApps[app].isFree) {
+                CMD.log(cmd.window, `${app} - ${Cronos.cmdApps[app].price} DigiCoins`);
+            }
+        });
+
+        CMD.log(cmd.window, "<br>");
+
+        CMD.log(cmd.window, "---Items---");
+        Object.keys(items).forEach(item => {
+            CMD.log(cmd.window, `${item} - ${items[item].price} DigiCoins`);
+        });
+    },
+    buy: (tokenized, cmd, syystem) => {
+        tokenized.shift();
+
+        if (tokenized.length < 1) {
+            CMD.error(cmd.window, "Needs at least 1 argument!");
+            return;
+        }
+
+        const appName = tokenized.shift().value;
+
+        let name = "";
+        Object.keys(apps).forEach(app => {
+            if (app.toLowerCase() === appName.toLowerCase()) name = app;
+        });
+        Object.keys(Streamline.cmdApps).forEach(app => {
+            if (app.toLowerCase() === appName.toLowerCase()) name = app;
+        });
+        Object.keys(NeoX.cmdApps).forEach(app => {
+            if (app.toLowerCase() === appName.toLowerCase()) name = app;
+        });
+        Object.keys(Cronos.cmdApps).forEach(app => {
+            if (app.toLowerCase() === appName.toLowerCase()) name = app;
+        });
+        Object.keys(items).forEach(item => {
+            if (item.toLowerCase() === appName.toLowerCase()) name = item;
+        });
+
+        const app = apps[name] || Streamline.cmdApps[name] || NeoX.cmdApps[name] || Cronos.cmdApps[name];
+        const item = items[name];
+
+        if (!app && !item) {
+            CMD.error(cmd.window, "App or item not found");
+            return;
+        }
+
+        if (app) {
+            if (player.boughtApps[name]) {
+                CMD.error(cmd.window, "You have already bought this app");
+                return;
+            }
+    
+            if (app.isFree) {
+                return;
+            }
+    
+            if (app.price > player.digiCoins) {
+                CMD.error(cmd.window, "Not enough DigiCoins to buy app: " + name);
+                return;
+            }
+    
+            CMD.log(cmd.window, name + " bought!");
+            player.digiCoins -= app.price;
+            player.boughtApps[name] = app;
+        }
+
+        if (item) {
+            if (item.price > player.digiCoins) {
+                CMD.error(cmd.window, "Not enough DigiCoins to buy app: " + name);
+                return;
+            }
+    
+            CMD.log(cmd.window, name + " bought!");
+            player.digiCoins -= item.price;
+            player.boughtItems.push(new item());
+        }
     },
 }
 
@@ -656,8 +808,10 @@ const OS = {
                     <p>dirlist - Directory list</p>
                     <p>cdir *path* - Changes directory to selected path</p>
                     <p>createfile *filename* *filetype* - Creates file in current directory</p>
-                    <p>deletefile *filename* - Deletes file in current directory</p>
+                    <p>createimage *filename* - Creates new image file in current directory</p>
+                    <p>deletefile *filename* - Deletes file or image in current directory</p>
                     <p>editfile *filename* - Opens a new instance of Notepad with file edit</p>
+                    <p>paint *filename* - Opens new instance of Canvas with file paint</p>
                     <p>createdir *dirname* - Creates new directory (folder) in current directory</p>
                     <p>deletedir *dirname* - Deletes new directory (folder) in current directory</p>
                     <p>pingpc *computer ip* *packet size* *pings* - Pings computer with desired packet size</p>
@@ -666,6 +820,8 @@ const OS = {
                     <p>alocate *packets* *command* - Alocates packets with given command</p>
                     <p>codetable - Returns table of code contents</p>
                     <p>forcepassword *wifi ip* - Brute forces the Wifi password and gives 2 outputs</p>
+                    <p>shop - Returns shop items</p>
+                    <p>buy *appname* - Buys app</p>
                 `);
             },
             downapp: async (tokenized, cmd) => {
@@ -692,6 +848,8 @@ const OS = {
             codetable: GLOBAL_COMMANDS.codetable,
             forcepassword: GLOBAL_COMMANDS.forcepassword,
             paint: GLOBAL_COMMANDS.paint,
+            shop: GLOBAL_COMMANDS.shop,
+            buy: GLOBAL_COMMANDS.buy,
         },
         "X": {
             info: GLOBAL_COMMANDS.systeminfo,

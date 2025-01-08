@@ -1,4 +1,5 @@
 class MessX extends App {
+    static isFree = true;
     constructor(window = null) {
         super();
         this.window = window;

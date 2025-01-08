@@ -1,5 +1,6 @@
 // Game starts the first time that the user logs in to the computer
 let isGameStarted = false;
+let isInteracted = false;
 
 // Game ticks
 const ticks = 20;
@@ -11,6 +12,9 @@ let anonymousUserMessageTick = 0;
 
 // Viruses
 let trojanMultiplier = 1;
+
+// Player
+const player = new Player();
 
 function wait(ms) {
     return new Promise(( resolve, reject ) => {
