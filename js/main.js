@@ -1,3 +1,5 @@
+import { init } from "./init.js";
+
 if (Apartment.activeApartment.pc.loggedIn) isGameStarted = true;
 
 async function gameLoop() {

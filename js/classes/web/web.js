@@ -22,6 +22,7 @@ class Web {
         SeagulNetworks,
         Mywifi,
         WireLink,
+        InMail,
     };
 
     static connections = [];

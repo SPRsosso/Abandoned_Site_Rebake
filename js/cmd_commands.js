@@ -721,7 +721,7 @@ const GLOBAL_COMMANDS = {
             CMD.log(cmd.window, `${item} - ${items[item].price} DigiCoins`);
         });
     },
-    buy: (tokenized, cmd, syystem) => {
+    buy: (tokenized, cmd, system) => {
         tokenized.shift();
 
         if (tokenized.length < 1) {
