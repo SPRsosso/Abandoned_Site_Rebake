@@ -22,8 +22,6 @@ Apartment.activeApartment.pc.downloadedApps = {
 // Apartment.activeApartment.pc.os.system = null;
 // Apartment.activeApartment.pc.os.version = null;
 
-const routers = Apartment.activeApartment.routers;
-
 let wifiIndex = 0;
 Apartment.activeApartment.wifis.forEach(( wifi, index ) => {
     if (Apartment.activeApartment.wifis[wifiIndex].strength > wifi.strength) wifiIndex = index;

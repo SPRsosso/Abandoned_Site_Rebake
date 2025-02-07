@@ -1,7 +1,8 @@
-if (Apartment.activeApartment.pc.loggedIn) isGameStarted = true;
-
+import { shared } from "./shared.js";
+if (shared.activeApartment.pc.loggedIn)
+    isGameStarted = true;
 async function gameLoop() {
-    while(true) {
+    while (true) {
         // Tick operations
         // Current tick resets to 0 when time reaches 1s
         if (currentTick >= ticks) {
@@ -12,46 +13,28 @@ async function gameLoop() {
         if (isGameStarted)
             globalTick++;
         // Tick whilst you are in PC counts when the game is started and user logs in to a computer
-        if (isGameStarted && Apartment.activeApartment.pc.loggedIn)
+        if (isGameStarted && shared.activeApartment.pc.loggedIn)
             insidePCTick++;
         // Anonymous user message tick count when the game is started, you are logged in to a computer and when the anonymous user should message your starting computer
         if (isGameStarted && apartments[0].pc.loggedIn)
             anonymousUserMessageTick++;
-
-
-
         // Game mechanics
-        
         // Anonymous user sends messages
         if (anonymousUserMessages[0]) {
             if (parseInt(tickstoms(anonymousUserMessageTick)) >= parseInt(Object.keys(anonymousUserMessages[0])[0])) {
                 const id = apartments[0].pc.user.id;
-
                 anonymousUser.sendMessage(id, anonymousUserMessages[0][Object.keys(anonymousUserMessages[0])[0]]);
-
-                if (anonymousUserMessages[0].chooseOptions) setAnonymousOptions(startChooseOptions);
-
+                if (anonymousUserMessages[0].chooseOptions)
+                    setAnonymousOptions(startChooseOptions);
                 anonymousUserMessages.shift();
                 anonymousUserMessageTick = 0;
             }
         }
-
-        // Wifi port sending
-        wifis.forEach(wifi => {
-            wifi.activePorts.forEach(activePort => {
-                activePort.pcIPs.forEach(pc => {
-                    if (pc.packetIndex < pc.packets.length - 1) pc.packetIndex++;
-                    else pc.packetIndex = 0;
-                });
-            })
-        });
-
         trojanMultiplier = Math.round(trojanMultiplier * 10000) / 10000;
         await wait(tps * trojanMultiplier);
     }
 }
 gameLoop();
-
 // Check if browser is different than Chrome
 if (navigator.userAgent.indexOf("Chrome") === -1)
     alert("You are using other browser than Chromium based browsers (eg. Chrome, Opera, Opera GX), this game may not work properly");

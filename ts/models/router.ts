@@ -1,5 +1,20 @@
-class Router {
-    constructor(name, x, y, spanX, spanY) {
+import { generateIP } from "../functions.js";
+import { Position } from "./position.js";
+import { Wifi } from "./wifi.js";
+
+const allRouters: Router[] = [];
+
+export class Router {
+    name: string;
+    pos: Position;
+    strength: Position;
+    connectedWifi: Wifi | null;
+    ip: string;
+
+    spanX: number;
+    spanY: number;
+
+    constructor(name: string, x: number, y: number, spanX: number, spanY: number) {
         this.name = name;
         this.pos = {
             x,

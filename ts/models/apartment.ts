@@ -1,6 +1,18 @@
-class Apartment {
-    static Apartment.activeApartment;
-    constructor(apartmentsName, roomNumber) {
+import { apartments } from "../data/apartments.js";
+import { PC } from "./pc.js";
+import { Router } from "./router.js";
+import { Wifi } from "./wifi.js";
+
+export class Apartment {
+    wifis: Wifi[];
+    routers: Router[];
+
+    roomNumber: string;
+    name: string;
+    router: Router;
+    pc: PC;
+
+    constructor(apartmentsName: string, roomNumber: string) {
         this.wifis = [];
 
         this.routers = [];
@@ -9,14 +21,15 @@ class Apartment {
         this.roomNumber = roomNumber;
         this.name = apartmentsName + " " + this.roomNumber;
         this.router = this.routers[this.routers.length - 1];
-        this.pc = new PC(this);
+
+        this.pc = new PC(this.name);
     }
 
-    static getByPC(pc) {
-        return apartments.find(apartment => apartment.pc === pc);
+    static getByPC(pc: PC): Apartment | undefined {
+        return apartments.find((apartment: Apartment) => apartment.pc === pc);
     }
 
-    static generateRouters(routers) {
+    static generateRouters(routers: Router[]) {
         const x = [];
         const y = [];
         const spanX = [];
@@ -84,7 +97,7 @@ class Apartment {
     }
 }
 
-function genrand(from, to, excluding = []) {
+function genrand(from: number, to: number, excluding = []): number {
     let num = Math.floor(Math.random() * (to - from + 1 )) + from;
     return excluding.find(ex => ex == num) ? genrand(from, to, excluding) : num;
 }

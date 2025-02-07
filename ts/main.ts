@@ -1,6 +1,9 @@
-if (Apartment.activeApartment.pc.loggedIn) isGameStarted = true;
+import { wifis } from "./data/wifis.js";
+import { shared } from "./shared.js";
 
-async function gameLoop() {
+if (shared.activeApartment.pc.loggedIn) isGameStarted = true;
+
+async function gameLoop(): Promise<void> {
     while(true) {
         // Tick operations
         // Current tick resets to 0 when time reaches 1s
@@ -12,7 +15,7 @@ async function gameLoop() {
         if (isGameStarted)
             globalTick++;
         // Tick whilst you are in PC counts when the game is started and user logs in to a computer
-        if (isGameStarted && Apartment.activeApartment.pc.loggedIn)
+        if (isGameStarted && shared.activeApartment.pc.loggedIn)
             insidePCTick++;
         // Anonymous user message tick count when the game is started, you are logged in to a computer and when the anonymous user should message your starting computer
         if (isGameStarted && apartments[0].pc.loggedIn)
@@ -35,16 +38,6 @@ async function gameLoop() {
                 anonymousUserMessageTick = 0;
             }
         }
-
-        // Wifi port sending
-        wifis.forEach(wifi => {
-            wifi.activePorts.forEach(activePort => {
-                activePort.pcIPs.forEach(pc => {
-                    if (pc.packetIndex < pc.packets.length - 1) pc.packetIndex++;
-                    else pc.packetIndex = 0;
-                });
-            })
-        });
 
         trojanMultiplier = Math.round(trojanMultiplier * 10000) / 10000;
         await wait(tps * trojanMultiplier);
